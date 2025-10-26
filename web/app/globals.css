@@ -1,3 +1,4 @@
+@import '@solana/wallet-adapter-react-ui/styles.css';
 @import "tailwindcss";
 
 :root {
@@ -23,4 +24,94 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Add this to your globals.css or app/globals.css */
+
+/* Override default wallet adapter styles */
+.wallet-adapter-button {
+  background: linear-gradient(to right, rgb(147 51 234), rgb(16 185 129)) !important;
+  border-radius: 9999px !important;
+  padding: 12px 24px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  height: auto !important;
+}
+
+.wallet-adapter-button:hover:not([disabled]) {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 30px rgba(153, 69, 255, 0.6) !important;
+  background: linear-gradient(to right, rgb(168 85 247), rgb(20 184 166)) !important;
+}
+
+.wallet-adapter-button:active:not([disabled]) {
+  transform: scale(0.98) !important;
+}
+
+.wallet-adapter-button-trigger {
+  background: linear-gradient(to right, rgb(147 51 234), rgb(16 185 129)) !important;
+}
+
+/* Style the wallet modal */
+.wallet-adapter-modal-wrapper {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.wallet-adapter-modal {
+  background: rgb(15 23 42) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  border-radius: 16px !important;
+}
+
+.wallet-adapter-modal-title {
+  color: rgb(16 185 129) !important;
+  font-weight: 700 !important;
+}
+
+.wallet-adapter-modal-list {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.wallet-adapter-modal-list-item {
+  background: rgb(30 41 59) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+  border-radius: 8px !important;
+  margin-bottom: 8px !important;
+  transition: all 0.2s !important;
+}
+
+.wallet-adapter-modal-list-item:hover {
+  background: rgb(51 65 85) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  transform: translateX(4px) !important;
+}
+
+/* Connected wallet display */
+.wallet-adapter-button-end-icon {
+  margin-left: 8px !important;
+}
+
+.wallet-adapter-button[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Dropdown menu styling */
+.wallet-adapter-dropdown {
+  background: rgb(15 23 42) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  border-radius: 12px !important;
+}
+
+.wallet-adapter-dropdown-list-item {
+  background: transparent !important;
+  transition: background 0.2s !important;
+}
+
+.wallet-adapter-dropdown-list-item:hover {
+  background: rgb(30 41 59) !important;
 }

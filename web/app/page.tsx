@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Crown, Zap, Trophy, Users, Shield, Coins, Swords, Sparkles } from 'lucide-react';
+import Navbar from '@/components/Navbar';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -51,21 +52,7 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="relative z-50 flex justify-between items-center px-8 py-6 bg-slate-950/80 backdrop-blur-xl border-b border-emerald-500/20">
-        <div className="flex items-center gap-3">
-          <div className="text-4xl animate-pulse filter drop-shadow-[0_0_10px_rgba(20,241,149,0.8)]">
-            ♔
-          </div>
-          <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-purple-500 bg-clip-text text-transparent tracking-tight">
-            SOLANA CHESS
-          </h1>
-        </div>
-        <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300 flex items-center gap-2">
-          <Sparkles className="w-5 h-5" />
-          Connect Wallet
-        </button>
-      </header>
-
+     <Navbar/>
       {/* Hero Section */}
       <section className="relative z-10 container mx-auto px-8 pt-20 pb-32">
         <div className="max-w-6xl mx-auto text-center">
@@ -253,10 +240,10 @@ export default function Home() {
               </span>
             </div>
             <div className="flex gap-8">
-              <a href="#" className="text-gray-400 hover:text-emerald-400 transition-colors">GitHub</a>
+              <a href="https://github.com/dvansari65/chess_dapp" className="text-gray-400 hover:text-emerald-400 transition-colors">GitHub</a>
               <a href="#" className="text-gray-400 hover:text-emerald-400 transition-colors">Docs</a>
               <a href="#" className="text-gray-400 hover:text-emerald-400 transition-colors">Discord</a>
-              <a href="#" className="text-gray-400 hover:text-emerald-400 transition-colors">Twitter</a>
+              <a href="https://x.com/AnsariDva" className="text-gray-400 hover:text-emerald-400 transition-colors">Twitter</a>
             </div>
           </div>
           <div className="text-center text-gray-500 text-sm mt-8">

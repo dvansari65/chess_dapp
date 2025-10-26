@@ -11,6 +11,7 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 import React, {  useMemo } from "react";
+
 interface WalletProviderProps {
   children: React.ReactNode;
 }
@@ -24,7 +25,7 @@ function SolanaWalletProvider({ children }: WalletProviderProps) {
   );
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets}>
+      <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
