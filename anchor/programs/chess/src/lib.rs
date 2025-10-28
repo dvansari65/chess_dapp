@@ -7,11 +7,12 @@ declare_id!("5CrifCndHLJRtxvMGksFgUK9caVEsqB38En6yaWr4C2s");
 #[program]
 pub mod chess {
 
-    use crate::instruction::InitializeEscrow;
-
     use super::*;
 
-    pub fn InitializePlayer (ctx: Context<InitializePlayer>,user_name:String)->Result<()>{
+    pub fn initialize_player (
+        ctx: Context<InitializePlayer>,
+        user_name:String
+    )->Result<()>{
         require!(user_name.len() <= 20,PlayerError::InvalidUserNameLength);
         let player = &mut ctx.accounts.player;
         player.user_name = user_name;
@@ -27,15 +28,18 @@ pub mod chess {
         let player_balance= ctx.accounts.player_1.to_account_info().lamports();
         require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
         let game = &mut ctx.accounts.game;
+        let escrow = &mut ctx.accounts.game_escrow;
+        escrow.amount_status = AmountStatus::NotObtainedYet;
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             Transfer {
                 from:ctx.accounts.player_1.to_account_info(),
-                to:ctx.accounts.game_escrow.to_account_info()
+                to:escrow.to_account_info()
             }
         );
         transfer(cpi_context, player_balance)?;
-
+        escrow.amount_status = AmountStatus::ObtainedFromPlayer1;
+        msg!("Wagered transfer from player 1 to escrow account");
         game.amount_wagered = wagered_amount;
         game.game_id = game_id;
         game.game_status = GameStatus::WaitingForPlayer2;
@@ -50,14 +54,16 @@ pub mod chess {
         require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         let player_balance = ctx.accounts.player_2.to_account_info().lamports();
         require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
+        let escrow = &mut ctx.accounts.game_escrow;
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             Transfer {
                 from:ctx.accounts.player_2.to_account_info(),
-                to:ctx.accounts.game_escrow.to_account_info()
+                to:escrow.to_account_info()
             }
         );
         transfer(cpi_context, player_balance)?;
+        escrow.amount_status = AmountStatus::ObtainedFromPlayer2;
         game.amount_wagered = wagered_amount;
         game.game_id = game_id;
         game.bump = ctx.bumps.join_game;
@@ -65,7 +71,13 @@ pub mod chess {
         Ok(())
     }
     pub fn initialize_escrow(ctx: Context<InitializeEscrow>,game_id: u64)->Result<()>{
-        let (expected)
+        let (expected_pda,_bump) = Pubkey::find_program_address(
+            &[b"escrow",game_id.to_le_bytes().as_ref()],
+             ctx.program_id
+            );
+            require_keys_eq!(expected_pda,ctx.accounts.escrow.key(),ChessError::InvalidPda);
+            let escrow = &mut ctx.accounts.escrow;
+            escrow.game_id = game_id;
         Ok(())
     }
 }
@@ -148,7 +160,9 @@ enum GameStatus {
 #[error_code]
 pub enum ChessError {
     #[msg("Invalid wagered amount!")]
-    InvalidWageredAmount
+    InvalidWageredAmount,
+    #[msg("Invalid PDA found!")]
+    InvalidPda
 }
 #[error_code]
 pub enum  PlayerError {
@@ -182,6 +196,7 @@ pub struct Escrow {
 #[derive(Clone,InitSpace,AnchorDeserialize,AnchorSerialize)]
 pub enum AmountStatus {
     NotObtainedYet,
-    Obtained,
+    ObtainedFromPlayer1,
+    ObtainedFromPlayer2,
     Returned
 }
