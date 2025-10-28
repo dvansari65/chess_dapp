@@ -6,15 +6,17 @@ declare_id!("5CrifCndHLJRtxvMGksFgUK9caVEsqB38En6yaWr4C2s");
 
 #[program]
 pub mod chess {
-    use crate::instruction::JoinGame;
 
     use super::*;
 
-    pub fn initialize_game(
+    pub fn create_game(
         ctx: Context<InitializeGame>,
         game_id: u64,
         wagered_amount:u64
     ) -> Result<()> {
+        require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
+        let player_balance= ctx.accounts.player_1.to_account_info().lamports();
+        require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
         let game = &mut ctx.accounts.game;
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
@@ -23,7 +25,7 @@ pub mod chess {
                 to:ctx.accounts.game_escrow.to_account_info()
             }
         );
-        transfer(cpi_context, wagered_amount);
+        transfer(cpi_context, player_balance)?;
 
         game.amount_wagered = wagered_amount;
         game.game_id = game_id;
@@ -34,8 +36,23 @@ pub mod chess {
         msg!("Game created ! ID : {} , Wagered Amount :{}", game_id,wagered_amount);
         Ok(())
     }
-    pub fn join_game (ctx: Context<InitializeJoinGame>,game_id:u64)-> Result<()>{
+    pub fn join_game (ctx: Context<InitializeJoinGame>,game_id:u64,wagered_amount:u64)-> Result<()>{
         let game= &mut ctx.accounts.join_game;
+        require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
+        let player_balance = ctx.accounts.player_2.to_account_info().lamports();
+        require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
+        let cpi_context = CpiContext::new(
+            ctx.accounts.system_program.to_account_info(),
+            Transfer {
+                from:ctx.accounts.player_2.to_account_info(),
+                to:ctx.accounts.game_escrow.to_account_info()
+            }
+        );
+        transfer(cpi_context, player_balance)?;
+        game.amount_wagered = wagered_amount;
+        game.game_id = game_id;
+        game.bump = ctx.bumps.join_game;
+        game.game_status = GameStatus::Player2Connected;
         Ok(())
     }
 }
@@ -43,7 +60,7 @@ pub mod chess {
 #[derive(Accounts)]
 #[instruction(game_id:u64)]
 pub struct InitializeGame<'info> {
-    #[account(init , space = 8 + 8  , payer = player_1, seeds = [b"game",game_id.to_le_bytes().as_ref()], bump)]
+    #[account(init , space = 8 + 8  , payer = player_1, seeds = [b"game",game_id.to_le_bytes().as_ref()], bump , has_one = player_1)]
     pub game: Account<'info, Game>,
     #[account(
         mut,
@@ -83,10 +100,16 @@ struct Game {
     pub winner: Option<Pubkey>,
     pub bump:u8
 }
-#[account]
- struct JoinGame {
-    game_id:u64,
-    player_2:String
-}
+
 #[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq, Eq, InitSpace)]
+enum GameStatus {
+    Processing,
+    Player2Connected,
+    WaitingForPlayer2
+}
+#[error_code]
+pub enum ChessError {
+    #[msg("Invalid wagered amount!")]
+    InvalidWageredAmount
+}
 
