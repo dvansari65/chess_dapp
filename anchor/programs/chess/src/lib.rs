@@ -9,6 +9,13 @@ pub mod chess {
 
     use super::*;
 
+    pub fn InitializePlayer (ctx: Context<InitializePlayer>,user_name:String)->Result<()>{
+        require!(user_name.len() <= 20,PlayerError::InvalidUserNameLength);
+        let player = &mut ctx.accounts.player;
+        player.user_name = user_name;
+        msg!("User name created successfully!");
+        Ok(())
+    }
     pub fn create_game(
         ctx: Context<InitializeGame>,
         game_id: u64,
@@ -60,7 +67,7 @@ pub mod chess {
 #[derive(Accounts)]
 #[instruction(game_id:u64)]
 pub struct InitializeGame<'info> {
-    #[account(init , space = 8 + 8  , payer = player_1, seeds = [b"game",game_id.to_le_bytes().as_ref()], bump , has_one = player_1)]
+    #[account(init , space = 8 + 8  , payer = player_1, seeds = [b"game",game_id.to_le_bytes().as_ref(),player_1.key().as_ref()], bump , has_one = player_1)]
     pub game: Account<'info, Game>,
     #[account(
         mut,
@@ -77,7 +84,7 @@ pub struct InitializeGame<'info> {
 #[derive(Accounts)]
 #[instruction(game_id:u64)]
 pub struct InitializeJoinGame <'info>{
-    #[account(init, payer = player_2 , space = 8 + 8  , seeds = [b"game",game_id.to_le_bytes().as_ref()] ,bump)]
+    #[account(init, payer = player_2 , space = 8 + 8  , seeds = [b"game",game_id.to_le_bytes().as_ref(),player_2.key().as_ref()] ,bump)]
     pub join_game : Account<'info,Game>,
     #[account(
         mut,
@@ -87,6 +94,15 @@ pub struct InitializeJoinGame <'info>{
     pub game_escrow : Account<'info,Game>,
     #[account(mut)]
     pub player_2 : Signer<'info>,
+    system_program : Program<'info,System>
+}
+#[derive(Accounts)]
+#[instruction(user_name:String)]
+pub struct InitializePlayer<'info> {
+    #[account(init , payer = signer , space = 8 + 8 , seeds = [b"player",user_name.as_bytes() ],bump)]
+    pub player : Account<'info,Player>,
+    #[account(mut)]
+    pub signer : Signer<'info>,
     system_program : Program<'info,System>
 }
 
@@ -111,5 +127,17 @@ enum GameStatus {
 pub enum ChessError {
     #[msg("Invalid wagered amount!")]
     InvalidWageredAmount
+}
+#[error_code]
+pub enum  PlayerError {
+    #[msg("User name length should be less than 20 characters!")]
+    InvalidUserNameLength
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct Player {
+    #[max_len(20)]
+    user_name:String
 }
 
