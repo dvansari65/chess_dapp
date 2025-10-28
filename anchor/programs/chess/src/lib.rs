@@ -7,6 +7,8 @@ declare_id!("5CrifCndHLJRtxvMGksFgUK9caVEsqB38En6yaWr4C2s");
 #[program]
 pub mod chess {
 
+    use crate::instruction::InitializeEscrow;
+
     use super::*;
 
     pub fn InitializePlayer (ctx: Context<InitializePlayer>,user_name:String)->Result<()>{
@@ -62,6 +64,10 @@ pub mod chess {
         game.game_status = GameStatus::Player2Connected;
         Ok(())
     }
+    pub fn initialize_escrow(ctx: Context<InitializeEscrow>,game_id: u64)->Result<()>{
+        let (expected)
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -74,7 +80,7 @@ pub struct InitializeGame<'info> {
         seeds = [b"escrow",game_id.to_le_bytes().as_ref()],
         bump
     )]
-    pub game_escrow: SystemAccount<'info>,
+    pub game_escrow: Account<'info,Escrow>,
 
     #[account(mut)]
     pub player_1: Signer<'info>,
@@ -88,10 +94,10 @@ pub struct InitializeJoinGame <'info>{
     pub join_game : Account<'info,Game>,
     #[account(
         mut,
-        seeds = [b"game",game_id.to_be_bytes().as_ref()],
+        seeds = [b"escrow",game_id.to_be_bytes().as_ref()],
         bump
     )]
-    pub game_escrow : Account<'info,Game>,
+    pub game_escrow : Account<'info,Escrow>,
     #[account(mut)]
     pub player_2 : Signer<'info>,
     system_program : Program<'info,System>
@@ -99,11 +105,27 @@ pub struct InitializeJoinGame <'info>{
 #[derive(Accounts)]
 #[instruction(user_name:String)]
 pub struct InitializePlayer<'info> {
-    #[account(init , payer = signer , space = 8 + 8 , seeds = [b"player",user_name.as_bytes() ],bump)]
+    #[account(init , payer = signer , space = 8 + Player::INIT_SPACE , seeds = [b"player",user_name.as_bytes() ],bump)]
     pub player : Account<'info,Player>,
     #[account(mut)]
     pub signer : Signer<'info>,
     system_program : Program<'info,System>
+}
+#[derive(Accounts)]
+#[instruction(game_id:u64,player_1:String,player_2:String)]
+pub struct InitializeEscrow<'info> {
+    #[account(
+        init,
+        payer = signer,
+        space = 8 + Escrow::INIT_SPACE, 
+        seeds = [b"escrow",game_id.to_le_bytes().as_ref()],
+        bump
+    )]
+    pub escrow : Account<'info,Escrow>,
+    #[account(mut)]
+    pub signer : Signer<'info>,
+    pub system_program : Program<'info,System>
+   
 }
 
 #[account]
@@ -133,6 +155,11 @@ pub enum  PlayerError {
     #[msg("User name length should be less than 20 characters!")]
     InvalidUserNameLength
 }
+#[error_code]
+pub enum EscrowError {
+    #[msg("Game id not provided!")]
+    GameIdError
+}
 
 #[account]
 #[derive(InitSpace)]
@@ -140,4 +167,21 @@ pub struct Player {
     #[max_len(20)]
     user_name:String
 }
+#[account]
+#[derive(InitSpace)]
+pub struct Escrow {
+    game_id:u64,
+    #[max_len(20)]
+    player_1:String,
+    #[max_len(20)]
+    player_2:String,
+    wagered_amount:u64,
+    amount_status:AmountStatus
+}
 
+#[derive(Clone,InitSpace,AnchorDeserialize,AnchorSerialize)]
+pub enum AmountStatus {
+    NotObtainedYet,
+    Obtained,
+    Returned
+}
