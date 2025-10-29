@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Crown, Zap, Trophy, Users, Shield, Coins, Swords, Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -80,13 +81,12 @@ export default function Home() {
             The first <span className="text-emerald-400 font-semibold">peer-to-peer</span> chess betting platform on Solana. 
             Challenge opponents, lock funds in escrow, and <span className="text-purple-400 font-semibold">winner takes all</span>.
           </p>
-
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-6 mb-16">
-            <button className="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl font-bold text-xl hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(20,241,149,0.4)] hover:shadow-[0_0_60px_rgba(20,241,149,0.6)] flex items-center gap-3">
+            <Link href={"/PlayGame"} className="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl font-bold text-xl hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(20,241,149,0.4)] hover:shadow-[0_0_60px_rgba(20,241,149,0.6)] flex items-center gap-3">
               <Swords className="w-6 h-6 group-hover:rotate-12 transition-transform" />
               Play Now
-            </button>
+            </Link>
             <button className="px-8 py-4 bg-slate-800/50 border-2 border-purple-500/50 rounded-xl font-bold text-xl hover:bg-slate-800 hover:border-purple-400 transition-all duration-300 flex items-center gap-3">
               <Trophy className="w-6 h-6" />
               View Leaderboard

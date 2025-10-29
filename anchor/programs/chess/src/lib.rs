@@ -8,7 +8,6 @@ declare_id!("5CrifCndHLJRtxvMGksFgUK9caVEsqB38En6yaWr4C2s");
 pub mod chess {
 
     use super::*;
-
     pub fn initialize_player (
         ctx: Context<InitializePlayer>,
         user_name:String
@@ -80,6 +79,7 @@ pub mod chess {
             escrow.game_id = game_id;
         Ok(())
     }
+
 }
 
 #[derive(Accounts)]
@@ -123,6 +123,7 @@ pub struct InitializePlayer<'info> {
     pub signer : Signer<'info>,
     system_program : Program<'info,System>
 }
+
 #[derive(Accounts)]
 #[instruction(game_id:u64,player_1:String,player_2:String)]
 pub struct InitializeEscrow<'info> {
@@ -137,7 +138,6 @@ pub struct InitializeEscrow<'info> {
     #[account(mut)]
     pub signer : Signer<'info>,
     pub system_program : Program<'info,System>
-   
 }
 
 #[account]
