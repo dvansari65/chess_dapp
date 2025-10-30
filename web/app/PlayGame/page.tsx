@@ -93,25 +93,7 @@ export default function GameModesPage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-20 border-b border-purple-500/20 bg-slate-950/50 backdrop-blur-xl">
-        <div className="container mx-auto px-8 py-4">
-          <div className="flex items-center justify-between">
-            <button onClick={handleBack} className="flex items-center gap-2 text-gray-400 hover:text-emerald-400 transition-colors group">
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-semibold">Back to Home</span>
-            </button>
-            <div className="flex items-center gap-3">
-              <div className="text-3xl">♔</div>
-              <span className="text-xl font-black bg-gradient-to-r from-emerald-400 to-purple-500 bg-clip-text text-transparent">
-                SOLANA CHESS
-              </span>
-            </div>
-            <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
-              <Settings className="w-5 h-5 text-gray-400" />
-            </button>
-          </div>
-        </div>
-      </header>
+      
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-8 py-12">

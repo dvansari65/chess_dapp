@@ -53,7 +53,7 @@ export default function Home() {
       </div>
 
       {/* Header */}
-     <Navbar/>
+     
       {/* Hero Section */}
       <section className="relative z-10 container mx-auto px-8 pt-20 pb-32">
         <div className="max-w-6xl mx-auto text-center">
