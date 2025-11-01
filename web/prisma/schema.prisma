@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-   output   = "../generated"
+  output   = "../generated"
 }
 
 datasource db {
@@ -15,11 +15,20 @@ datasource db {
 }
 
 model Player {
-  userName   String @unique
-  matchesPlayed  Int @default(0)
-  wins           Int @default(0)
-  lost           Int @default(0)
-  rating         Int @default(0)
-  solWon         Int @default(0)
-  createdAt      String
+  id            Int    @id @default(autoincrement())
+  userName      String @unique
+  status        playerStatus @default(offline)
+  avatar        String
+  matchesPlayed Int    @default(0)
+  wins          Int    @default(0)
+  lost          Int    @default(0)
+  rating        Int    @default(0)
+  solWon        Int    @default(0)
+  createdAt     String
+  isPlaying     Boolean @default(false)
+}
+
+enum playerStatus {
+  Online
+  offline
 }

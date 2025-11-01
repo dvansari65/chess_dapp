@@ -26,6 +26,7 @@ export type AggregatePlayer = {
 }
 
 export type PlayerAvgAggregateOutputType = {
+  id: number | null
   matchesPlayed: number | null
   wins: number | null
   lost: number | null
@@ -34,6 +35,7 @@ export type PlayerAvgAggregateOutputType = {
 }
 
 export type PlayerSumAggregateOutputType = {
+  id: number | null
   matchesPlayed: number | null
   wins: number | null
   lost: number | null
@@ -42,38 +44,51 @@ export type PlayerSumAggregateOutputType = {
 }
 
 export type PlayerMinAggregateOutputType = {
+  id: number | null
   userName: string | null
+  status: $Enums.playerStatus | null
+  avatar: string | null
   matchesPlayed: number | null
   wins: number | null
   lost: number | null
   rating: number | null
   solWon: number | null
   createdAt: string | null
+  isPlaying: boolean | null
 }
 
 export type PlayerMaxAggregateOutputType = {
+  id: number | null
   userName: string | null
+  status: $Enums.playerStatus | null
+  avatar: string | null
   matchesPlayed: number | null
   wins: number | null
   lost: number | null
   rating: number | null
   solWon: number | null
   createdAt: string | null
+  isPlaying: boolean | null
 }
 
 export type PlayerCountAggregateOutputType = {
+  id: number
   userName: number
+  status: number
+  avatar: number
   matchesPlayed: number
   wins: number
   lost: number
   rating: number
   solWon: number
   createdAt: number
+  isPlaying: number
   _all: number
 }
 
 
 export type PlayerAvgAggregateInputType = {
+  id?: true
   matchesPlayed?: true
   wins?: true
   lost?: true
@@ -82,6 +97,7 @@ export type PlayerAvgAggregateInputType = {
 }
 
 export type PlayerSumAggregateInputType = {
+  id?: true
   matchesPlayed?: true
   wins?: true
   lost?: true
@@ -90,33 +106,45 @@ export type PlayerSumAggregateInputType = {
 }
 
 export type PlayerMinAggregateInputType = {
+  id?: true
   userName?: true
+  status?: true
+  avatar?: true
   matchesPlayed?: true
   wins?: true
   lost?: true
   rating?: true
   solWon?: true
   createdAt?: true
+  isPlaying?: true
 }
 
 export type PlayerMaxAggregateInputType = {
+  id?: true
   userName?: true
+  status?: true
+  avatar?: true
   matchesPlayed?: true
   wins?: true
   lost?: true
   rating?: true
   solWon?: true
   createdAt?: true
+  isPlaying?: true
 }
 
 export type PlayerCountAggregateInputType = {
+  id?: true
   userName?: true
+  status?: true
+  avatar?: true
   matchesPlayed?: true
   wins?: true
   lost?: true
   rating?: true
   solWon?: true
   createdAt?: true
+  isPlaying?: true
   _all?: true
 }
 
@@ -207,13 +235,17 @@ export type PlayerGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 export type PlayerGroupByOutputType = {
+  id: number
   userName: string
+  status: $Enums.playerStatus
+  avatar: string
   matchesPlayed: number
   wins: number
   lost: number
   rating: number
   solWon: number
   createdAt: string
+  isPlaying: boolean
   _count: PlayerCountAggregateOutputType | null
   _avg: PlayerAvgAggregateOutputType | null
   _sum: PlayerSumAggregateOutputType | null
@@ -240,46 +272,62 @@ export type PlayerWhereInput = {
   AND?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
   OR?: Prisma.PlayerWhereInput[]
   NOT?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
+  id?: Prisma.IntFilter<"Player"> | number
   userName?: Prisma.StringFilter<"Player"> | string
+  status?: Prisma.EnumplayerStatusFilter<"Player"> | $Enums.playerStatus
+  avatar?: Prisma.StringFilter<"Player"> | string
   matchesPlayed?: Prisma.IntFilter<"Player"> | number
   wins?: Prisma.IntFilter<"Player"> | number
   lost?: Prisma.IntFilter<"Player"> | number
   rating?: Prisma.IntFilter<"Player"> | number
   solWon?: Prisma.IntFilter<"Player"> | number
   createdAt?: Prisma.StringFilter<"Player"> | string
+  isPlaying?: Prisma.BoolFilter<"Player"> | boolean
 }
 
 export type PlayerOrderByWithRelationInput = {
+  id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  isPlaying?: Prisma.SortOrder
 }
 
 export type PlayerWhereUniqueInput = Prisma.AtLeast<{
+  id?: number
   userName?: string
   AND?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
   OR?: Prisma.PlayerWhereInput[]
   NOT?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
+  status?: Prisma.EnumplayerStatusFilter<"Player"> | $Enums.playerStatus
+  avatar?: Prisma.StringFilter<"Player"> | string
   matchesPlayed?: Prisma.IntFilter<"Player"> | number
   wins?: Prisma.IntFilter<"Player"> | number
   lost?: Prisma.IntFilter<"Player"> | number
   rating?: Prisma.IntFilter<"Player"> | number
   solWon?: Prisma.IntFilter<"Player"> | number
   createdAt?: Prisma.StringFilter<"Player"> | string
-}, "userName">
+  isPlaying?: Prisma.BoolFilter<"Player"> | boolean
+}, "id" | "userName">
 
 export type PlayerOrderByWithAggregationInput = {
+  id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  isPlaying?: Prisma.SortOrder
   _count?: Prisma.PlayerCountOrderByAggregateInput
   _avg?: Prisma.PlayerAvgOrderByAggregateInput
   _max?: Prisma.PlayerMaxOrderByAggregateInput
@@ -291,96 +339,130 @@ export type PlayerScalarWhereWithAggregatesInput = {
   AND?: Prisma.PlayerScalarWhereWithAggregatesInput | Prisma.PlayerScalarWhereWithAggregatesInput[]
   OR?: Prisma.PlayerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PlayerScalarWhereWithAggregatesInput | Prisma.PlayerScalarWhereWithAggregatesInput[]
+  id?: Prisma.IntWithAggregatesFilter<"Player"> | number
   userName?: Prisma.StringWithAggregatesFilter<"Player"> | string
+  status?: Prisma.EnumplayerStatusWithAggregatesFilter<"Player"> | $Enums.playerStatus
+  avatar?: Prisma.StringWithAggregatesFilter<"Player"> | string
   matchesPlayed?: Prisma.IntWithAggregatesFilter<"Player"> | number
   wins?: Prisma.IntWithAggregatesFilter<"Player"> | number
   lost?: Prisma.IntWithAggregatesFilter<"Player"> | number
   rating?: Prisma.IntWithAggregatesFilter<"Player"> | number
   solWon?: Prisma.IntWithAggregatesFilter<"Player"> | number
   createdAt?: Prisma.StringWithAggregatesFilter<"Player"> | string
+  isPlaying?: Prisma.BoolWithAggregatesFilter<"Player"> | boolean
 }
 
 export type PlayerCreateInput = {
   userName: string
+  status?: $Enums.playerStatus
+  avatar: string
   matchesPlayed?: number
   wins?: number
   lost?: number
   rating?: number
   solWon?: number
   createdAt: string
+  isPlaying?: boolean
 }
 
 export type PlayerUncheckedCreateInput = {
+  id?: number
   userName: string
+  status?: $Enums.playerStatus
+  avatar: string
   matchesPlayed?: number
   wins?: number
   lost?: number
   rating?: number
   solWon?: number
   createdAt: string
+  isPlaying?: boolean
 }
 
 export type PlayerUpdateInput = {
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PlayerUncheckedUpdateInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PlayerCreateManyInput = {
+  id?: number
   userName: string
+  status?: $Enums.playerStatus
+  avatar: string
   matchesPlayed?: number
   wins?: number
   lost?: number
   rating?: number
   solWon?: number
   createdAt: string
+  isPlaying?: boolean
 }
 
 export type PlayerUpdateManyMutationInput = {
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PlayerUncheckedUpdateManyInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PlayerCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  isPlaying?: Prisma.SortOrder
 }
 
 export type PlayerAvgOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
@@ -389,26 +471,35 @@ export type PlayerAvgOrderByAggregateInput = {
 }
 
 export type PlayerMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  isPlaying?: Prisma.SortOrder
 }
 
 export type PlayerMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  isPlaying?: Prisma.SortOrder
 }
 
 export type PlayerSumOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   lost?: Prisma.SortOrder
@@ -420,6 +511,10 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type EnumplayerStatusFieldUpdateOperationsInput = {
+  set?: $Enums.playerStatus
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -428,61 +523,85 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 
 
 export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
   userName?: boolean
+  status?: boolean
+  avatar?: boolean
   matchesPlayed?: boolean
   wins?: boolean
   lost?: boolean
   rating?: boolean
   solWon?: boolean
   createdAt?: boolean
+  isPlaying?: boolean
 }, ExtArgs["result"]["player"]>
 
 export type PlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
   userName?: boolean
+  status?: boolean
+  avatar?: boolean
   matchesPlayed?: boolean
   wins?: boolean
   lost?: boolean
   rating?: boolean
   solWon?: boolean
   createdAt?: boolean
+  isPlaying?: boolean
 }, ExtArgs["result"]["player"]>
 
 export type PlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
   userName?: boolean
+  status?: boolean
+  avatar?: boolean
   matchesPlayed?: boolean
   wins?: boolean
   lost?: boolean
   rating?: boolean
   solWon?: boolean
   createdAt?: boolean
+  isPlaying?: boolean
 }, ExtArgs["result"]["player"]>
 
 export type PlayerSelectScalar = {
+  id?: boolean
   userName?: boolean
+  status?: boolean
+  avatar?: boolean
   matchesPlayed?: boolean
   wins?: boolean
   lost?: boolean
   rating?: boolean
   solWon?: boolean
   createdAt?: boolean
+  isPlaying?: boolean
 }
 
-export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userName" | "matchesPlayed" | "wins" | "lost" | "rating" | "solWon" | "createdAt", ExtArgs["result"]["player"]>
+export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userName" | "status" | "avatar" | "matchesPlayed" | "wins" | "lost" | "rating" | "solWon" | "createdAt" | "isPlaying", ExtArgs["result"]["player"]>
 
 export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Player"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    id: number
     userName: string
+    status: $Enums.playerStatus
+    avatar: string
     matchesPlayed: number
     wins: number
     lost: number
     rating: number
     solWon: number
     createdAt: string
+    isPlaying: boolean
   }, ExtArgs["result"]["player"]>
   composites: {}
 }
@@ -566,8 +685,8 @@ export interface PlayerDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * // Get first 10 Players
    * const players = await prisma.player.findMany({ take: 10 })
    * 
-   * // Only select the `userName`
-   * const playerWithUserNameOnly = await prisma.player.findMany({ select: { userName: true } })
+   * // Only select the `id`
+   * const playerWithIdOnly = await prisma.player.findMany({ select: { id: true } })
    * 
    */
   findMany<T extends PlayerFindManyArgs>(args?: Prisma.SelectSubset<T, PlayerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -611,9 +730,9 @@ export interface PlayerDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   ]
    * })
    * 
-   * // Create many Players and only return the `userName`
-   * const playerWithUserNameOnly = await prisma.player.createManyAndReturn({
-   *   select: { userName: true },
+   * // Create many Players and only return the `id`
+   * const playerWithIdOnly = await prisma.player.createManyAndReturn({
+   *   select: { id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -702,9 +821,9 @@ export interface PlayerDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   ]
    * })
    * 
-   * // Update zero or more Players and only return the `userName`
-   * const playerWithUserNameOnly = await prisma.player.updateManyAndReturn({
-   *   select: { userName: true },
+   * // Update zero or more Players and only return the `id`
+   * const playerWithIdOnly = await prisma.player.updateManyAndReturn({
+   *   select: { id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -906,13 +1025,17 @@ export interface Prisma__PlayerClient<T, Null = never, ExtArgs extends runtime.T
  * Fields of the Player model
  */
 export interface PlayerFieldRefs {
+  readonly id: Prisma.FieldRef<"Player", 'Int'>
   readonly userName: Prisma.FieldRef<"Player", 'String'>
+  readonly status: Prisma.FieldRef<"Player", 'playerStatus'>
+  readonly avatar: Prisma.FieldRef<"Player", 'String'>
   readonly matchesPlayed: Prisma.FieldRef<"Player", 'Int'>
   readonly wins: Prisma.FieldRef<"Player", 'Int'>
   readonly lost: Prisma.FieldRef<"Player", 'Int'>
   readonly rating: Prisma.FieldRef<"Player", 'Int'>
   readonly solWon: Prisma.FieldRef<"Player", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Player", 'String'>
+  readonly isPlaying: Prisma.FieldRef<"Player", 'Boolean'>
 }
     
 

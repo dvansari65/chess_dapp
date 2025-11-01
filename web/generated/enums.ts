@@ -8,7 +8,9 @@
 * 🟢 You can import this file directly.
 */
 
+export const playerStatus = {
+  Online: 'Online',
+  offline: 'offline'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type playerStatus = (typeof playerStatus)[keyof typeof playerStatus]

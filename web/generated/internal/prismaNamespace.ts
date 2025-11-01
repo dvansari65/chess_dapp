@@ -523,13 +523,17 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 
 export const PlayerScalarFieldEnum = {
+  id: 'id',
   userName: 'userName',
+  status: 'status',
+  avatar: 'avatar',
   matchesPlayed: 'matchesPlayed',
   wins: 'wins',
   lost: 'lost',
   rating: 'rating',
   solWon: 'solWon',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  isPlaying: 'isPlaying'
 } as const
 
 export type PlayerScalarFieldEnum = (typeof PlayerScalarFieldEnum)[keyof typeof PlayerScalarFieldEnum]
@@ -558,6 +562,20 @@ export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'String'
  */
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
@@ -572,16 +590,23 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'Int'
+ * Reference to a field of type 'playerStatus'
  */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+export type EnumplayerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'playerStatus'>
     
 
 
 /**
- * Reference to a field of type 'Int[]'
+ * Reference to a field of type 'playerStatus[]'
  */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+export type ListEnumplayerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'playerStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
