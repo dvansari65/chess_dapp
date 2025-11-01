@@ -31,7 +31,6 @@ export type PlayerAvgAggregateOutputType = {
   lost: number | null
   rating: number | null
   solWon: number | null
-  createdAt: number | null
 }
 
 export type PlayerSumAggregateOutputType = {
@@ -40,7 +39,6 @@ export type PlayerSumAggregateOutputType = {
   lost: number | null
   rating: number | null
   solWon: number | null
-  createdAt: number | null
 }
 
 export type PlayerMinAggregateOutputType = {
@@ -50,7 +48,7 @@ export type PlayerMinAggregateOutputType = {
   lost: number | null
   rating: number | null
   solWon: number | null
-  createdAt: number | null
+  createdAt: string | null
 }
 
 export type PlayerMaxAggregateOutputType = {
@@ -60,7 +58,7 @@ export type PlayerMaxAggregateOutputType = {
   lost: number | null
   rating: number | null
   solWon: number | null
-  createdAt: number | null
+  createdAt: string | null
 }
 
 export type PlayerCountAggregateOutputType = {
@@ -81,7 +79,6 @@ export type PlayerAvgAggregateInputType = {
   lost?: true
   rating?: true
   solWon?: true
-  createdAt?: true
 }
 
 export type PlayerSumAggregateInputType = {
@@ -90,7 +87,6 @@ export type PlayerSumAggregateInputType = {
   lost?: true
   rating?: true
   solWon?: true
-  createdAt?: true
 }
 
 export type PlayerMinAggregateInputType = {
@@ -217,7 +213,7 @@ export type PlayerGroupByOutputType = {
   lost: number
   rating: number
   solWon: number
-  createdAt: number
+  createdAt: string
   _count: PlayerCountAggregateOutputType | null
   _avg: PlayerAvgAggregateOutputType | null
   _sum: PlayerSumAggregateOutputType | null
@@ -250,7 +246,7 @@ export type PlayerWhereInput = {
   lost?: Prisma.IntFilter<"Player"> | number
   rating?: Prisma.IntFilter<"Player"> | number
   solWon?: Prisma.IntFilter<"Player"> | number
-  createdAt?: Prisma.IntFilter<"Player"> | number
+  createdAt?: Prisma.StringFilter<"Player"> | string
 }
 
 export type PlayerOrderByWithRelationInput = {
@@ -273,7 +269,7 @@ export type PlayerWhereUniqueInput = Prisma.AtLeast<{
   lost?: Prisma.IntFilter<"Player"> | number
   rating?: Prisma.IntFilter<"Player"> | number
   solWon?: Prisma.IntFilter<"Player"> | number
-  createdAt?: Prisma.IntFilter<"Player"> | number
+  createdAt?: Prisma.StringFilter<"Player"> | string
 }, "userName">
 
 export type PlayerOrderByWithAggregationInput = {
@@ -301,27 +297,27 @@ export type PlayerScalarWhereWithAggregatesInput = {
   lost?: Prisma.IntWithAggregatesFilter<"Player"> | number
   rating?: Prisma.IntWithAggregatesFilter<"Player"> | number
   solWon?: Prisma.IntWithAggregatesFilter<"Player"> | number
-  createdAt?: Prisma.IntWithAggregatesFilter<"Player"> | number
+  createdAt?: Prisma.StringWithAggregatesFilter<"Player"> | string
 }
 
 export type PlayerCreateInput = {
   userName: string
-  matchesPlayed: number
-  wins: number
-  lost: number
-  rating: number
-  solWon: number
-  createdAt: number
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
 }
 
 export type PlayerUncheckedCreateInput = {
   userName: string
-  matchesPlayed: number
-  wins: number
-  lost: number
-  rating: number
-  solWon: number
-  createdAt: number
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
 }
 
 export type PlayerUpdateInput = {
@@ -331,7 +327,7 @@ export type PlayerUpdateInput = {
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PlayerUncheckedUpdateInput = {
@@ -341,17 +337,17 @@ export type PlayerUncheckedUpdateInput = {
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PlayerCreateManyInput = {
   userName: string
-  matchesPlayed: number
-  wins: number
-  lost: number
-  rating: number
-  solWon: number
-  createdAt: number
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
 }
 
 export type PlayerUpdateManyMutationInput = {
@@ -361,7 +357,7 @@ export type PlayerUpdateManyMutationInput = {
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PlayerUncheckedUpdateManyInput = {
@@ -371,7 +367,7 @@ export type PlayerUncheckedUpdateManyInput = {
   lost?: Prisma.IntFieldUpdateOperationsInput | number
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PlayerCountOrderByAggregateInput = {
@@ -390,7 +386,6 @@ export type PlayerAvgOrderByAggregateInput = {
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 export type PlayerMaxOrderByAggregateInput = {
@@ -419,7 +414,6 @@ export type PlayerSumOrderByAggregateInput = {
   lost?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   solWon?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -488,7 +482,7 @@ export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     lost: number
     rating: number
     solWon: number
-    createdAt: number
+    createdAt: string
   }, ExtArgs["result"]["player"]>
   composites: {}
 }
@@ -918,7 +912,7 @@ export interface PlayerFieldRefs {
   readonly lost: Prisma.FieldRef<"Player", 'Int'>
   readonly rating: Prisma.FieldRef<"Player", 'Int'>
   readonly solWon: Prisma.FieldRef<"Player", 'Int'>
-  readonly createdAt: Prisma.FieldRef<"Player", 'Int'>
+  readonly createdAt: Prisma.FieldRef<"Player", 'String'>
 }
     
 

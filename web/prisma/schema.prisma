@@ -16,10 +16,10 @@ datasource db {
 
 model Player {
   userName   String @unique
-  matchesPlayed  Int
-  wins           Int
-  lost           Int
-  rating         Int
-  solWon         Int
-  createdAt      Int
+  matchesPlayed  Int @default(0)
+  wins           Int @default(0)
+  lost           Int @default(0)
+  rating         Int @default(0)
+  solWon         Int @default(0)
+  createdAt      String
 }
