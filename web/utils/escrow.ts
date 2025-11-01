@@ -14,7 +14,6 @@ export const getEscrowPda = (gameId:string)=>{
 
 export const initializeEscrow = (gameId:string)=>{
     const {program} = chessProgram()
-   
     return useQuery({
         queryKey:["create_escrow",gameId],
         queryFn:async()=>{

@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #090909;
   --foreground: #171717;
 }
 
@@ -23,7 +23,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'CustomFont', sans-serif;
 }
 
 /* Add this to your globals.css or app/globals.css */
@@ -114,4 +114,12 @@ body {
 
 .wallet-adapter-dropdown-list-item:hover {
   background: rgb(30 41 59) !important;
+}
+
+/* fonts */
+@font-face {
+  font-family: 'CustomFont';
+  src: url('../public/fonts/VeniteAdoremus-rgRBA.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }

@@ -108,51 +108,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Game Modes Section */}
-      <section className="relative z-10 container mx-auto px-8 py-20">
-        <h3 className="text-5xl font-black text-center mb-4">
-          <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            GAME MODES
-          </span>
-        </h3>
-        <p className="text-center text-gray-400 text-lg mb-16">Choose your battlefield</p>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* 1v1 Wager */}
-          <div className="group bg-gradient-to-br from-slate-900/90 to-purple-900/30 p-8 rounded-2xl border-2 border-purple-500/30 hover:border-purple-400 hover:scale-105 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] cursor-pointer">
-            <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">⚔️</div>
-            <h4 className="text-2xl font-bold mb-3 text-emerald-400">1v1 Wager Match</h4>
-            <p className="text-gray-300 mb-4">Challenge a player, both deposit SOL, winner takes the pot</p>
-            <div className="flex items-center gap-2 text-sm text-purple-300">
-              <Coins className="w-4 h-4" />
-              <span>Custom Stakes</span>
-            </div>
-          </div>
-
-          {/* Tournament */}
-          <div className="group bg-gradient-to-br from-slate-900/90 to-orange-900/30 p-8 rounded-2xl border-2 border-orange-500/30 hover:border-orange-400 hover:scale-105 transition-all duration-300 hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] cursor-pointer">
-            <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">🏆</div>
-            <h4 className="text-2xl font-bold mb-3 text-orange-400">Tournament Mode</h4>
-            <p className="text-gray-300 mb-4">Compete in multi-player tournaments with prize pools</p>
-            <div className="flex items-center gap-2 text-sm text-orange-300">
-              <Users className="w-4 h-4" />
-              <span>8-32 Players</span>
-            </div>
-          </div>
-
-          {/* Practice */}
-          <div className="group bg-gradient-to-br from-slate-900/90 to-blue-900/30 p-8 rounded-2xl border-2 border-blue-500/30 hover:border-blue-400 hover:scale-105 transition-all duration-300 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] cursor-pointer">
-            <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">🤖</div>
-            <h4 className="text-2xl font-bold mb-3 text-blue-400">Practice Mode</h4>
-            <p className="text-gray-300 mb-4">Sharpen your skills against AI before betting real SOL</p>
-            <div className="flex items-center gap-2 text-sm text-blue-300">
-              <Shield className="w-4 h-4" />
-              <span>Risk Free</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section className="relative z-10 container mx-auto px-8 py-20">
         <h3 className="text-5xl font-black text-center mb-4">

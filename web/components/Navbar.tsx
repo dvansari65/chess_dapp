@@ -4,12 +4,14 @@ import { Sparkles, LogOut, Copy, ExternalLink } from "lucide-react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const pathName = usePathname();
+  console.log("pathname", pathName);
   const handleConnect = () => {
     setVisible(true);
   };
@@ -35,7 +37,9 @@ function Navbar() {
   };
 
   return (
-    <header className="relative z-50 flex justify-between items-center px-8 py-6 bg-slate-950/80 backdrop-blur-xl border-b border-emerald-500/20">
+    <header
+      className={`sticky top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6 bg-slate-950/80 backdrop-blur-xl border-b border-emerald-500/20`}
+    >
       <div className="flex items-center gap-3">
         <div className="text-4xl animate-pulse filter drop-shadow-[0_0_10px_rgba(20,241,149,0.8)]">
           ♔

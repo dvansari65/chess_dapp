@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Swords, Bot, Users, Trophy, Clock, Settings, ChevronRight, Crown, Zap, Shield, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function GameModesPage() {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
@@ -12,6 +13,7 @@ export default function GameModesPage() {
   const gameModes = [
     {
       id: 'pvp',
+      path:"/Lobby",
       icon: Swords,
       title: '1v1 Match',
       subtitle: 'Challenge a Friend',
@@ -25,6 +27,7 @@ export default function GameModesPage() {
     {
       id: 'ai',
       icon: Bot,
+       path:"/Lobby",
       title: 'vs Computer',
       subtitle: 'Practice Against AI',
       description: 'Sharpen your skills with AI opponents of various difficulty levels',
@@ -37,6 +40,7 @@ export default function GameModesPage() {
     {
       id: 'tournament',
       icon: Trophy,
+      path:"/Lobby",
       title: 'Tournament',
       subtitle: 'Compete for Glory',
       description: 'Join multi-player tournaments and climb the leaderboard',
@@ -49,6 +53,7 @@ export default function GameModesPage() {
     {
       id: 'wager',
       icon: Crown,
+      path:"/Lobby",
       title: 'Wager Match',
       subtitle: 'Play for Stakes',
       description: 'Bet SOL tokens and winner takes all the rewards',
@@ -119,7 +124,8 @@ export default function GameModesPage() {
         {/* Game Modes Grid */}
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-16">
           {gameModes.map((mode) => (
-            <div
+            <Link
+              href={mode.path}
               key={mode.id}
               onClick={() => setSelectedMode(mode.id)}
               className={`group bg-gradient-to-br ${mode.bgGradient} p-8 rounded-2xl border-2 ${mode.borderColor} ${mode.shadowColor} hover:scale-105 transition-all duration-300 cursor-pointer relative overflow-hidden ${
@@ -128,7 +134,6 @@ export default function GameModesPage() {
             >
               {/* Background Glow */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              
               {/* Content */}
               <div className="relative z-10">
                 <div className="flex items-start justify-between mb-4">
@@ -139,13 +144,11 @@ export default function GameModesPage() {
                     <mode.icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
-                
                 <h3 className={`text-3xl font-black mb-2 bg-gradient-to-r ${mode.color} bg-clip-text text-transparent`}>
                   {mode.title}
                 </h3>
                 <p className="text-emerald-400 font-semibold text-sm mb-3">{mode.subtitle}</p>
                 <p className="text-gray-300 mb-6">{mode.description}</p>
-                
                 <div className="flex items-center gap-2 text-sm text-purple-300 group-hover:text-emerald-400 transition-colors">
                   <span className="font-semibold">Start Playing</span>
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -158,7 +161,7 @@ export default function GameModesPage() {
                   <div className="w-3 h-3 bg-white rounded-full" />
                 </div>
               )}
-            </div>
+            </Link>
           ))}
         </div>
 
