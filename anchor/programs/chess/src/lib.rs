@@ -8,6 +8,12 @@ declare_id!("5thRjLC5weq2vHC4VnDP1irNgNpdqCRmLEN6RqBtHvwt");
 pub mod chess {
 
     use super::*;
+
+    pub fn initialize_game_id(ctx:Context<InitializeGameId>)->Result<()>{
+        let game_counter = &mut ctx.accounts.counter;
+        game_counter.game_id = 0;
+        Ok(())
+    }
    
     pub fn create_game(
         ctx: Context<InitializeGame>,
@@ -121,6 +127,21 @@ pub struct InitializeEscrow<'info> {
     pub system_program : Program<'info,System>
 }
 
+#[derive(Accounts)]
+pub struct InitializeGameId<'info> {
+    #[account(
+        init,
+        payer = signer,
+        space = 8 + 8,
+        seeds = [b"counter",signer.key().as_ref()],
+        bump
+    )]
+    pub counter : Account<'info,Counter>,
+    #[account(mut)]
+    pub signer : Signer<'info>,
+    pub system_program : Program<'info,System>
+}
+
 #[account]
 struct Game {
     pub game_id: u64,
@@ -166,6 +187,10 @@ pub struct Escrow {
     player_2:String,
     wagered_amount:u64,
     amount_status:AmountStatus
+}
+#[account]
+pub struct Counter {
+    game_id:u64
 }
 
 #[derive(Clone,InitSpace,AnchorDeserialize,AnchorSerialize)]

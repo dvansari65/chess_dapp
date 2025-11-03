@@ -46,6 +46,7 @@ export type PlayerSumAggregateOutputType = {
 export type PlayerMinAggregateOutputType = {
   id: number | null
   userName: string | null
+  password: string | null
   status: $Enums.playerStatus | null
   avatar: string | null
   matchesPlayed: number | null
@@ -60,6 +61,7 @@ export type PlayerMinAggregateOutputType = {
 export type PlayerMaxAggregateOutputType = {
   id: number | null
   userName: string | null
+  password: string | null
   status: $Enums.playerStatus | null
   avatar: string | null
   matchesPlayed: number | null
@@ -74,6 +76,7 @@ export type PlayerMaxAggregateOutputType = {
 export type PlayerCountAggregateOutputType = {
   id: number
   userName: number
+  password: number
   status: number
   avatar: number
   matchesPlayed: number
@@ -108,6 +111,7 @@ export type PlayerSumAggregateInputType = {
 export type PlayerMinAggregateInputType = {
   id?: true
   userName?: true
+  password?: true
   status?: true
   avatar?: true
   matchesPlayed?: true
@@ -122,6 +126,7 @@ export type PlayerMinAggregateInputType = {
 export type PlayerMaxAggregateInputType = {
   id?: true
   userName?: true
+  password?: true
   status?: true
   avatar?: true
   matchesPlayed?: true
@@ -136,6 +141,7 @@ export type PlayerMaxAggregateInputType = {
 export type PlayerCountAggregateInputType = {
   id?: true
   userName?: true
+  password?: true
   status?: true
   avatar?: true
   matchesPlayed?: true
@@ -237,6 +243,7 @@ export type PlayerGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type PlayerGroupByOutputType = {
   id: number
   userName: string
+  password: string
   status: $Enums.playerStatus
   avatar: string
   matchesPlayed: number
@@ -274,6 +281,7 @@ export type PlayerWhereInput = {
   NOT?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
   id?: Prisma.IntFilter<"Player"> | number
   userName?: Prisma.StringFilter<"Player"> | string
+  password?: Prisma.StringFilter<"Player"> | string
   status?: Prisma.EnumplayerStatusFilter<"Player"> | $Enums.playerStatus
   avatar?: Prisma.StringFilter<"Player"> | string
   matchesPlayed?: Prisma.IntFilter<"Player"> | number
@@ -288,6 +296,7 @@ export type PlayerWhereInput = {
 export type PlayerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
@@ -305,6 +314,7 @@ export type PlayerWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
   OR?: Prisma.PlayerWhereInput[]
   NOT?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
+  password?: Prisma.StringFilter<"Player"> | string
   status?: Prisma.EnumplayerStatusFilter<"Player"> | $Enums.playerStatus
   avatar?: Prisma.StringFilter<"Player"> | string
   matchesPlayed?: Prisma.IntFilter<"Player"> | number
@@ -319,6 +329,7 @@ export type PlayerWhereUniqueInput = Prisma.AtLeast<{
 export type PlayerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
@@ -341,6 +352,7 @@ export type PlayerScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PlayerScalarWhereWithAggregatesInput | Prisma.PlayerScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Player"> | number
   userName?: Prisma.StringWithAggregatesFilter<"Player"> | string
+  password?: Prisma.StringWithAggregatesFilter<"Player"> | string
   status?: Prisma.EnumplayerStatusWithAggregatesFilter<"Player"> | $Enums.playerStatus
   avatar?: Prisma.StringWithAggregatesFilter<"Player"> | string
   matchesPlayed?: Prisma.IntWithAggregatesFilter<"Player"> | number
@@ -354,6 +366,7 @@ export type PlayerScalarWhereWithAggregatesInput = {
 
 export type PlayerCreateInput = {
   userName: string
+  password: string
   status?: $Enums.playerStatus
   avatar: string
   matchesPlayed?: number
@@ -368,6 +381,7 @@ export type PlayerCreateInput = {
 export type PlayerUncheckedCreateInput = {
   id?: number
   userName: string
+  password: string
   status?: $Enums.playerStatus
   avatar: string
   matchesPlayed?: number
@@ -381,6 +395,7 @@ export type PlayerUncheckedCreateInput = {
 
 export type PlayerUpdateInput = {
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
   avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -395,6 +410,7 @@ export type PlayerUpdateInput = {
 export type PlayerUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
   avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -409,6 +425,7 @@ export type PlayerUncheckedUpdateInput = {
 export type PlayerCreateManyInput = {
   id?: number
   userName: string
+  password: string
   status?: $Enums.playerStatus
   avatar: string
   matchesPlayed?: number
@@ -422,6 +439,7 @@ export type PlayerCreateManyInput = {
 
 export type PlayerUpdateManyMutationInput = {
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
   avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -436,6 +454,7 @@ export type PlayerUpdateManyMutationInput = {
 export type PlayerUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userName?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
   avatar?: Prisma.StringFieldUpdateOperationsInput | string
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -450,6 +469,7 @@ export type PlayerUncheckedUpdateManyInput = {
 export type PlayerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
@@ -473,6 +493,7 @@ export type PlayerAvgOrderByAggregateInput = {
 export type PlayerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
@@ -487,6 +508,7 @@ export type PlayerMaxOrderByAggregateInput = {
 export type PlayerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userName?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
@@ -532,6 +554,7 @@ export type BoolFieldUpdateOperationsInput = {
 export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userName?: boolean
+  password?: boolean
   status?: boolean
   avatar?: boolean
   matchesPlayed?: boolean
@@ -546,6 +569,7 @@ export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type PlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userName?: boolean
+  password?: boolean
   status?: boolean
   avatar?: boolean
   matchesPlayed?: boolean
@@ -560,6 +584,7 @@ export type PlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type PlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userName?: boolean
+  password?: boolean
   status?: boolean
   avatar?: boolean
   matchesPlayed?: boolean
@@ -574,6 +599,7 @@ export type PlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type PlayerSelectScalar = {
   id?: boolean
   userName?: boolean
+  password?: boolean
   status?: boolean
   avatar?: boolean
   matchesPlayed?: boolean
@@ -585,7 +611,7 @@ export type PlayerSelectScalar = {
   isPlaying?: boolean
 }
 
-export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userName" | "status" | "avatar" | "matchesPlayed" | "wins" | "lost" | "rating" | "solWon" | "createdAt" | "isPlaying", ExtArgs["result"]["player"]>
+export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userName" | "password" | "status" | "avatar" | "matchesPlayed" | "wins" | "lost" | "rating" | "solWon" | "createdAt" | "isPlaying", ExtArgs["result"]["player"]>
 
 export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Player"
@@ -593,6 +619,7 @@ export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     userName: string
+    password: string
     status: $Enums.playerStatus
     avatar: string
     matchesPlayed: number
@@ -1027,6 +1054,7 @@ export interface Prisma__PlayerClient<T, Null = never, ExtArgs extends runtime.T
 export interface PlayerFieldRefs {
   readonly id: Prisma.FieldRef<"Player", 'Int'>
   readonly userName: Prisma.FieldRef<"Player", 'String'>
+  readonly password: Prisma.FieldRef<"Player", 'String'>
   readonly status: Prisma.FieldRef<"Player", 'playerStatus'>
   readonly avatar: Prisma.FieldRef<"Player", 'String'>
   readonly matchesPlayed: Prisma.FieldRef<"Player", 'Int'>

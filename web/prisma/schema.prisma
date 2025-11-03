@@ -17,6 +17,7 @@ datasource db {
 model Player {
   id            Int    @id @default(autoincrement())
   userName      String @unique
+  password      String 
   status        playerStatus @default(offline)
   avatar        String
   matchesPlayed Int    @default(0)
