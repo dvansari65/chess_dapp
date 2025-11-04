@@ -17,11 +17,11 @@ pub mod chess {
    
     pub fn create_game(
         ctx: Context<InitializeGame>,
-        game_id: u64,
+        ctx_2:Context<InitializeGameId>,
         wagered_amount:u64
     ) -> Result<()> {
         require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
-        let player_balance= ctx.accounts.player_1.to_account_info().lamports();
+        let player_balance = ctx.accounts.player_1.to_account_info().lamports();
         require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
         let game = &mut ctx.accounts.game;
         let escrow = &mut ctx.accounts.game_escrow;
@@ -34,18 +34,21 @@ pub mod chess {
             }
         );
         transfer(cpi_context, player_balance)?;
+        let game_counter = &mut ctx_2.accounts.counter ;
+        game_counter.game_id += 1;
+        println!("game id{}",game_counter.game_id);
         escrow.amount_status = AmountStatus::ObtainedFromPlayer1;
         msg!("Wagered transfer from player 1 to escrow account");
         game.amount_wagered = wagered_amount;
-        game.game_id = game_id;
+        game.game_id = game_counter.game_id;
         game.game_status = GameStatus::WaitingForPlayer2;
         game.player_1 =  ctx.accounts.player_1.key();
         game.player_2 = Pubkey::default();
         game.bump = ctx.bumps.game;
-        msg!("Game created ! ID : {} , Wagered Amount :{}", game_id,wagered_amount);
+        // msg!("Game created ! ID : {} , Wagered Amount :{}", game_id,wagered_amount);
         Ok(())
     }
-    pub fn join_game (ctx: Context<InitializeJoinGame>,game_id:u64,wagered_amount:u64)-> Result<()>{
+    pub fn join_game (ctx: Context<InitializeJoinGame>,ctx_2:Context<InitializeGameId>,wagered_amount:u64)-> Result<()>{
         let game= &mut ctx.accounts.join_game;
         require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         let player_balance = ctx.accounts.player_2.to_account_info().lamports();
@@ -59,9 +62,10 @@ pub mod chess {
             }
         );
         transfer(cpi_context, player_balance)?;
+        let game_counter = &mut ctx_2.accounts.counter;
         escrow.amount_status = AmountStatus::ObtainedFromPlayer2;
         game.amount_wagered = wagered_amount;
-        game.game_id = game_id;
+        game.game_id = game_counter.game_id;
         game.bump = ctx.bumps.join_game;
         game.game_status = GameStatus::Player2Connected;
         Ok(())
@@ -193,7 +197,7 @@ pub struct Counter {
     game_id:u64
 }
 
-#[derive(Clone,InitSpace,AnchorDeserialize,AnchorSerialize)]
+#[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq, Eq, InitSpace)]
 pub enum AmountStatus {
     NotObtainedYet,
     ObtainedFromPlayer1,
