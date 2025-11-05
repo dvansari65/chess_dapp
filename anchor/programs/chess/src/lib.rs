@@ -17,12 +17,13 @@ pub mod chess {
    
     pub fn create_game(
         ctx: Context<InitializeGame>,
-        ctx_2:Context<InitializeGameId>,
         wagered_amount:u64
     ) -> Result<()> {
         require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         let player_balance = ctx.accounts.player_1.to_account_info().lamports();
         require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
+        let game_counter = &mut ctx.accounts.game_counter;
+        game_counter.game_id += 1;
         let game = &mut ctx.accounts.game;
         let escrow = &mut ctx.accounts.game_escrow;
         escrow.amount_status = AmountStatus::NotObtainedYet;
@@ -34,13 +35,11 @@ pub mod chess {
             }
         );
         transfer(cpi_context, player_balance)?;
-        let game_counter = &mut ctx_2.accounts.counter ;
-        game_counter.game_id += 1;
-        println!("game id{}",game_counter.game_id);
         escrow.amount_status = AmountStatus::ObtainedFromPlayer1;
         msg!("Wagered transfer from player 1 to escrow account");
-        game.amount_wagered = wagered_amount;
+        println!("game id{}",game_counter.game_id);
         game.game_id = game_counter.game_id;
+        game.amount_wagered = wagered_amount;
         game.game_status = GameStatus::WaitingForPlayer2;
         game.player_1 =  ctx.accounts.player_1.key();
         game.player_2 = Pubkey::default();
@@ -48,7 +47,7 @@ pub mod chess {
         // msg!("Game created ! ID : {} , Wagered Amount :{}", game_id,wagered_amount);
         Ok(())
     }
-    pub fn join_game (ctx: Context<InitializeJoinGame>,ctx_2:Context<InitializeGameId>,wagered_amount:u64)-> Result<()>{
+    pub fn join_game (ctx: Context<InitializeJoinGame>,wagered_amount:u64)-> Result<()>{
         let game= &mut ctx.accounts.join_game;
         require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         let player_balance = ctx.accounts.player_2.to_account_info().lamports();
@@ -62,10 +61,8 @@ pub mod chess {
             }
         );
         transfer(cpi_context, player_balance)?;
-        let game_counter = &mut ctx_2.accounts.counter;
         escrow.amount_status = AmountStatus::ObtainedFromPlayer2;
         game.amount_wagered = wagered_amount;
-        game.game_id = game_counter.game_id;
         game.bump = ctx.bumps.join_game;
         game.game_status = GameStatus::Player2Connected;
         Ok(())
@@ -94,6 +91,12 @@ pub struct InitializeGame<'info> {
         bump
     )]
     pub game_escrow: Account<'info,Escrow>,
+    #[account(
+        mut,
+        seeds= [b"counter"],
+        bump
+    )]
+    pub game_counter : Account<'info,Counter>,
     #[account(mut)]
     pub player_1: Signer<'info>,
     pub system_program: Program<'info, System>,
@@ -110,6 +113,12 @@ pub struct InitializeJoinGame <'info>{
         bump
     )]
     pub game_escrow : Account<'info,Escrow>,
+    #[account(
+        mut,
+        seeds= [b"counter"],
+        bump
+    )]
+    pub game_counter : Account<'info,Counter>,
     #[account(mut)]
     pub player_2 : Signer<'info>,
     system_program : Program<'info,System>
