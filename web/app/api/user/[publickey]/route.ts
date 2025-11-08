@@ -2,29 +2,56 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export const GET = async(req:NextRequest,{params}:{params:Promise<{publickey:string}>})=>{
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ publickey: string }> }) => {
+    let publickey;
     try {
-        const publickey = (await params).publickey
-        if(!publickey){
+        publickey = (await params).publickey
+    } catch (error) {
+        return NextResponse.json(
+            {
+                message: "Invalid param publickey!",
+                success: false
+            },
+            {
+                status: 400
+            }
+        )
+    }
+    try {
+        if (!publickey || typeof publickey !== "string" || publickey.trim() == "") {
             throw new Error("Please provide publickey!")
         }
         const user = await prisma.player.findUnique({
-            where:{
-                publickey:publickey as string
+            where: {
+                publickey: publickey as string
             },
-            select:{
-                userName:true
+            select: {
+                userName: true
             }
         })
-        if(!user){
+        if (!user) {
             throw new Error("User not found!")
         }
-        return NextResponse.json({
-            message:"success!",
-            user
-        })
-    } catch (error) {
-        console.log("server error",error)
-        throw error;
+        return NextResponse.json(
+            {
+                success: true,
+                message: "success!",
+                user
+            },
+            {
+                status: 200
+            }
+        )
+    } catch (error:any) {
+        console.log("server error", error)
+        return NextResponse.json(
+            {
+                error:error.message || "server error!",
+                success:false
+            },
+            {
+                status:500
+            }
+        )
     }
 }
