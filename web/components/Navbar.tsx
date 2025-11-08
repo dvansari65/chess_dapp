@@ -56,7 +56,7 @@ function Navbar() {
         <div className="text-4xl animate-pulse filter drop-shadow-[0_0_10px_rgba(20,241,149,0.8)]">
           ♔
         </div>
-        <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-purple-500 bg-clip-text text-transparent tracking-tight">
+        <h1 className="text-3xl font-black bg-linear-to-r from-emerald-400 to-purple-500 bg-clip-text text-transparent tracking-tight">
           SOLANA CHESS
         </h1>
       </div>
@@ -67,7 +67,7 @@ function Navbar() {
           {!connected ? (
             <button
               onClick={handleConnect}
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 bg-linear-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300 flex items-center gap-2"
             >
               <Sparkles className="w-5 h-5" />
               Connect Wallet
@@ -76,7 +76,7 @@ function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300 flex items-center gap-2"
+                className="px-6 py-3 bg-linear-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300 flex items-center gap-2"
               >
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                 {publicKey && formatAddress(publicKey.toBase58())}
@@ -136,7 +136,7 @@ function Navbar() {
         {connected && (
           <button
            onClick={handleModalOpen}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300"
+            className="px-6 py-3 bg-linear-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300"
           >
             Set Name
           </button>

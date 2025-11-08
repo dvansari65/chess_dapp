@@ -34,7 +34,7 @@ function SetName({
       <div className="relative w-full max-w-md animate-in zoom-in-95 duration-200">
         <form 
           onSubmit={handleSubmit}
-          className="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl border border-slate-700/50 p-8"
+          className="relative bg-linear-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl border border-slate-700/50 p-8"
         >
           {/* Close button */}
           <button
