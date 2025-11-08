@@ -17,7 +17,7 @@ export const POST = async(req:NextRequest)=>{
             data:{
                 userName:userName as string,
                 publickey:publickey as string,
-                createdAt:String(new Date())
+                createdAt:new Date().toISOString()
             }
         })
         if(!user){
