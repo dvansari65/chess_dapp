@@ -33,10 +33,16 @@ export const POST = async (req: NextRequest) => {
         if (!user) {
             throw new Error("failed to generate user!")
         }
-        return NextResponse.json({
-            message: "user created successfully!",
-            user
-        })
+        return NextResponse.json(
+            {
+                success: true,
+                message: "user created successfully!",
+                user
+            },
+            {
+                status: 200
+            }
+        )
     } catch (error: any) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === "P2002") {

@@ -3,10 +3,11 @@
 import { Sparkles, LogOut, Copy, ExternalLink } from "lucide-react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import  {  useState } from "react";
+import  {  useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setName } from "@/features/redux/setNameSlice";
 import { RootState } from "@/lib/store";
+import { getPlayer } from "@/apis/getUser";
 
 function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
@@ -35,6 +36,10 @@ function Navbar() {
     }
   };
 
+  const {data} = getPlayer(publicKey)
+useEffect(()=>{
+  console.log("user data",data)
+},[data])
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
@@ -130,7 +135,7 @@ function Navbar() {
             </div>
           )}
         </div>
-        {connected && (
+        {connected && !data. (
           <button
            onClick={handleModalOpen}
             className="px-6 py-3 bg-linear-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300"
