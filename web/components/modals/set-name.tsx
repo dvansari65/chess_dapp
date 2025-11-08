@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
 
 interface SetNameProps {
   name: string;
@@ -6,6 +6,9 @@ interface SetNameProps {
   isOpen?: boolean;
   onClose: () => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  isPending: boolean;
+  error: boolean;
+  errorName:string  | undefined
 }
 
 function SetName({
@@ -13,7 +16,10 @@ function SetName({
   save,
   isOpen,
   onClose,
-  onChange
+  onChange,
+  isPending,
+  error,
+  errorName
 }: SetNameProps) {
   if (!isOpen) return null;
 
@@ -25,14 +31,14 @@ function SetName({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md animate-in zoom-in-95 duration-200">
-        <form 
+        <form
           onSubmit={handleSubmit}
           className="relative bg-linear-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl border border-slate-700/50 p-8"
         >
@@ -44,21 +50,28 @@ function SetName({
           >
             <X size={20} />
           </button>
-
           {/* Header */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-white mb-2">
               Set Your Name
             </h2>
-            <p className="text-slate-400 text-sm">
-              Choose a name that represents you
-            </p>
+            {error ? (
+              <div className=" p-2 bg-[rgb(239,155,155)] rounded-[5px]">
+                <p className="text-[rgb(188,54,54)] text-sm font-serif">
+                {errorName || "server error!"}
+              </p>
+              </div>
+            ) : (
+              <p className="text-slate-400 text-sm">
+                Choose a name that represents you
+              </p>
+            )}
           </div>
 
           {/* Input */}
           <div className="space-y-2 mb-6">
-            <label 
-              htmlFor="username" 
+            <label
+              htmlFor="username"
               className="block text-sm font-medium text-slate-300"
             >
               Username
@@ -84,10 +97,11 @@ function SetName({
               Cancel
             </button>
             <button
+            disabled={isPending}
               type="submit"
               className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-lg shadow-blue-600/20"
             >
-              Save
+              {isPending ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
@@ -95,4 +109,4 @@ function SetName({
     </div>
   );
 }
-export default SetName
+export default SetName;
