@@ -18,15 +18,13 @@ model Player {
   id            Int    @id @default(autoincrement())
   userName      String @unique
   publickey     String @unique
-  password      String 
   status        playerStatus @default(offline)
-  avatar        String
   matchesPlayed Int    @default(0)
   wins          Int    @default(0)
   lost          Int    @default(0)
   rating        Int    @default(0)
   solWon        Int    @default(0)
-  createdAt     String
+  createdAt     String 
   isPlaying     Boolean @default(false)
 }
 
@@ -34,3 +32,4 @@ enum playerStatus {
   Online
   offline
 }
+

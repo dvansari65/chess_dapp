@@ -1,6 +1,7 @@
 import React from "react";
 import SolanaWalletProvider from "./WalletProvider";
 import ReactQueryProvider from "./react-query-provider";
+import ReduxProvider from "./redux-provider";
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -8,9 +9,11 @@ interface AppProviderProps {
 
 function AppProvider({ children }: AppProviderProps) {
   return (
-    <ReactQueryProvider>
-      <SolanaWalletProvider>{children}</SolanaWalletProvider>
-    </ReactQueryProvider>
+    <ReduxProvider>
+      <ReactQueryProvider>
+        <SolanaWalletProvider>{children}</SolanaWalletProvider>
+      </ReactQueryProvider>
+    </ReduxProvider>
   );
 }
 

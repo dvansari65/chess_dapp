@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 
 interface initialstateProps {
-    isNameSet:boolean
+    isNameSetModalOpen:boolean
 }
 const initialState:initialstateProps = {
-    isNameSet:false
+    isNameSetModalOpen:false
 }
 
 export const setNameSlice = createSlice({
@@ -13,7 +13,7 @@ export const setNameSlice = createSlice({
     initialState,
     reducers:{
         setName:(state,action:PayloadAction<boolean>)=>{
-            state.isNameSet = !!action.payload
+            state.isNameSetModalOpen = action.payload
         }
     }
 })

@@ -525,9 +525,8 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const PlayerScalarFieldEnum = {
   id: 'id',
   userName: 'userName',
-  password: 'password',
+  publickey: 'publickey',
   status: 'status',
-  avatar: 'avatar',
   matchesPlayed: 'matchesPlayed',
   wins: 'wins',
   lost: 'lost',
