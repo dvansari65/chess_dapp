@@ -6,9 +6,7 @@ import {
   Trophy,
   Users,
   Shield,
-  Coins,
   Swords,
-  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -117,9 +115,7 @@ export default function Home() {
           />
         ))}
       </div>
-
       {/* Header */}
-
       {/* Hero Section */}
       <section className="relative z-10 container mx-auto px-8 pt-20 pb-32">
         

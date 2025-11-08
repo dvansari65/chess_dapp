@@ -3,7 +3,7 @@
 import { Sparkles, LogOut, Copy, ExternalLink } from "lucide-react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import  {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setName } from "@/features/redux/setNameSlice";
 import { RootState } from "@/lib/store";
@@ -13,9 +13,11 @@ function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
   const [showDropdown, setShowDropdown] = useState(false);
-  const {isNameSetModalOpen} = useSelector((state:RootState)=>state.setName)
+  const { isNameSetModalOpen } = useSelector(
+    (state: RootState) => state.setName
+  );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const handleConnect = () => {
     setVisible(true);
   };
@@ -26,7 +28,7 @@ function Navbar() {
       // You can add a toast notification here
     }
   };
-  
+
   const viewOnExplorer = () => {
     if (publicKey) {
       window.open(
@@ -36,21 +38,21 @@ function Navbar() {
     }
   };
 
-  const {data} = getPlayer(publicKey)
-useEffect(()=>{
-  console.log("user data",data)
-},[data])
+  const { data } = getPlayer(publicKey);
+  useEffect(() => {
+    console.log("user data", data);
+  }, [data]);
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
-  const handleModalOpen = ()=>{
-   if(isNameSetModalOpen){
-    dispatch(setName(false))
-    console.log("isNameSetModalOpen",isNameSetModalOpen)
-   }
-   dispatch(setName(true))
-  }
+  const handleModalOpen = () => {
+    if (isNameSetModalOpen) {
+      dispatch(setName(false));
+      console.log("isNameSetModalOpen", isNameSetModalOpen);
+    }
+    dispatch(setName(true));
+  };
 
   return (
     <header
@@ -135,13 +137,18 @@ useEffect(()=>{
             </div>
           )}
         </div>
-        {connected && !data. (
+        {connected && !data?.user?.userName && (
           <button
-           onClick={handleModalOpen}
+            onClick={handleModalOpen}
             className="px-6 py-3 bg-linear-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300"
           >
             Set Name
           </button>
+        )}
+        {connected && data?.user.userName && (
+          <div className="px-6 py-3 text-white border border-slate-200 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300">
+            {data?.user.userName}
+          </div>
         )}
       </div>
     </header>

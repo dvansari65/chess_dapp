@@ -22,6 +22,10 @@ enum StatusCode {
   NotFound = 404,
   OK = 200,
   Created = 201
-  // add other status codes as needed
 }
 
+export interface getAllPlayersResponse {
+  success:boolean;
+  message:string;
+  users:player[]
+}

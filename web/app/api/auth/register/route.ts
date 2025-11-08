@@ -16,7 +16,6 @@ export const POST = async (req: NextRequest) => {
     }
     try {
         const { userName, publickey } = body
-        console.log("public from backend", publickey)
         if (!userName) {
             throw new Error("Please provide user name!")
         }
@@ -27,7 +26,8 @@ export const POST = async (req: NextRequest) => {
             data: {
                 userName: userName as string,
                 publickey: publickey as string,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                status:"Online"
             }
         })
         if (!user) {
