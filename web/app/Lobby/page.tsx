@@ -1,7 +1,7 @@
 "use client";
 import LobbyHeader from "@/components/lobby/header";
 import UserSidebar from "@/components/lobby/user-sidebar";
-import Oppenent from "@/components/oppenent";
+import Oppenent from "@/components/opponent";
 import { player } from "@/types/player";
 import React, { useEffect, useState } from "react";
 
