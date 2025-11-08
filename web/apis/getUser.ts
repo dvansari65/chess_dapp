@@ -1,13 +1,16 @@
+import { player } from "@/types/player"
+import { PublicKey } from "@solana/web3.js"
 import { useQuery } from "@tanstack/react-query"
 
 
 
-export const getPlayer = (publickey:string)=>{
-    return useQuery({
+export const getPlayer = (publickey:PublicKey | null)=>{
+    return useQuery<player>({
         queryKey:["player",publickey],
         queryFn:async()=>{
             try {
-                const response = await fetch(`/api/user/${publickey}`)
+                const convertedKey = publickey?.toString()
+                const response = await fetch(`/api/user/${convertedKey}`)
                 const data = await response.json()
                 if(!response.ok){
                     throw new Error(data.error || "failed to fetch player!")
