@@ -14,12 +14,12 @@ export const Register = ()=>{
                     }
                 })
                 const data = await response.json()
-                console.log("register user data",data)
                 if(!response.ok){
-                    throw new Error(data.message || "something went wrong!")
+                    throw new Error(data?.error)
                 }
                 return data;
-            } catch (error) {
+            } catch (error:any) {
+                console.log("error",error.message)
                 throw error;
             }
         }

@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import setNameReducer from "../features/redux/setNameSlice"
-
+import saveUserReducer from "../features/redux/saveUser"
 export const store = configureStore({
     reducer:{
-        setName:setNameReducer
+        setName:setNameReducer,
+        saveUser:saveUserReducer
     }
 })
 

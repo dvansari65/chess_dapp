@@ -3,8 +3,7 @@
 import { Sparkles, LogOut, Copy, ExternalLink } from "lucide-react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import  { useState } from "react";
-import { usePathname } from "next/navigation";
+import  {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setName } from "@/features/redux/setNameSlice";
 import { RootState } from "@/lib/store";
@@ -14,7 +13,7 @@ function Navbar() {
   const { setVisible } = useWalletModal();
   const [showDropdown, setShowDropdown] = useState(false);
   const {isNameSetModalOpen} = useSelector((state:RootState)=>state.setName)
-  const pathName = usePathname();
+
   const dispatch = useDispatch()
   const handleConnect = () => {
     setVisible(true);
@@ -26,7 +25,7 @@ function Navbar() {
       // You can add a toast notification here
     }
   };
-
+  
   const viewOnExplorer = () => {
     if (publicKey) {
       window.open(
@@ -39,8 +38,8 @@ function Navbar() {
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
+
   const handleModalOpen = ()=>{
-    
    if(isNameSetModalOpen){
     dispatch(setName(false))
     console.log("isNameSetModalOpen",isNameSetModalOpen)
@@ -60,7 +59,6 @@ function Navbar() {
           SOLANA CHESS
         </h1>
       </div>
-
       {/* Custom wallet button */}
       <div className="flex justify-between items-center gap-3">
         <div>
@@ -107,7 +105,6 @@ function Navbar() {
                         <Copy className="w-4 h-4 text-emerald-400" />
                         <span>Copy Address</span>
                       </button>
-
                       <button
                         onClick={viewOnExplorer}
                         className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-800 rounded-lg transition-colors text-left"

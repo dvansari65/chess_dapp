@@ -18,6 +18,7 @@ import { setName } from "@/features/redux/setNameSlice";
 import { toast } from "react-toastify";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Register } from "@/apis/register";
+import { error } from "console";
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -27,7 +28,7 @@ export default function Home() {
     (state: RootState) => state.setName
   );
   const {connected,publicKey} = useWallet()
-  const {mutate,isPending,error} = Register()
+  const {mutate,isPending,error,isError,reset} = Register()
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -50,6 +51,14 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+    if (isError) {
+      reset();
+    }
+    const {value} = e.target
+    setUserName(value)
+  }
+
   const handleSaveUser = ()=>{
     if(userName.trim() === ""){
       toast.error("enter user name!")
@@ -60,11 +69,14 @@ export default function Home() {
       return;
     }
     const publickey = publicKey.toString()
+    console.log("publickey",publicKey)
     mutate({userName,publickey},{
       onSuccess:(data)=>{
+        setUserName("")
         toast.success("user created successfully!")
       },
       onError:(error)=>{
+        setUserName("")
         toast.error(error.message)
       }
     })
@@ -74,12 +86,14 @@ export default function Home() {
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 text-white overflow-hidden relative">
       {isNameSetModalOpen && (
           <SetName
+            error={isError}
+            errorName={error?.message}
             onClose={() => dispatch(setName(false))}
             save={handleSaveUser}
             name={userName} 
-            onChange={(e)=>setUserName(e.target.value)}
+            onChange={handleNameChange}
             isOpen={isNameSetModalOpen}
-
+            isPending={isPending}
           />
         )}
       {/* Animated Chess Pattern Background */}
