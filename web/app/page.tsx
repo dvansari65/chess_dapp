@@ -16,7 +16,6 @@ import { setName } from "@/features/redux/setNameSlice";
 import { toast } from "react-toastify";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Register } from "@/apis/register";
-import { error } from "console";
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });

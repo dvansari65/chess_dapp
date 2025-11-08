@@ -38,7 +38,10 @@ function Navbar() {
     }
   };
 
-  const { data } = getPlayer(publicKey);
+  const { data,refetch } = getPlayer(publicKey);
+  useEffect(()=>{
+    refetch()
+  },[connected,publicKey])
   useEffect(() => {
     console.log("user data", data);
   }, [data]);

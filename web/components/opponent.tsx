@@ -1,12 +1,12 @@
-import { PublicKey } from '@solana/web3.js';
-import React from 'react'
+import { PublicKey, PublicKeyInitData } from '@solana/web3.js';
 
 interface oppenentProps {
   userName:string | undefined;
   status:"Online" | "Offline";
   challenge:(publicKey:PublicKey | null)=>void;
   ratings:number;
-  publickey:PublicKey | null
+  publickey:PublicKey | null;
+  currentPlayer:PublicKey | null
 }
 
 function Opponent({
@@ -14,8 +14,16 @@ function Opponent({
   status,
   challenge,
   ratings,
-  publickey
+  publickey,
+  currentPlayer
 }:oppenentProps) {
+  
+  const publicKeyObj = new PublicKey(publickey as PublicKeyInitData);
+  console.log(currentPlayer?.toString())
+  console.log(publicKeyObj?.toString())
+  if(currentPlayer?.toString() === publicKeyObj.toString()){
+    return null
+  }
   return (
     <div className='group relative flex gap-4 text-stone-100 justify-between items-center px-6 py-3 m-2 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-purple-500/20'>
       
@@ -47,7 +55,7 @@ function Opponent({
         <button className='relative px-6 py-2 rounded-xl font-semibold text-sm tracking-wide bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 active:scale-95 overflow-hidden group/btn'>
           {/* Button shimmer */}
           <div className='absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
-          <button onClick={()=>challenge(publickey)} className=' z-10'>Challenge</button>
+          <span onClick={()=>challenge(publickey)} className=' z-10'>Challenge</span>
         </button>
       </div>
     </div>
