@@ -15,6 +15,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import SetName from "@/components/modals/set-name";
 import { setName } from "@/features/redux/setNameSlice";
+import { toast } from "react-toastify";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Register } from "@/apis/register";
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -23,6 +26,8 @@ export default function Home() {
   const { isNameSetModalOpen } = useSelector(
     (state: RootState) => state.setName
   );
+  const {connected,publicKey} = useWallet()
+  const {mutate,isPending,error} = Register()
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,7 +51,23 @@ export default function Home() {
   }, []);
 
   const handleSaveUser = ()=>{
-
+    if(userName.trim() === ""){
+      toast.error("enter user name!")
+      return;
+    }
+    if(!connected || !publicKey){
+      toast.error("connect your wallet first!")
+      return;
+    }
+    const publickey = publicKey.toString()
+    mutate({userName,publickey},{
+      onSuccess:(data)=>{
+        toast.success("user created successfully!")
+      },
+      onError:(error)=>{
+        toast.error(error.message)
+      }
+    })
   }
 
   return (
