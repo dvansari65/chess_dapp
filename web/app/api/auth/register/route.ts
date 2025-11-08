@@ -1,38 +1,56 @@
 
+import { Prisma } from "@/generated/client";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export const POST = async(req:NextRequest)=>{
+export const POST = async (req: NextRequest) => {
+    let body;
     try {
-        const body = await req.json()
-        const {userName,publickey} = body
-        if(!userName){
+        body = await req.json()
+    } catch (error) {
+        return NextResponse.json(
+            { error: "Invalid JSON in request body" },
+            { status: 400 }
+        );
+    }
+    try {
+        const { userName, publickey } = body
+        console.log("public from backend", publickey)
+        if (!userName) {
             throw new Error("Please provide user name!")
         }
-        if(!publickey){
+        if (!publickey) {
             throw new Error("Please connect your wallet first!")
         }
         const user = await prisma.player.create({
-            data:{
-                userName:userName as string,
-                publickey:publickey as string,
-                createdAt:new Date().toISOString()
+            data: {
+                userName: userName as string,
+                publickey: publickey as string,
+                createdAt: new Date().toISOString()
             }
         })
-        if(!user){
+        if (!user) {
             throw new Error("failed to generate user!")
         }
         return NextResponse.json({
-            message:"user created successfully!",
+            message: "user created successfully!",
             user
         })
-    } catch (error:any) {
+    } catch (error: any) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2002") {
+                return NextResponse.json(
+                    { success: false, error: "This wallet is already registered!" },
+                    { status: 409 }
+                );
+            }
+        }
         return NextResponse.json(
             {
-                error:error.message || "server error!"
+                error: error.message || "server error!"
             },
-            {status:500}
+            { status: 500 }
         )
     }
 }
