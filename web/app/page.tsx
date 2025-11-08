@@ -1,12 +1,29 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import { Crown, Zap, Trophy, Users, Shield, Coins, Swords, Sparkles } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Link from 'next/link';
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+  Crown,
+  Zap,
+  Trophy,
+  Users,
+  Shield,
+  Coins,
+  Swords,
+  Sparkles,
+} from "lucide-react";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import SetName from "@/components/modals/set-name";
+import { setName } from "@/features/redux/setNameSlice";
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [userName,setUserName] = useState("")
   const [particles, setParticles] = useState<any[]>([]);
+  const { isNameSetModalOpen } = useSelector(
+    (state: RootState) => state.setName
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Generate floating particles
@@ -15,21 +32,35 @@ export default function Home() {
       x: Math.random() * 100,
       delay: Math.random() * 5,
       duration: 10 + Math.random() * 10,
-      size: 2 + Math.random() * 4
+      size: 2 + Math.random() * 4,
     }));
     setParticles(newParticles);
   }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e:MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  const handleSaveUser = ()=>{
+
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 text-white overflow-hidden relative">
+      {isNameSetModalOpen && (
+          <SetName
+            onClose={() => dispatch(setName(false))}
+            save={handleSaveUser}
+            name={userName} 
+            onChange={(e)=>setUserName(e.target.value)}
+            isOpen={isNameSetModalOpen}
+
+          />
+        )}
       {/* Animated Chess Pattern Background */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(45deg,#14F195_25%,transparent_25%),linear-gradient(-45deg,#14F195_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#14F195_75%),linear-gradient(-45deg,transparent_75%,#14F195_75%)] bg-[length:80px_80px] bg-[position:0_0,0_40px,40px_-40px,-40px_0] animate-[chess-move_20s_linear_infinite]" />
@@ -46,21 +77,24 @@ export default function Home() {
               width: `${particle.size}px`,
               height: `${particle.size}px`,
               animationDelay: `${particle.delay}s`,
-              animationDuration: `${particle.duration}s`
+              animationDuration: `${particle.duration}s`,
             }}
           />
         ))}
       </div>
 
       {/* Header */}
-     
+
       {/* Hero Section */}
       <section className="relative z-10 container mx-auto px-8 pt-20 pb-32">
+        
         <div className="max-w-6xl mx-auto text-center">
           {/* Glowing Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full mb-8 animate-pulse">
             <Zap className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm font-semibold text-purple-300">POWERED BY SOLANA BLOCKCHAIN</span>
+            <span className="text-sm font-semibold text-purple-300">
+              POWERED BY SOLANA BLOCKCHAIN
+            </span>
           </div>
 
           {/* Main Title */}
@@ -78,12 +112,21 @@ export default function Home() {
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto font-light">
-            The first <span className="text-emerald-400 font-semibold">peer-to-peer</span> chess betting platform on Solana. 
-            Challenge opponents, lock funds in escrow, and <span className="text-purple-400 font-semibold">winner takes all</span>.
+            The first{" "}
+            <span className="text-emerald-400 font-semibold">peer-to-peer</span>{" "}
+            chess betting platform on Solana. Challenge opponents, lock funds in
+            escrow, and{" "}
+            <span className="text-purple-400 font-semibold">
+              winner takes all
+            </span>
+            .
           </p>
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-6 mb-16">
-            <Link href={"/PlayGame"} className="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl font-bold text-xl hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(20,241,149,0.4)] hover:shadow-[0_0_60px_rgba(20,241,149,0.6)] flex items-center gap-3">
+            <Link
+              href={"/PlayGame"}
+              className="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl font-bold text-xl hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(20,241,149,0.4)] hover:shadow-[0_0_60px_rgba(20,241,149,0.6)] flex items-center gap-3"
+            >
               <Swords className="w-6 h-6 group-hover:rotate-12 transition-transform" />
               Play Now
             </Link>
@@ -115,20 +158,40 @@ export default function Home() {
             HOW IT WORKS
           </span>
         </h3>
-        <p className="text-center text-gray-400 text-lg mb-16">Simple. Fast. Trustless.</p>
+        <p className="text-center text-gray-400 text-lg mb-16">
+          Simple. Fast. Trustless.
+        </p>
 
         <div className="max-w-5xl mx-auto grid md:grid-cols-4 gap-8">
           {[
-            { icon: "🔌", title: "Connect Wallet", desc: "Link your Phantom or Solflare wallet" },
-            { icon: "🎮", title: "Create/Join Game", desc: "Set your wager amount and find opponent" },
-            { icon: "♟️", title: "Play Chess", desc: "Make your moves, outsmart your opponent" },
-            { icon: "💰", title: "Winner Gets Paid", desc: "Smart contract pays out instantly" }
+            {
+              icon: "🔌",
+              title: "Connect Wallet",
+              desc: "Link your Phantom or Solflare wallet",
+            },
+            {
+              icon: "🎮",
+              title: "Create/Join Game",
+              desc: "Set your wager amount and find opponent",
+            },
+            {
+              icon: "♟️",
+              title: "Play Chess",
+              desc: "Make your moves, outsmart your opponent",
+            },
+            {
+              icon: "💰",
+              title: "Winner Gets Paid",
+              desc: "Smart contract pays out instantly",
+            },
           ].map((step, i) => (
             <div key={i} className="text-center group">
               <div className="text-7xl mb-4 group-hover:scale-125 transition-transform duration-300">
                 {step.icon}
               </div>
-              <div className="text-emerald-400 font-bold text-lg mb-2">STEP {i + 1}</div>
+              <div className="text-emerald-400 font-bold text-lg mb-2">
+                STEP {i + 1}
+              </div>
               <h4 className="text-xl font-bold mb-2">{step.title}</h4>
               <p className="text-gray-400 text-sm">{step.desc}</p>
             </div>
@@ -147,12 +210,31 @@ export default function Home() {
             </h3>
             <div className="space-y-6">
               {[
-                { icon: Shield, title: "Trustless Escrow", desc: "Smart contracts hold funds - no middleman needed" },
-                { icon: Zap, title: "Instant Payouts", desc: "Winner receives SOL immediately after checkmate" },
-                { icon: Crown, title: "Provably Fair", desc: "All moves recorded on-chain, transparent and auditable" },
-                { icon: Users, title: "Global Matchmaking", desc: "Play against opponents worldwide 24/7" }
+                {
+                  icon: Shield,
+                  title: "Trustless Escrow",
+                  desc: "Smart contracts hold funds - no middleman needed",
+                },
+                {
+                  icon: Zap,
+                  title: "Instant Payouts",
+                  desc: "Winner receives SOL immediately after checkmate",
+                },
+                {
+                  icon: Crown,
+                  title: "Provably Fair",
+                  desc: "All moves recorded on-chain, transparent and auditable",
+                },
+                {
+                  icon: Users,
+                  title: "Global Matchmaking",
+                  desc: "Play against opponents worldwide 24/7",
+                },
               ].map((feature, i) => (
-                <div key={i} className="flex items-start gap-4 group hover:translate-x-2 transition-transform">
+                <div
+                  key={i}
+                  className="flex items-start gap-4 group hover:translate-x-2 transition-transform"
+                >
                   <div className="p-3 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/30 group-hover:border-purple-400 transition-colors">
                     <feature.icon className="w-6 h-6 text-purple-400" />
                   </div>
@@ -171,15 +253,17 @@ export default function Home() {
                   <div
                     key={i}
                     className={`${
-                      (Math.floor(i / 8) + i) % 2 === 0 
-                        ? 'bg-emerald-500/30' 
-                        : 'bg-purple-500/30'
+                      (Math.floor(i / 8) + i) % 2 === 0
+                        ? "bg-emerald-500/30"
+                        : "bg-purple-500/30"
                     } rounded-sm hover:bg-white/20 transition-colors cursor-pointer`}
                   />
                 ))}
               </div>
             </div>
-            <div className="absolute -top-4 -right-4 text-8xl animate-bounce">💎</div>
+            <div className="absolute -top-4 -right-4 text-8xl animate-bounce">
+              💎
+            </div>
           </div>
         </div>
       </section>
@@ -195,10 +279,30 @@ export default function Home() {
               </span>
             </div>
             <div className="flex gap-8">
-              <a href="https://github.com/dvansari65/chess_dapp" className="text-gray-400 hover:text-emerald-400 transition-colors">GitHub</a>
-              <a href="#" className="text-gray-400 hover:text-emerald-400 transition-colors">Docs</a>
-              <a href="#" className="text-gray-400 hover:text-emerald-400 transition-colors">Discord</a>
-              <a href="https://x.com/AnsariDva" className="text-gray-400 hover:text-emerald-400 transition-colors">Twitter</a>
+              <a
+                href="https://github.com/dvansari65/chess_dapp"
+                className="text-gray-400 hover:text-emerald-400 transition-colors"
+              >
+                GitHub
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-emerald-400 transition-colors"
+              >
+                Docs
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-emerald-400 transition-colors"
+              >
+                Discord
+              </a>
+              <a
+                href="https://x.com/AnsariDva"
+                className="text-gray-400 hover:text-emerald-400 transition-colors"
+              >
+                Twitter
+              </a>
             </div>
           </div>
           <div className="text-center text-gray-500 text-sm mt-8">
@@ -209,18 +313,38 @@ export default function Home() {
 
       <style jsx>{`
         @keyframes chess-move {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(80px, 80px); }
+          0% {
+            transform: translate(0, 0);
+          }
+          100% {
+            transform: translate(80px, 80px);
+          }
         }
         @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+          0%,
+          100% {
+            transform: translateY(0) translateX(0);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-100vh) translateX(50px);
+            opacity: 0;
+          }
         }
         @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
         .animate-gradient {
           background-size: 200% 200%;
