@@ -2,7 +2,7 @@ import React from "react";
 import { player } from "@/types/player";
 
 interface UserInfoProps {
-  user: player;
+  user: player | undefined;
 }
 
 const UserProfile: React.FC<UserInfoProps> = ({ user }) => {
@@ -38,7 +38,7 @@ const UserProfile: React.FC<UserInfoProps> = ({ user }) => {
       <div className="text-sm text-gray-500 mt-6">
         <p>Joined on:</p>
         <p className="text-gray-300">
-          {new Date(user?.createdAt).toLocaleDateString()}
+          {new Date(user?.createdAt as string).toLocaleDateString()}
         </p>
       </div>
     </div>
