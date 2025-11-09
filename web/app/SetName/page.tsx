@@ -26,7 +26,7 @@ function SetName({}) {
     mutate({userName,publickey},{
       onSuccess:(data)=>{
         setUserName("")
-        toast.success("user created successfully!")
+        toast.success(`user ${data?.user.userName} created successfully!`)
       },
       onError:(error)=>{
         setUserName("")

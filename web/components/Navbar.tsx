@@ -43,20 +43,15 @@ function Navbar() {
   useEffect(()=>{
     refetch()
   },[connected,publicKey])
+
   useEffect(() => {
     console.log("user data", data);
   }, [data]);
+  
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
-  const handleModalOpen = () => {
-    if (isNameSetModalOpen) {
-      dispatch(setName(false));
-      console.log("isNameSetModalOpen", isNameSetModalOpen);
-    }
-    dispatch(setName(true));
-  };
 
   return (
     <header

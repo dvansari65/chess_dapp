@@ -26,7 +26,16 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ publ
                 publickey: publickey as string
             },
             select: {
-                userName: true
+                userName:true,
+                rating:true,
+                publickey:true,
+                solWon:true,
+                wins:true,
+                lost:true,
+                status:true,
+                matchesPlayed:true,
+                isPlaying:true,
+                createdAt:true
             }
         })
         console.log("user",user)

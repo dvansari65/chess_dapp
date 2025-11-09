@@ -7,7 +7,7 @@ import { Server } from "socket.io"
 
 const PORT = Number(process.env.SERVER_PORT) || 4000
 
-interface SocketServer extends Http2Server {
+  interface SocketServer extends Http2Server {
     io?: IOServer | undefined
   }
   
@@ -17,6 +17,12 @@ interface SocketServer extends Http2Server {
   
   interface NextApiResponseWithSocket extends NextApiResponse {
     socket: SocketWithIO
+  }
+
+  interface ChallengeProps {
+    challengerUserName:string
+    challengerPubKey:string | null;
+    oppenentPubKey:string | null
   }
   
   export async function GET(_req: NextApiRequest, res: NextApiResponseWithSocket) {
@@ -33,6 +39,9 @@ interface SocketServer extends Http2Server {
       const _socket = socket
       console.log("socket connect", socket.id)
       _socket.broadcast.emit("welcome", `Welcome ${_socket.id}`)
+      socket.on("challenge",()=>{
+
+      })
       
       socket.on("disconnect", async () => {
         console.log("socket disconnect")
