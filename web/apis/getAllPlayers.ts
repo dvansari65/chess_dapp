@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 
 export const getAllPlayers = ()=>{
     return useQuery<getAllPlayersResponse>({
-        queryKey:["users"],
+        queryKey:["players"],
         queryFn:async()=>{
             try {
                 const response = await fetch("/api/user")

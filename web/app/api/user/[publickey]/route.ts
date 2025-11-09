@@ -21,7 +21,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ publ
         if (!publickey || typeof publickey !== "string" || publickey.trim() == "") {
             throw new Error("Please provide publickey!")
         }
-        const user = await prisma.player.findUnique({
+        const user = await prisma.player.findFirst({
             where: {
                 publickey: publickey as string
             },
@@ -29,6 +29,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ publ
                 userName: true
             }
         })
+        console.log("user",user)
         if (!user) {
             throw new Error("User not found!")
         }

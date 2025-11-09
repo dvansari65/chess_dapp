@@ -19,13 +19,11 @@ function Opponent({
 }:oppenentProps) {
   
   const publicKeyObj = new PublicKey(publickey as PublicKeyInitData);
-  console.log(currentPlayer?.toString())
-  console.log(publicKeyObj?.toString())
   if(currentPlayer?.toString() === publicKeyObj.toString()){
     return null
   }
   return (
-    <div className='group relative flex gap-4 text-stone-100 justify-between items-center px-6 py-3 m-2 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-purple-500/20'>
+    <div className='group relative flex gap-4 text-stone-100 justify-between items-center px-6 py-3 m-2 rounded-2xl  border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-purple-500/20'>
       
       {/* Animated background glow */}
       <div className='absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/5 to-pink-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500'></div>

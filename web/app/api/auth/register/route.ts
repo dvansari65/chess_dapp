@@ -47,7 +47,7 @@ export const POST = async (req: NextRequest) => {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === "P2002") {
                 return NextResponse.json(
-                    { success: false, error: "This wallet is already registered!" },
+                    { success: false, error: "This wallet or username is already registered!" },
                     { status: 409 }
                 );
             }

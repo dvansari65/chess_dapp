@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setName } from "@/features/redux/setNameSlice";
 import { RootState } from "@/lib/store";
 import { getPlayer } from "@/apis/getUser";
+import Link from "next/link";
 
 function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
@@ -141,12 +142,12 @@ function Navbar() {
           )}
         </div>
         {connected && !data?.user?.userName && (
-          <button
-            onClick={handleModalOpen}
+          <Link
+            href={"/SetName"}
             className="px-6 py-3 bg-linear-to-r from-purple-600 to-emerald-500 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300"
           >
             Set Name
-          </button>
+          </Link>
         )}
         {connected && data?.user.userName && (
           <div className="px-6 py-3 text-white border border-slate-200 rounded-full font-bold text-lg hover:scale-105 hover:shadow-[0_0_30px_rgba(153,69,255,0.6)] transition-all duration-300">

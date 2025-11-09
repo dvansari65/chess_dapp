@@ -8,25 +8,11 @@ import {
   Shield,
   Swords,
 } from "lucide-react";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import SetName from "@/components/modals/set-name";
-import { setName } from "@/features/redux/setNameSlice";
-import { toast } from "react-toastify";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Register } from "@/apis/register";
+import Link from "next/link"
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [userName,setUserName] = useState("")
   const [particles, setParticles] = useState<any[]>([]);
-  const { isNameSetModalOpen } = useSelector(
-    (state: RootState) => state.setName
-  );
-  const {connected,publicKey} = useWallet()
-  const {mutate,isPending,error,isError,reset} = Register()
-  const dispatch = useDispatch();
 
   useEffect(() => {
     // Generate floating particles
@@ -48,51 +34,11 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
-    if (isError) {
-      reset();
-    }
-    const {value} = e.target
-    setUserName(value)
-  }
 
-  const handleSaveUser = ()=>{
-    if(userName.trim() === ""){
-      toast.error("enter user name!")
-      return;
-    }
-    if(!connected || !publicKey){
-      toast.error("connect your wallet first!")
-      return;
-    }
-    const publickey = publicKey.toString()
-    console.log("publickey",publicKey)
-    mutate({userName,publickey},{
-      onSuccess:(data)=>{
-        setUserName("")
-        toast.success("user created successfully!")
-      },
-      onError:(error)=>{
-        setUserName("")
-        toast.error(error.message)
-      }
-    })
-  }
+
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 text-white overflow-hidden relative">
-      {isNameSetModalOpen && (
-          <SetName
-            error={isError}
-            errorName={error?.message}
-            onClose={() => dispatch(setName(false))}
-            save={handleSaveUser}
-            name={userName} 
-            onChange={handleNameChange}
-            isOpen={isNameSetModalOpen}
-            isPending={isPending}
-          />
-        )}
       {/* Animated Chess Pattern Background */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(45deg,#14F195_25%,transparent_25%),linear-gradient(-45deg,#14F195_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#14F195_75%),linear-gradient(-45deg,transparent_75%,#14F195_75%)] bg-[length:80px_80px] bg-[position:0_0,0_40px,40px_-40px,-40px_0] animate-[chess-move_20s_linear_infinite]" />

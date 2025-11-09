@@ -1,7 +1,8 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 
 export const Register = ()=>{
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey:["register"],
         mutationFn:async({userName,publickey}:{userName:string,publickey:string})=>{
@@ -22,6 +23,10 @@ export const Register = ()=>{
                 console.log("error",error.message)
                 throw error;
             }
+        },
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:["player"]})
+            queryClient.invalidateQueries({queryKey:["players"]})
         }
     })
 }
