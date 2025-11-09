@@ -1,5 +1,6 @@
 "use client";
 import { getAllPlayers } from "@/apis/getAllPlayers";
+import { getPlayer } from "@/apis/getUser";
 import OpponentsLoader from "@/components/Loader/oppenent-loader";
 import LobbyHeader from "@/components/lobby/header";
 import UserSidebar from "@/components/lobby/user-sidebar";
@@ -10,6 +11,7 @@ import  { useEffect, useState } from "react";
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
  const {publicKey} = useWallet()
+ const { data:UserData,refetch,isPending:isUserLoading } = getPlayer(publicKey);
   const openUserProfile = () => setIsSidebarOpen(true);
   const closeUserProfile = () => setIsSidebarOpen(false);
 
@@ -26,7 +28,7 @@ export default function Lobby() {
     <div className="w-full h-full ">
       <div>
         <LobbyHeader openUserProfile={openUserProfile} openFilter={() => {}} />
-        <UserSidebar isOpen={isSidebarOpen} onClose={closeUserProfile} />
+        <UserSidebar user={UserData?.user} isOpen={isSidebarOpen} onClose={closeUserProfile} isLoading={isUserLoading} />
       </div>
       <div>
         {isPending &&
@@ -35,7 +37,7 @@ export default function Lobby() {
               <OpponentsLoader />
             </div>
           ))}
-        {data?.users.map((user) => (
+        {data?.users?.map((user) => (
           <div key={user.id}>
             <Oppenent 
               userName={user.userName}
