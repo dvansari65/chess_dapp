@@ -2,14 +2,16 @@ import React from "react";
 import { X } from "lucide-react";
 import { player } from "@/types/player";
 import UserProfile from "../user-profile";
+import UserProfileSkeleton from "../Loader/user-profile/skeleton";
 
 interface UserSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  user: player;
+  user: player | undefined;
+  isLoading:boolean
 }
 
-const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose, user }) => {
+const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose, user, isLoading }) => {
   return (
     <>
       {/* Overlay */}
@@ -35,7 +37,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose, user }) => {
             <X size={20} />
           </button>
         </div>
-        <UserProfile user={user} />
+        {isLoading ? <UserProfileSkeleton /> : <UserProfile user={user} />}
       </div>
     </>
   );
