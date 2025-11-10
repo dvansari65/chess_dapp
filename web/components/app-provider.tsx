@@ -12,9 +12,7 @@ function AppProvider({ children }: AppProviderProps) {
   return (
     <ReduxProvider>
       <ReactQueryProvider>
-        <SocketProvider>
           <SolanaWalletProvider>{children}</SolanaWalletProvider>
-        </SocketProvider>
       </ReactQueryProvider>
     </ReduxProvider>
   );
