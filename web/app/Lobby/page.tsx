@@ -8,7 +8,6 @@ import Oppenent from "@/components/opponent";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { useSocket } from "../hooks/useSocket";
-import { toast } from "react-toastify";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -22,21 +21,21 @@ export default function Lobby() {
   const closeUserProfile = () => setIsSidebarOpen(false);
   const { socket, isConnected } = useSocket();
   const { data, isPending, error } = getAllPlayers();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    if (!socket || !isConnected) {
-      toast.error("socket not connected!");
-      return;
+  useEffect(()=>{
+    if(!socket){
+      console.log("socket not connected!")
     }
-  }, [socket]);
+
+  },[socket])
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
 
   return (
     <div className="w-full h-full ">

@@ -1,12 +1,12 @@
 
-import { Server } from "socket.io"
+import  { Server } from "socket.io"
 import { createServer } from "http"
 
 const server = createServer()
 
 const io = new Server(server,{
   cors:{
-    origin:"*",
+    origin:"http://localhost:3000",
     methods:["GET","POST"]
   }
 })

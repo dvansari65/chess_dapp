@@ -4,12 +4,10 @@ import { Crown, Swords } from "lucide-react";
 
 interface PlayerCardProps {
     player:player,
-    openChallengeModal : ()=> void
 }
 
 function PlayerCard({
    player,
-   openChallengeModal
 }:PlayerCardProps) {
     const calculateWinRate = (matchesPlayed:number | null,wins:number | null)=>{
         if(wins == null ){
@@ -35,7 +33,7 @@ function PlayerCard({
             </div>
             <div
               className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-slate-800 ${
-                player.status === "online" ? "bg-green-500" : "bg-gray-500"
+                player.status === "Online" ? "bg-green-500" : "bg-gray-500"
               }`}
             />
           </div>
@@ -84,7 +82,6 @@ function PlayerCard({
 
       {/* Challenge Button */}
       <button
-        onClick={() => openChallengeModal(player)}
         disabled={player.isPlaying}
         className={`w-full py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${
           player.isPlaying

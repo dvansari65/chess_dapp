@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, ReactNode } from "react";
+import { createContext, useContext, useEffect, ReactNode, useMemo } from "react";
 import { initializeSocket } from "@/lib/socket";
-import type { Socket } from "socket.io-client";
+import  { Socket } from "socket.io-client";
 
 interface SocketProviderProps {
   children: ReactNode;
@@ -11,8 +11,7 @@ interface SocketProviderProps {
 const SocketContext = createContext<Socket | null>(null);
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
-  const socket = initializeSocket();
-
+  const socket = useMemo(() => initializeSocket(), []);
   useEffect(() => {
     socket.connect();
 
