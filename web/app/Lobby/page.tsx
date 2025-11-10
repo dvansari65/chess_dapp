@@ -36,7 +36,7 @@ export default function Lobby() {
       toast.error("socket not connected!");
       return;
     }
-  }, [socket, data]);
+  }, [socket]);
 
   return (
     <div className="w-full h-full ">
