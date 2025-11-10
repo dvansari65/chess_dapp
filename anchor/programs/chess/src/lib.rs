@@ -14,7 +14,6 @@ pub mod chess {
         game_counter.game_id = 0;
         Ok(())
     }
-   
     pub fn create_game(
         ctx: Context<InitializeGame>,
         wagered_amount:u64
@@ -77,7 +76,6 @@ pub mod chess {
             escrow.game_id = game_id;
         Ok(())
     }
-
 }
 
 #[derive(Accounts)]
