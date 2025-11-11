@@ -9,14 +9,15 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSocket } from "@/utils/socketProvider";
-import { SendChallengeProps } from "@/server";
+import { SendChallengeProps } from "@/types/player";
+import { RegisterUserProps } from "@/server";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { publicKey , connected } = useWallet();
   const [label,setLabel] = useState<"Challenge" | "Sent" | "Accepted">("Challenge")
   const [opponentOnline,setOpponentOnline] = useState(true)
-  const [challengeStatus,setChallengeStatus] = useState<"Sent" | "Accepted" | "Rejected">("Rejected")
+  const [challengeStatuses, setChallengeStatuses] = useState<Record<string, "Sent" | "Accepted" | "Rejected">>({});
   const {
     data: UserData,
     refetch,
@@ -37,30 +38,35 @@ export default function Lobby() {
       console.log("⏳ Waiting for UserData...");
       return;
     }
-    const payload = {
-      currentUserKey: publicKey?.toString(),
-      currentUserName: UserData.user.userName,
-    };
 
+    const payload: RegisterUserProps = {
+          currentUserKey: publicKey?.toString(),
+          currentUserName: UserData?.user?.userName,
+    };
     socket.emit("register-user", payload);
 
-    socket.on("successfully-register", (data) => {
-      console.log(`regiester user data ${data}`);
-      toast.success(`user ${data.currentUserName}  is now online!!`);
-    });
-
+    const handleSuccessfulRegister = (data: any) => {
+        console.log("Successfully registered:", data);
+        toast.success(`Welcome ${data.currentUserName}!`);
+    };
     
     const handleOpponentPlayerStatus = (data:any)=>{
       if(data?.opponentPlayerKey){
+        toast.error("opponent is offline!")
         setOpponentOnline(false)
       }
     }
     const handlePlayerOffline = (data:any)=>{
       console.log(`user ${data.status} ${data.currentUser}`)
     }
+    const handleSuccessfullChallenge = (data:any)=>{
+      toast.success(`challenge send successfully :${data?.opponentPlayerKey}`)
+    }
 
+    socket.on("successfully-register", handleSuccessfulRegister);
     socket.on("user-offline",handlePlayerOffline)
     socket.on("opponent-offline",handleOpponentPlayerStatus)
+    socket.on("challenge-sent-successfully",handleSuccessfullChallenge)
 
     return () => {
       socket.off("opponent-offline",handleOpponentPlayerStatus)
@@ -68,7 +74,7 @@ export default function Lobby() {
   }, [socket, UserData]);
 
   const handleSendChallenge = ({
-    currentPlayerkey,
+    currentPlayerKey,
     opponentPlayerKey,
   }: SendChallengeProps) => {
 
@@ -82,19 +88,19 @@ export default function Lobby() {
       return;
     }
     const payload = {
-      currentPlayerkey,
+      currentPlayerKey,
       opponentPlayerKey,
     };
     if (socket && socket.connected) {
       socket.emit("send-challenge", payload);
-      setChallengeStatus("Sent")
+      setChallengeStatuses(prev => ({...prev, [opponentPlayerKey as string]: "Sent"}));
       setLabel("Sent")
       toast.success(`challenge sent to the player  : ${opponentPlayerKey}`);
     } else {
       socket.once("connect", () => {
         socket.emit("send-challenge", payload);
         setLabel("Sent")
-        setChallengeStatus("Sent")
+        setChallengeStatuses(prev => ({...prev, [opponentPlayerKey as string]: "Sent"}));
       });
     }
   };
@@ -130,7 +136,7 @@ export default function Lobby() {
               sendChallenge={() =>
                 handleSendChallenge({
                   currentPlayerStats:UserData?.user,
-                  currentPlayerkey: publicKey?.toString(),
+                  currentPlayerKey: publicKey?.toString(),
                   opponentPlayerKey: user?.publickey?.toString(),
                 })
               }
@@ -139,7 +145,7 @@ export default function Lobby() {
               status={user.status}
               ratings={user.rating}
               currentPlayer={publicKey?.toString()}
-              challengeStatus={challengeStatus}
+              challengeStatus={challengeStatuses[user.publickey?.toString() || ""] || "Rejected"}
             />
           </div>
         ))}

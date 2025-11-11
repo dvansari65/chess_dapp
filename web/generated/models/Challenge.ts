@@ -222,15 +222,15 @@ export type ChallengeOrderByWithRelationInput = {
 
 export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  senderPubKey?: string
-  receiverPubKey?: string
   AND?: Prisma.ChallengeWhereInput | Prisma.ChallengeWhereInput[]
   OR?: Prisma.ChallengeWhereInput[]
   NOT?: Prisma.ChallengeWhereInput | Prisma.ChallengeWhereInput[]
+  senderPubKey?: Prisma.StringFilter<"Challenge"> | string
+  receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
   receiver?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
-}, "id" | "senderPubKey" | "receiverPubKey">
+}, "id">
 
 export type ChallengeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

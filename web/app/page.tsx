@@ -1,19 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  Crown,
-  Zap,
-  Trophy,
-  Users,
-  Shield,
-  Swords,
-} from "lucide-react";
-import Link from "next/link"
+import { Crown, Zap, Trophy, Users, Shield, Swords } from "lucide-react";
+import Link from "next/link";
+import { useSocket } from "@/utils/socketProvider";
+import { toast } from "react-toastify";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { getPlayer } from "@/apis/getUser";
+import { RegisterUserProps } from "@/server";
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<any[]>([]);
-
+  const { publicKey } = useWallet();
+  const {
+    data: UserData,
+    refetch,
+    isPending: isUserLoading,
+  } = getPlayer(publicKey);
+  const socket = useSocket();
   useEffect(() => {
     // Generate floating particles
     const newParticles = Array.from({ length: 15 }, (_, i) => ({
@@ -34,8 +38,32 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-
-
+  useEffect(() => {
+    if (!socket || !publicKey || !UserData?.user?.userName) {
+      console.log("Waiting for socket, wallet, or user data...");
+      return;
+    }
+    if (!socket || !socket.connected) {
+      toast.error("socket not connected!");
+      return;
+    }
+    const payload: RegisterUserProps = {
+      currentUserKey: publicKey?.toString(),
+      currentUserName: UserData?.user?.userName,
+    };
+    socket.emit("register-user", payload);
+    console.log("Emitting register-user with payload:", payload);
+    // Listen for successful registration
+    const handleSuccessfulRegister = (data: any) => {
+      console.log("Successfully registered:", data);
+      toast.success(`Welcome ${data.currentUserName}!`);
+    };
+    socket.on("successfully-register", handleSuccessfulRegister);
+    // Cleanup
+    return () => {
+      socket.off("successfully-register", handleSuccessfulRegister);
+    };
+  }, [socket, UserData, publicKey]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 text-white overflow-hidden relative">
@@ -63,7 +91,6 @@ export default function Home() {
       {/* Header */}
       {/* Hero Section */}
       <section className="relative z-10 container mx-auto px-8 pt-20 pb-32">
-        
         <div className="max-w-6xl mx-auto text-center">
           {/* Glowing Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full mb-8 animate-pulse">

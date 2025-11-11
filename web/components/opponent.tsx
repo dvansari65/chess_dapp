@@ -98,12 +98,10 @@ function Opponent({
               opponentPlayerKey: publickey,
             })
           }
-          // || status == "offline"
-          disabled={challengeStatus === "Sent" }
+          disabled={challengeStatus === "Sent" || status == "offline" }
           className={`relative px-6 py-2 rounded-xl font-semibold text-sm transition-all duration-300 
             ${
-              challengeStatus === "Sent"
-              //  status === "offline"
+              challengeStatus === "Sent" ||  status === "offline"
                 ? "bg-slate-700/50 text-slate-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             }`}
