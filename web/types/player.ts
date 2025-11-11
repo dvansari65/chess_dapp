@@ -33,3 +33,14 @@ export interface getAllPlayersResponse {
   users:player[]
 }
 
+export interface SendChallengeProps {
+  currentPlayerStats: player | undefined;
+  currentPlayerKey: string | undefined;  
+  opponentPlayerKey: string | undefined;
+}
+
+export interface ReceiveChallenge {
+  currentPlayerKey: string | undefined;  // ✅ Fixed typo: recieve -> Receive, consistent camelCase
+  currentPlayerStats: player | undefined;
+  opponentPlayerKey: string | undefined;
+}
