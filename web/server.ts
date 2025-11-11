@@ -15,20 +15,30 @@ const io = new Server(server,{
     challengerRating:number | undefined ;
     challengerWinsGames: number | undefined;
     challengerLostGames:number | undefined;
-    challengerUserName:string
-    challengerPubKey:string | undefined;
+    challengerUserName:string | undefined
+    challengerPubKey:string | undefined
     opponentPubKey:string | null
   }
 
-  const onlineUsers = new Map<string, string>()
+interface RegisterUserProps {
+  currentUserKey:string | undefined;
+  currentUserName:string | undefined
+}
+
+  const onlineUsers = new Map<string | undefined, string>()
   
   io.on("connect", (socket) => {
-    socket.on("register-user",(data:ChallengeProps)=>{
-        const {challengerPubKey,challengerUserName} = data
-        if(challengerPubKey){
-          onlineUsers.set(challengerPubKey,socket.id)
+    console.log("socket started",socket.id)
+    socket.on("register-user",(data:RegisterUserProps)=>{
+      console.log("event started")
+        const {currentUserName,currentUserKey} = data
+        console.log("pubkey and username",currentUserKey,currentUserName)
+        if(!currentUserKey){
+        throw new Error("Please provide challenger pubkey!")
         }
-        console.log(`user ${challengerUserName} is registered , pubkey ${challengerPubKey} ${socket.id}`)
+        onlineUsers.set(currentUserKey,socket.id)
+        socket.emit("successfully-register",{currentUserKey,currentUserName})
+        console.log(`user ${currentUserName} is registered , pubkey ${currentUserKey} ${socket.id}`)
     })
     socket.on("send-challenge",(data:ChallengeProps)=>{
       const {challengerPubKey,opponentPubKey} = data

@@ -7,7 +7,8 @@ import UserSidebar from "@/components/lobby/user-sidebar";
 import Oppenent from "@/components/opponent";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
-import { useSocket } from "../hooks/useSocket";
+import { toast } from "react-toastify";
+import { useSocket } from "@/utils/socketProvider";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -19,14 +20,37 @@ export default function Lobby() {
   } = getPlayer(publicKey);
   const openUserProfile = () => setIsSidebarOpen(true);
   const closeUserProfile = () => setIsSidebarOpen(false);
-  const { socket, isConnected } = useSocket();
+  const socket = useSocket()
   const { data, isPending, error } = getAllPlayers();
   useEffect(()=>{
-    if(!socket){
-      console.log("socket not connected!")
+    console.log("socket",socket)
+    if (!socket) {
+      console.log("❌ Socket not available")
+      return;
     }
+    
+    if (!UserData?.user) {
+      console.log("⏳ Waiting for UserData...")
+      return;
+    }
+  
+    if (!publicKey) {
+      console.log("⏳ Waiting for publicKey...")
+      return;
+    }
+    const payload = {
+      currentUserKey: publicKey.toString(),
+      currentUserName: UserData.user.userName
+    };
 
-  },[socket])
+    socket.emit("register-user",payload)
+    
+    socket.on("successfully-register",(data)=>{
+      console.log(`regiester user data ${data}`)
+        toast.success(`user ${data.currentUserName}  is now online!!`)
+    })
+
+  },[socket,UserData])
 
   useEffect(() => {
     window.scrollTo(0, 0);
