@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 interface oppenentProps {
   userName: string | undefined;
-  status: "Online" | "Offline";
+  status: "online" | "offline";
   ratings: number | undefined;
   publickey: string | undefined;
   currentPlayer: string | undefined;
@@ -16,7 +16,6 @@ interface oppenentProps {
     currentPlayerkey: string | undefined;
     opponentPlayerKey: string | undefined;
   }) => void;
-  isOpponentActive: "Online" | "Offline";
 }
 
 function Opponent({
@@ -27,31 +26,12 @@ function Opponent({
   currentPlayer,
   sendChallenge,
   challengeStatus,
-  isOpponentActive,
 }: oppenentProps) {
   const publicKeyObj = new PublicKey(publickey as PublicKeyInitData);
-  const [label, setLabel] = useState<"Challenge" | "Sent" | "Accepted">(
-    "Challenge"
-  );
-
-  if (currentPlayer?.toString() === publicKeyObj.toString()) {
+   
+   if (currentPlayer?.toString() === publicKeyObj.toString()) {
     return null;
   }
-
-   useEffect(()=>{
-    switch (challengeStatus) {
-      case "Sent":
-        setLabel("Sent");
-        break;
-      case "Accepted":
-        setLabel("Accepted");
-      default:
-        setLabel("Challenge");
-        break;
-    }
-  
-   },[challengeStatus])
-  
 
   return (
     <div className="group relative flex gap-4 text-stone-100 justify-between items-center px-6 py-3 m-2 rounded-2xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-purple-500/20">
@@ -72,10 +52,10 @@ function Opponent({
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-slate-900 flex items-center justify-center">
             <div
               className={`w-full h-full rounded-full ${
-                isOpponentActive
+                status == "online"
                   ? "bg-emerald-500 shadow-lg shadow-emerald-500/50"
                   : "bg-slate-500"
-              } ${isOpponentActive ? "animate-pulse" : ""}`}
+              } ${status ? "animate-pulse" : ""}`}
             ></div>
           </div>
         </div>
@@ -88,12 +68,12 @@ function Opponent({
           <div className="flex items-center gap-1.5">
             <div
               className={`w-1.5 h-1.5 rounded-full ${
-                isOpponentActive ? "bg-emerald-400" : "bg-slate-500"
+                status == "online" ? "bg-emerald-400" : "bg-slate-500"
               }`}
             ></div>
             <span
               className={`text-xs font-medium ${
-                isOpponentActive ? "text-emerald-400" : "text-slate-500"
+                status === "online" ? "text-emerald-400" : "text-slate-500"
               }`}
             >
               {status}
@@ -111,7 +91,6 @@ function Opponent({
             {ratings}
           </span>
         </div>
-
         <button
           onClick={() =>
             sendChallenge({
@@ -119,15 +98,17 @@ function Opponent({
               opponentPlayerKey: publickey,
             })
           }
-          disabled={challengeStatus === "Sent" || !isOpponentActive}
+          // || status == "offline"
+          disabled={challengeStatus === "Sent" }
           className={`relative px-6 py-2 rounded-xl font-semibold text-sm transition-all duration-300 
             ${
-              challengeStatus === "Sent" || !isOpponentActive
+              challengeStatus === "Sent"
+              //  status === "offline"
                 ? "bg-slate-700/50 text-slate-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             }`}
         >
-          {!isOpponentActive ? "Offline" : label}
+          {status === "offline" ? "Offline" : "Challenge"}
         </button>
       </div>
     </div>

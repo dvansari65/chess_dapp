@@ -48,3 +48,8 @@ path.join(process.cwd(), "generated/libquery_engine-darwin-arm64.dylib.node")
  * 
  */
 export type Player = Prisma.PlayerModel
+/**
+ * Model Challenge
+ * 
+ */
+export type Challenge = Prisma.ChallengeModel

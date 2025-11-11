@@ -9,7 +9,7 @@ export interface player {
   createdAt:     string;
   rating:        number | undefined;
   solWon:        number | undefined ;
-  status :       "Online" | "Offline",
+  status :       "online" | "offline",
   isPlaying:     boolean,
   matchesPlayed: number | undefined,
   publickey:     PublicKey | null

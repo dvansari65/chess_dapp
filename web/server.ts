@@ -2,7 +2,7 @@
 import  { Server } from "socket.io"
 import { createServer } from "http"
 import { player } from "./types/player";
-import { updateUser } from "./app/services/update-user";
+import { updateUser } from "./services/service";
 
 const server = createServer()
 
@@ -74,8 +74,10 @@ interface RegisterUserProps {
       if(currentUser){
         onlineUsers.delete(socket.id)
         socket.broadcast.emit("user-offline",{currentUser,status:"Offline"})
+        console.log("status updated>>>")
         try {
-          await updateUser(currentUser , "Offline")
+          const updateduser = await updateUser(currentUser , "Offline")
+          console.log("status",updateduser)
         } catch (error) {
           throw error;
         }

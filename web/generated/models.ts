@@ -8,4 +8,5 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Player'
+export type * from './models/Challenge'
 export type * from './commonInputTypes'

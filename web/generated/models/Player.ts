@@ -283,6 +283,8 @@ export type PlayerWhereInput = {
   solWon?: Prisma.IntFilter<"Player"> | number
   createdAt?: Prisma.StringFilter<"Player"> | string
   isPlaying?: Prisma.BoolFilter<"Player"> | boolean
+  sentChallenges?: Prisma.ChallengeListRelationFilter
+  recievedChallenges?: Prisma.ChallengeListRelationFilter
 }
 
 export type PlayerOrderByWithRelationInput = {
@@ -297,6 +299,8 @@ export type PlayerOrderByWithRelationInput = {
   solWon?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   isPlaying?: Prisma.SortOrder
+  sentChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
+  recievedChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
 }
 
 export type PlayerWhereUniqueInput = Prisma.AtLeast<{
@@ -314,6 +318,8 @@ export type PlayerWhereUniqueInput = Prisma.AtLeast<{
   solWon?: Prisma.IntFilter<"Player"> | number
   createdAt?: Prisma.StringFilter<"Player"> | string
   isPlaying?: Prisma.BoolFilter<"Player"> | boolean
+  sentChallenges?: Prisma.ChallengeListRelationFilter
+  recievedChallenges?: Prisma.ChallengeListRelationFilter
 }, "id" | "userName" | "publickey">
 
 export type PlayerOrderByWithAggregationInput = {
@@ -363,6 +369,8 @@ export type PlayerCreateInput = {
   solWon?: number
   createdAt: string
   isPlaying?: boolean
+  sentChallenges?: Prisma.ChallengeCreateNestedManyWithoutSenderInput
+  recievedChallenges?: Prisma.ChallengeCreateNestedManyWithoutReceiverInput
 }
 
 export type PlayerUncheckedCreateInput = {
@@ -377,6 +385,8 @@ export type PlayerUncheckedCreateInput = {
   solWon?: number
   createdAt: string
   isPlaying?: boolean
+  sentChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutSenderInput
+  recievedChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutReceiverInput
 }
 
 export type PlayerUpdateInput = {
@@ -390,6 +400,8 @@ export type PlayerUpdateInput = {
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sentChallenges?: Prisma.ChallengeUpdateManyWithoutSenderNestedInput
+  recievedChallenges?: Prisma.ChallengeUpdateManyWithoutReceiverNestedInput
 }
 
 export type PlayerUncheckedUpdateInput = {
@@ -404,6 +416,8 @@ export type PlayerUncheckedUpdateInput = {
   solWon?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sentChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutSenderNestedInput
+  recievedChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutReceiverNestedInput
 }
 
 export type PlayerCreateManyInput = {
@@ -507,6 +521,11 @@ export type PlayerSumOrderByAggregateInput = {
   solWon?: Prisma.SortOrder
 }
 
+export type PlayerScalarRelationFilter = {
+  is?: Prisma.PlayerWhereInput
+  isNot?: Prisma.PlayerWhereInput
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -527,6 +546,220 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type PlayerCreateNestedOneWithoutSentChallengesInput = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutSentChallengesInput, Prisma.PlayerUncheckedCreateWithoutSentChallengesInput>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutSentChallengesInput
+  connect?: Prisma.PlayerWhereUniqueInput
+}
+
+export type PlayerCreateNestedOneWithoutRecievedChallengesInput = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutRecievedChallengesInput, Prisma.PlayerUncheckedCreateWithoutRecievedChallengesInput>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutRecievedChallengesInput
+  connect?: Prisma.PlayerWhereUniqueInput
+}
+
+export type PlayerUpdateOneRequiredWithoutSentChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutSentChallengesInput, Prisma.PlayerUncheckedCreateWithoutSentChallengesInput>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutSentChallengesInput
+  upsert?: Prisma.PlayerUpsertWithoutSentChallengesInput
+  connect?: Prisma.PlayerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutSentChallengesInput, Prisma.PlayerUpdateWithoutSentChallengesInput>, Prisma.PlayerUncheckedUpdateWithoutSentChallengesInput>
+}
+
+export type PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutRecievedChallengesInput, Prisma.PlayerUncheckedCreateWithoutRecievedChallengesInput>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutRecievedChallengesInput
+  upsert?: Prisma.PlayerUpsertWithoutRecievedChallengesInput
+  connect?: Prisma.PlayerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutRecievedChallengesInput, Prisma.PlayerUpdateWithoutRecievedChallengesInput>, Prisma.PlayerUncheckedUpdateWithoutRecievedChallengesInput>
+}
+
+export type PlayerCreateWithoutSentChallengesInput = {
+  userName: string
+  publickey: string
+  status?: $Enums.playerStatus
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
+  isPlaying?: boolean
+  recievedChallenges?: Prisma.ChallengeCreateNestedManyWithoutReceiverInput
+}
+
+export type PlayerUncheckedCreateWithoutSentChallengesInput = {
+  id?: number
+  userName: string
+  publickey: string
+  status?: $Enums.playerStatus
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
+  isPlaying?: boolean
+  recievedChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutReceiverInput
+}
+
+export type PlayerCreateOrConnectWithoutSentChallengesInput = {
+  where: Prisma.PlayerWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutSentChallengesInput, Prisma.PlayerUncheckedCreateWithoutSentChallengesInput>
+}
+
+export type PlayerCreateWithoutRecievedChallengesInput = {
+  userName: string
+  publickey: string
+  status?: $Enums.playerStatus
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
+  isPlaying?: boolean
+  sentChallenges?: Prisma.ChallengeCreateNestedManyWithoutSenderInput
+}
+
+export type PlayerUncheckedCreateWithoutRecievedChallengesInput = {
+  id?: number
+  userName: string
+  publickey: string
+  status?: $Enums.playerStatus
+  matchesPlayed?: number
+  wins?: number
+  lost?: number
+  rating?: number
+  solWon?: number
+  createdAt: string
+  isPlaying?: boolean
+  sentChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutSenderInput
+}
+
+export type PlayerCreateOrConnectWithoutRecievedChallengesInput = {
+  where: Prisma.PlayerWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutRecievedChallengesInput, Prisma.PlayerUncheckedCreateWithoutRecievedChallengesInput>
+}
+
+export type PlayerUpsertWithoutSentChallengesInput = {
+  update: Prisma.XOR<Prisma.PlayerUpdateWithoutSentChallengesInput, Prisma.PlayerUncheckedUpdateWithoutSentChallengesInput>
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutSentChallengesInput, Prisma.PlayerUncheckedCreateWithoutSentChallengesInput>
+  where?: Prisma.PlayerWhereInput
+}
+
+export type PlayerUpdateToOneWithWhereWithoutSentChallengesInput = {
+  where?: Prisma.PlayerWhereInput
+  data: Prisma.XOR<Prisma.PlayerUpdateWithoutSentChallengesInput, Prisma.PlayerUncheckedUpdateWithoutSentChallengesInput>
+}
+
+export type PlayerUpdateWithoutSentChallengesInput = {
+  userName?: Prisma.StringFieldUpdateOperationsInput | string
+  publickey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  lost?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  solWon?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recievedChallenges?: Prisma.ChallengeUpdateManyWithoutReceiverNestedInput
+}
+
+export type PlayerUncheckedUpdateWithoutSentChallengesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userName?: Prisma.StringFieldUpdateOperationsInput | string
+  publickey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  lost?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  solWon?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recievedChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutReceiverNestedInput
+}
+
+export type PlayerUpsertWithoutRecievedChallengesInput = {
+  update: Prisma.XOR<Prisma.PlayerUpdateWithoutRecievedChallengesInput, Prisma.PlayerUncheckedUpdateWithoutRecievedChallengesInput>
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutRecievedChallengesInput, Prisma.PlayerUncheckedCreateWithoutRecievedChallengesInput>
+  where?: Prisma.PlayerWhereInput
+}
+
+export type PlayerUpdateToOneWithWhereWithoutRecievedChallengesInput = {
+  where?: Prisma.PlayerWhereInput
+  data: Prisma.XOR<Prisma.PlayerUpdateWithoutRecievedChallengesInput, Prisma.PlayerUncheckedUpdateWithoutRecievedChallengesInput>
+}
+
+export type PlayerUpdateWithoutRecievedChallengesInput = {
+  userName?: Prisma.StringFieldUpdateOperationsInput | string
+  publickey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  lost?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  solWon?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sentChallenges?: Prisma.ChallengeUpdateManyWithoutSenderNestedInput
+}
+
+export type PlayerUncheckedUpdateWithoutRecievedChallengesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userName?: Prisma.StringFieldUpdateOperationsInput | string
+  publickey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  lost?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  solWon?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sentChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutSenderNestedInput
+}
+
+
+/**
+ * Count Type PlayerCountOutputType
+ */
+
+export type PlayerCountOutputType = {
+  sentChallenges: number
+  recievedChallenges: number
+}
+
+export type PlayerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sentChallenges?: boolean | PlayerCountOutputTypeCountSentChallengesArgs
+  recievedChallenges?: boolean | PlayerCountOutputTypeCountRecievedChallengesArgs
+}
+
+/**
+ * PlayerCountOutputType without action
+ */
+export type PlayerCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlayerCountOutputType
+   */
+  select?: Prisma.PlayerCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PlayerCountOutputType without action
+ */
+export type PlayerCountOutputTypeCountSentChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeWhereInput
+}
+
+/**
+ * PlayerCountOutputType without action
+ */
+export type PlayerCountOutputTypeCountRecievedChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeWhereInput
+}
 
 
 export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -541,6 +774,9 @@ export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   solWon?: boolean
   createdAt?: boolean
   isPlaying?: boolean
+  sentChallenges?: boolean | Prisma.Player$sentChallengesArgs<ExtArgs>
+  recievedChallenges?: boolean | Prisma.Player$recievedChallengesArgs<ExtArgs>
+  _count?: boolean | Prisma.PlayerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["player"]>
 
 export type PlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -586,10 +822,20 @@ export type PlayerSelectScalar = {
 }
 
 export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userName" | "publickey" | "status" | "matchesPlayed" | "wins" | "lost" | "rating" | "solWon" | "createdAt" | "isPlaying", ExtArgs["result"]["player"]>
+export type PlayerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sentChallenges?: boolean | Prisma.Player$sentChallengesArgs<ExtArgs>
+  recievedChallenges?: boolean | Prisma.Player$recievedChallengesArgs<ExtArgs>
+  _count?: boolean | Prisma.PlayerCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type PlayerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type PlayerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Player"
-  objects: {}
+  objects: {
+    sentChallenges: Prisma.$ChallengePayload<ExtArgs>[]
+    recievedChallenges: Prisma.$ChallengePayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     userName: string
@@ -996,6 +1242,8 @@ readonly fields: PlayerFieldRefs;
  */
 export interface Prisma__PlayerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  sentChallenges<T extends Prisma.Player$sentChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$sentChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  recievedChallenges<T extends Prisma.Player$recievedChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$recievedChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1053,6 +1301,10 @@ export type PlayerFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
+  /**
    * Filter, which Player to fetch.
    */
   where: Prisma.PlayerWhereUniqueInput
@@ -1071,6 +1323,10 @@ export type PlayerFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
+  /**
    * Filter, which Player to fetch.
    */
   where: Prisma.PlayerWhereUniqueInput
@@ -1088,6 +1344,10 @@ export type PlayerFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Player
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
   /**
    * Filter, which Player to fetch.
    */
@@ -1137,6 +1397,10 @@ export type PlayerFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
+  /**
    * Filter, which Player to fetch.
    */
   where?: Prisma.PlayerWhereInput
@@ -1185,6 +1449,10 @@ export type PlayerFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
+  /**
    * Filter, which Players to fetch.
    */
   where?: Prisma.PlayerWhereInput
@@ -1227,6 +1495,10 @@ export type PlayerCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Player
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
   /**
    * The data needed to create a Player.
    */
@@ -1275,6 +1547,10 @@ export type PlayerUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Player
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
   /**
    * The data needed to update a Player.
    */
@@ -1342,6 +1618,10 @@ export type PlayerUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
+  /**
    * The filter to search for the Player to update in case it exists.
    */
   where: Prisma.PlayerWhereUniqueInput
@@ -1368,6 +1648,10 @@ export type PlayerDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
+  /**
    * Filter which Player to delete.
    */
   where: Prisma.PlayerWhereUniqueInput
@@ -1388,6 +1672,54 @@ export type PlayerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * Player.sentChallenges
+ */
+export type Player$sentChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Challenge
+   */
+  select?: Prisma.ChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Challenge
+   */
+  omit?: Prisma.ChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeInclude<ExtArgs> | null
+  where?: Prisma.ChallengeWhereInput
+  orderBy?: Prisma.ChallengeOrderByWithRelationInput | Prisma.ChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeScalarFieldEnum | Prisma.ChallengeScalarFieldEnum[]
+}
+
+/**
+ * Player.recievedChallenges
+ */
+export type Player$recievedChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Challenge
+   */
+  select?: Prisma.ChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Challenge
+   */
+  omit?: Prisma.ChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeInclude<ExtArgs> | null
+  where?: Prisma.ChallengeWhereInput
+  orderBy?: Prisma.ChallengeOrderByWithRelationInput | Prisma.ChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeScalarFieldEnum | Prisma.ChallengeScalarFieldEnum[]
+}
+
+/**
  * Player without action
  */
 export type PlayerDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1399,4 +1731,8 @@ export type PlayerDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Player
    */
   omit?: Prisma.PlayerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerInclude<ExtArgs> | null
 }

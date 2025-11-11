@@ -9,16 +9,26 @@ import { setName } from "@/features/redux/setNameSlice";
 import { RootState } from "@/lib/store";
 import { getPlayer } from "@/apis/getUser";
 import Link from "next/link";
+import { useSocket } from "@/utils/socketProvider";
+import { SendChallengeProps } from "@/server";
+import { player } from "@/types/player";
+import { toast } from "react-toastify";
+
+interface recieveChallenge {
+  currentPlayerKey:string | undefined;
+  currentPlayerStats:player | undefined;
+  opponentPlayerKey: string | undefined
+}
 
 function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
   const [showDropdown, setShowDropdown] = useState(false);
-  const { isNameSetModalOpen } = useSelector(
-    (state: RootState) => state.setName
-  );
-
+  const [challenges,setChallenges] = useState<recieveChallenge[]>([])
+  const { isNameSetModalOpen } = useSelector((state: RootState) => state.setName);
   const dispatch = useDispatch();
+  const { data, refetch } = getPlayer(publicKey);
+  const socket = useSocket()
   const handleConnect = () => {
     setVisible(true);
   };
@@ -26,10 +36,8 @@ function Navbar() {
   const copyAddress = () => {
     if (publicKey) {
       navigator.clipboard.writeText(publicKey.toBase58());
-      // You can add a toast notification here
     }
   };
-
   const viewOnExplorer = () => {
     if (publicKey) {
       window.open(
@@ -39,19 +47,38 @@ function Navbar() {
     }
   };
 
-  const { data,refetch } = getPlayer(publicKey);
-  useEffect(()=>{
-    refetch()
-  },[connected,publicKey])
+  useEffect(() => {
+    refetch();
+  }, [connected, publicKey]);
 
   useEffect(() => {
     console.log("user data", data);
   }, [data]);
-  
+
+  useEffect(()=>{
+    if(!socket){
+      console.log("socket not connected from navbar!")
+      return
+    }
+    console.log("we are in navbar")
+    const handleRecieveChallenge = (data:SendChallengeProps)=>{
+      if(!data){
+        toast.error("recieved challenge not found")
+        return;
+      }
+      console.log("challenge recieved  data",data)
+      console.log(`challenge recieved from the ${data.currentPlayerkey}`)
+      console.log("recieved data",data?.currentPlayerStats)
+    }
+    socket.on("recieve-challenge",handleRecieveChallenge)
+    return () => {
+      socket.off("recieve-challenge",handleRecieveChallenge)
+    };
+  },[socket])
+
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
-
 
   return (
     <header

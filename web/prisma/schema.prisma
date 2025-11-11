@@ -15,21 +15,31 @@ datasource db {
 }
 
 model Player {
-  id            Int    @id @default(autoincrement())
-  userName      String @unique
-  publickey     String @unique
+  id            Int          @id @default(autoincrement())
+  userName      String       @unique
+  publickey     String       @unique
   status        playerStatus @default(offline)
-  matchesPlayed Int    @default(0)
-  wins          Int    @default(0)
-  lost          Int    @default(0)
-  rating        Int    @default(0)
-  solWon        Int    @default(0)
-  createdAt     String 
-  isPlaying     Boolean @default(false)
+  matchesPlayed Int          @default(0)
+  wins          Int          @default(0)
+  lost          Int          @default(0)
+  rating        Int          @default(0)
+  solWon        Int          @default(0)
+  createdAt     String
+  isPlaying     Boolean      @default(false)
+  sentChallenges     Challenge[]  @relation("sender")
+  recievedChallenges Challenge[]  @relation("receiver")
+}
+
+model Challenge {
+  id             Int @id @default(autoincrement())
+  senderPubKey   String @unique
+  receiverPubKey String @unique
+  sender         Player @relation("sender",fields: [senderPubKey], references: [publickey])
+  receiver       Player @relation("receiver",fields: [receiverPubKey], references: [publickey])
+  createdAt      String
 }
 
 enum playerStatus {
   Online
   offline
 }
-

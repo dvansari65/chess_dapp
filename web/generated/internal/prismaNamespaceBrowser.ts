@@ -48,7 +48,8 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 
 export const ModelName = {
-  Player: 'Player'
+  Player: 'Player',
+  Challenge: 'Challenge'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -82,6 +83,16 @@ export const PlayerScalarFieldEnum = {
 } as const
 
 export type PlayerScalarFieldEnum = (typeof PlayerScalarFieldEnum)[keyof typeof PlayerScalarFieldEnum]
+
+
+export const ChallengeScalarFieldEnum = {
+  id: 'id',
+  senderPubKey: 'senderPubKey',
+  receiverPubKey: 'receiverPubKey',
+  createdAt: 'createdAt'
+} as const
+
+export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
 
 
 export const SortOrder = {

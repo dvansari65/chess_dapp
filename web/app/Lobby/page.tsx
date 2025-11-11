@@ -13,7 +13,8 @@ import { SendChallengeProps } from "@/server";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { publicKey } = useWallet();
+  const { publicKey , connected } = useWallet();
+  const [label,setLabel] = useState<"Challenge" | "Sent" | "Accepted">("Challenge")
   const [opponentOnline,setOpponentOnline] = useState(true)
   const [challengeStatus,setChallengeStatus] = useState<"Sent" | "Accepted" | "Rejected">("Rejected")
   const {
@@ -36,13 +37,8 @@ export default function Lobby() {
       console.log("⏳ Waiting for UserData...");
       return;
     }
-
-    if (!publicKey) {
-      console.log("⏳ Waiting for publicKey...");
-      return;
-    }
     const payload = {
-      currentUserKey: publicKey.toString(),
+      currentUserKey: publicKey?.toString(),
       currentUserName: UserData.user.userName,
     };
 
@@ -53,13 +49,8 @@ export default function Lobby() {
       toast.success(`user ${data.currentUserName}  is now online!!`);
     });
 
-    const handleRecieveChallenge = (data:SendChallengeProps)=>{
-      console.log(`challenge recieved from the ${data.currentPlayerkey}`)
-      console.log("recieved data",data?.currentPlayerStats)
-    }
+    
     const handleOpponentPlayerStatus = (data:any)=>{
-      console.log("status started")
-      console.log("key",data?.opponentPlayerKey)
       if(data?.opponentPlayerKey){
         setOpponentOnline(false)
       }
@@ -69,11 +60,9 @@ export default function Lobby() {
     }
 
     socket.on("user-offline",handlePlayerOffline)
-    socket.on("recieve-challenge",handleRecieveChallenge)
     socket.on("opponent-offline",handleOpponentPlayerStatus)
-    
+
     return () => {
-      socket.off("recieve-challenge",handleRecieveChallenge)
       socket.off("opponent-offline",handleOpponentPlayerStatus)
     };
   }, [socket, UserData]);
@@ -82,20 +71,33 @@ export default function Lobby() {
     currentPlayerkey,
     opponentPlayerKey,
   }: SendChallengeProps) => {
+
+    if(!connected){
+      toast.error("Connect your wallet!")
+      return;
+    }
+
+    if(!publicKey){
+      toast.error("PublicKey not found!")
+      return;
+    }
     const payload = {
       currentPlayerkey,
       opponentPlayerKey,
     };
     if (socket && socket.connected) {
       socket.emit("send-challenge", payload);
-      toast.success(`challenge sent by the current user : ${currentPlayerkey}`);
+      setChallengeStatus("Sent")
+      setLabel("Sent")
+      toast.success(`challenge sent to the player  : ${opponentPlayerKey}`);
     } else {
       socket.once("connect", () => {
         socket.emit("send-challenge", payload);
+        setLabel("Sent")
+        setChallengeStatus("Sent")
       });
     }
   };
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -123,7 +125,7 @@ export default function Lobby() {
             </div>
           ))}
         {data?.users?.map((user) => (
-          <div key={user.id}>
+          <div key={`${user.id}-${user.publickey}`}>
             <Oppenent
               sendChallenge={() =>
                 handleSendChallenge({
@@ -137,7 +139,6 @@ export default function Lobby() {
               status={user.status}
               ratings={user.rating}
               currentPlayer={publicKey?.toString()}
-              isOpponentActive = {user?.status}
               challengeStatus={challengeStatus}
             />
           </div>

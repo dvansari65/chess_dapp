@@ -21,3 +21,8 @@ export * from './enums';
  * 
  */
 export type Player = Prisma.PlayerModel
+/**
+ * Model Challenge
+ * 
+ */
+export type Challenge = Prisma.ChallengeModel
