@@ -1,18 +1,18 @@
 import { PublicKey } from "@solana/web3.js";
 
 export interface player {
-  id: number | undefined;
-  avatar: string | undefined;
-  userName: string | undefined;
-  lost: number;
-  wins: number ;
-  createdAt: string;
-  rating: number ;
-  solWon: number ;
-  status : "Online" | "Offline",
-  isPlaying:boolean,
-  matchesPlayed:number ,
-  publickey:PublicKey | null
+  id:            number | undefined;
+  avatar:        string | undefined;
+  userName:      string | undefined;
+  lost:          number | undefined;
+  wins:          number | undefined;
+  createdAt:     string;
+  rating:        number | undefined;
+  solWon:        number | undefined ;
+  status :       "Online" | "Offline",
+  isPlaying:     boolean,
+  matchesPlayed: number | undefined,
+  publickey:     PublicKey | null
 }
 
 export interface getUserResponse {

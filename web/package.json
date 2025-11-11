@@ -10,7 +10,7 @@
     "lint": "eslint",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "socket": "ts-node server.ts"
+    "socket": "tsx server.ts"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.32.1",
@@ -45,6 +45,7 @@
     "eslint-config-next": "16.0.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }

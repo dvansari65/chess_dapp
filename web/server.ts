@@ -1,6 +1,8 @@
 
 import  { Server } from "socket.io"
 import { createServer } from "http"
+import { player } from "./types/player";
+import { updateUser } from "./app/services/update-user";
 
 const server = createServer()
 
@@ -25,36 +27,59 @@ interface RegisterUserProps {
   currentUserName:string | undefined
 }
 
+ export interface SendChallengeProps {
+  currentPlayerStats:player | undefined,
+  currentPlayerkey : string | undefined,
+  opponentPlayerKey: string | undefined
+}
+
   const onlineUsers = new Map<string | undefined, string>()
   
   io.on("connect", (socket) => {
     console.log("socket started",socket.id)
-    socket.on("register-user",(data:RegisterUserProps)=>{
+    socket.on("register-user",async (data:RegisterUserProps)=>{
       console.log("event started")
         const {currentUserName,currentUserKey} = data
         console.log("pubkey and username",currentUserKey,currentUserName)
         if(!currentUserKey){
         throw new Error("Please provide challenger pubkey!")
         }
-        onlineUsers.set(currentUserKey,socket.id)
-        socket.emit("successfully-register",{currentUserKey,currentUserName})
+        onlineUsers.set(socket.id,currentUserKey)
+        socket.emit("successfully-register",{currentUserKey,currentUserName,isOnline:true})
+        try {
+           await updateUser(currentUserKey,"Online")
+        } catch (error:any) {
+          console.error("user not updated!",error.message)
+        }
         console.log(`user ${currentUserName} is registered , pubkey ${currentUserKey} ${socket.id}`)
     })
-    socket.on("send-challenge",(data:ChallengeProps)=>{
-      const {challengerPubKey,opponentPubKey} = data
-      let opponentSocketID;
-      if(challengerPubKey){
-        opponentSocketID =  onlineUsers.get(opponentPubKey || "")
+
+    socket.on("send-challenge",(data:SendChallengeProps)=>{
+      console.log("challenge started..")
+      const {currentPlayerkey,opponentPlayerKey} = data
+      let opponentPubkey;
+      if(opponentPlayerKey){
+        opponentPubkey =  onlineUsers.get(socket.id || "")
       }
-      if(opponentSocketID){
-        io.to(opponentSocketID).emit("recieved-challenge",data)
-        console.log(`challenge send from ${challengerPubKey} to ${opponentPubKey}`)
+      if(opponentPubkey){
+        io.to(opponentPubkey).emit("recieve-challenge",data)
+        console.log(`challenge send from ${currentPlayerkey} to ${opponentPlayerKey}`)
       }else{
-        socket.emit("opponent-offline",{opponentPubKey})
-        console.log("opponent is offline!!!")
+        socket.emit("opponent-offline",{opponentPlayerKey})
+        console.log("opponent is offline!!!",opponentPlayerKey)
       }
     })
     socket.on("disconnect", async () => {
+      const currentUser = onlineUsers.get(socket.id)
+      if(currentUser){
+        onlineUsers.delete(socket.id)
+        socket.broadcast.emit("user-offline",{currentUser,status:"Offline"})
+        try {
+          await updateUser(currentUser , "Offline")
+        } catch (error) {
+          throw error;
+        }
+      }
       console.log("socket disconnect")
     })
   })
