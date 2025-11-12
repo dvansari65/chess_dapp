@@ -12,6 +12,7 @@ const PlayerStatsModal = ({
     onAccept: () => void;
     onDecline: () => void;
   }) => {
+    
     if (!player) return null;
   
     const winRate = player.matchesPlayed 
@@ -40,7 +41,7 @@ const PlayerStatsModal = ({
             <div className="relative flex items-center gap-4">
               <div className="relative">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-emerald-500 flex items-center justify-center text-3xl font-bold shadow-lg">
-                  {player.avatar || player.userName?.charAt(0).toUpperCase() || "?"}
+                  { player.userName?.charAt(0).toUpperCase() || "?"}
                 </div>
                 <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-slate-900 ${
                   player.status === "online" ? "bg-green-500" : "bg-slate-500"
@@ -54,7 +55,7 @@ const PlayerStatsModal = ({
                 <div className="flex items-center gap-2">
                   <Crown className="w-4 h-4 text-yellow-500" />
                   <span className="text-yellow-500 font-semibold">
-                    {player.rating || 1200} Rating
+                    {player?.rating} Rating
                   </span>
                 </div>
               </div>
@@ -87,7 +88,7 @@ const PlayerStatsModal = ({
                 </div>
                 <p className="text-2xl font-bold text-blue-400">{winRate}%</p>
               </div>
-  
+
               <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
                 <div className="flex items-center gap-2 mb-2">
                   <Zap className="w-4 h-4 text-purple-400" />
