@@ -1,6 +1,6 @@
 import { AlertCircle } from "lucide-react"
 
-export const ErrorLabel = ({ error }: { error: string }) => {
+ const ErrorLabel = ({ error }: { error: string }) => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="relative group max-w-md w-full mx-4">
@@ -27,3 +27,5 @@ export const ErrorLabel = ({ error }: { error: string }) => {
     </div>
   )
 }
+
+export default ErrorLabel

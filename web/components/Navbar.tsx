@@ -242,7 +242,7 @@ function Navbar() {
           <div className="relative group px-6 py-3 bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 hover:border-emerald-500/40 rounded-xl font-semibold text-sm transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-emerald-500/10">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <span className="relative text-white">
-              {data?.user.userName}
+              # {data?.user.userName}
             </span>
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-3/4 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent transition-all duration-500 rounded-full" />
           </div>
