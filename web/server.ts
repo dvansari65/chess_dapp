@@ -90,9 +90,9 @@ io.on("connect", (socket) => {
       if (opponentSocketId) {
         // ✅ Send challenge with proper structure
         const challengeData = {
-          currentPlayerKey: currentPlayerKey,
-          currentPlayerStats: currentPlayerStats,
-          opponentPlayerKey: opponentPlayerKey
+          currentPlayerKey: opponentPlayerKey,
+          opponentPlayerStats: currentPlayerStats,
+          opponentPlayerKey: currentPlayerKey
         };
         
         console.log("📨 Emitting challenge to opponent:", challengeData);
