@@ -51,28 +51,9 @@ export const createChallenge = async({senderPublickey,receiverPublicKey}:createC
                 senderPubKey:senderPublickey,
                 receiverPubKey:receiverPublicKey,
                 createdAt:new Date().toISOString()
-            },
-            select:{
-                sender:{
-                    select:{
-                        userName:true,
-                        publickey:true,
-                        matchesPlayed:true,
-                        wins:true,
-                        lost:true,
-                        isPlaying:true,
-                        rating:true,
-                        createdAt:true,
-                        status:true
-                    }
-                },
-                receiver:{
-                    select:{
-                        publickey:true
-                    }
-                }
             }
         })
+        console.log("challenge from utils",challenge)
         if(!challenge){
             throw new Error("failed to create challenge!")
         }

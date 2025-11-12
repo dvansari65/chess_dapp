@@ -12,6 +12,7 @@ import { useSocket } from "@/utils/socketProvider";
 import { SendChallengeProps } from "@/types/player";
 import { RegisterUserProps } from "@/server";
 import ErrorLabel from "../../components/error/error"
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,6 +28,7 @@ export default function Lobby() {
   const openUserProfile = () => setIsSidebarOpen(true);
   const closeUserProfile = () => setIsSidebarOpen(false);
   const socket = useSocket();
+  const queryClient = useQueryClient()
   const { data, isPending, error } = getAllPlayers();
   useEffect(() => {
     console.log("socket", socket);
@@ -92,6 +94,7 @@ export default function Lobby() {
       socket.emit("send-challenge", payload);
       setChallengeStatuses(prev => ({...prev, [opponentPlayerKey as string]: "Sent"}));
       setLabel("Sent")
+      queryClient.invalidateQueries({queryKey:["challenges",publicKey.toString()]})
       toast.success(`challenge sent to the player  : ${opponentPlayerKey}`);
     } else {
       socket.once("connect", () => {

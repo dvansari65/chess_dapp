@@ -4,7 +4,7 @@ import { Sparkles, LogOut, Copy, ExternalLink, Swords } from "lucide-react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { getPlayer } from "@/apis/getUser";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import {  ReceiveChallenge } from "@/types/player";
 import { toast } from "react-toastify";
 import { RegisterUserProps } from "@/server";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
@@ -25,6 +26,7 @@ function Navbar() {
  const router = useRouter()
   const { data, refetch } = getPlayer(publicKey);
   const socket = useSocket();
+  const queryClient = useQueryClient()
   const handleConnect = () => {
     setVisible(true);
   };
@@ -58,6 +60,7 @@ function Navbar() {
     }
 
     const handleReceiveChallenge = (data: ReceiveChallenge) => {
+      queryClient.invalidateQueries({queryKey:["challenges",publicKey?.toString()]})
       console.log("✅ Challenge received:", data);
 
       if (!data || !data.currentPlayerKey) {
@@ -67,7 +70,7 @@ function Navbar() {
 
       console.log(`Challenge from: ${data.opponentPlayerKey}`);
       console.log("Challenger stats:", data.currentPlayerStats);
-
+      toast.success(`challenge recieved from ${data?.currentPlayerStats?.userName}`)
       // Add to challenges state
       setChallenges((prev) => [...prev, data]);
 

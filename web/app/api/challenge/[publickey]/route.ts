@@ -14,26 +14,37 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                 }
             )
         }
-
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
         const  challenges = await prisma.challenge.findMany({
             where:{
-                OR:[
+                AND:[
                     {
-                        receiverPubKey:publickey
+                        OR:[
+                            {
+                                receiverPubKey:publickey
+                            },
+                            {
+                                senderPubKey:publickey
+                            } 
+                        ]
                     },
                     {
-                        senderPubKey:publickey
-                    } 
+                        createdAt:{
+                            gte: fiveMinutesAgo.toISOString()
+                        }
+                    }
                 ]
             },
             orderBy:{
                 createdAt:"desc"
             },
             select:{
+                createdAt:true,
                 receiverPubKey:true,
                 senderPubKey:true,
                 sender:{
                     select:{
+                        id:true,
                         userName:true,
                         lost:true,
                         publickey:true,
@@ -48,6 +59,7 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                 },
                 receiver:{
                     select:{
+                        id:true,
                         userName:true,
                         lost:true,
                         publickey:true,
@@ -57,6 +69,7 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                         solWon:true,
                         rating:true,
                         isPlaying:true,
+                        status:true
                     }
                 }
             }

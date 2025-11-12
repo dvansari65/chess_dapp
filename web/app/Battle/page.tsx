@@ -1,6 +1,7 @@
 "use client";
 import { getAllChallenges } from "@/apis/getAllChallenges";
 import ChallengeTabs from "@/components/challenge-tabs";
+import ErrorLabel from "@/components/error/error";
 import PlayerStatsModal from "@/components/modals/player-stats-modal";
 import { player } from "@/types/player";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -13,11 +14,6 @@ const BattlePage = () => {
   const { publicKey } = useWallet();
   const { data, isPending, error } = getAllChallenges(publicKey?.toString());
 
-  if (error) {
-    toast.error(error.message);
-    return null;
-  }
-
   const challenges = data?.challenges || [];
 
   const handleAcceptChallenge = () => {
@@ -29,7 +25,11 @@ const BattlePage = () => {
     console.log("Challenge declined!");
     setSelectedPlayer(null);
   };
-
+  if (!publicKey) {
+    return (
+      <ErrorLabel error="Please connect your wallet!!"/>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white px-6 py-10">
       {/* Header */}

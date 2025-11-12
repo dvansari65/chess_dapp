@@ -16,8 +16,6 @@ export const GET = async () => {
       );
     }
 
-    console.log("all users from backend", users);
-
     return NextResponse.json(
       {
         message: "Users found successfully!",

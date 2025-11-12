@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { player, SendChallengeProps } from "./types/player";
 import { createChallenge, updateUser } from "./services/service";
+import { Challenge } from "./types/challenge";
 
 const server = createServer();
 const io = new Server(server, {
@@ -95,19 +96,27 @@ io.on("connect", (socket) => {
           opponentPlayerKey: currentPlayerKey
         };
         
-        console.log("📨 Emitting challenge to opponent:", challengeData);
+        // Create challenge in database
+        let challenge 
+        try {
+           challenge = await createChallenge({
+            senderPublickey: currentPlayerKey,
+            receiverPublicKey: opponentPlayerKey,
+          });
+        } catch (error) {
+          console.error(error)
+        }
+       
+        if(!challenge){
+          socket.emit("error",{message:"challenge not created!"})
+        }
+
         io.to(opponentSocketId).emit("recieve-challenge", challengeData);
         
-        // Create challenge in database
-        const challenge = await createChallenge({
-          senderPublickey: currentPlayerKey,
-          receiverPublicKey: opponentPlayerKey,
-        });
-        
+        console.log("created challenge",challenge)
         if (!challenge) {
           throw new Error("challenge not created in DB");
         }
-        
         // ✅ Confirm to sender
         socket.emit("challenge-sent-successfully", {
           opponentPlayerKey,
