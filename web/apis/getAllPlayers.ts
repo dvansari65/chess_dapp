@@ -1,4 +1,5 @@
 
+import { baseUrl } from "@/lib/URL"
 import { getAllPlayersResponse, player } from "@/types/player"
 import { useQuery } from "@tanstack/react-query"
 
@@ -8,12 +9,14 @@ export const getAllPlayers = ()=>{
         queryKey:["players"],
         queryFn:async()=>{
             try {
-                const response = await fetch("/api/user")
+                const response = await fetch(`${baseUrl}/api/user`,{
+                    method:"GET"
+                })
                 const data = await response.json()
+                console.log("all players",data)
                 if(!response.ok){
                     throw new Error(data.error || "something went wrong!")
                 }
-                console.log("users",data.users)
                 return data;
             } catch (error) {
                 throw error

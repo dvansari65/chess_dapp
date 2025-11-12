@@ -2,7 +2,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { player } from "@/types/player";
 import UserProfile from "../user-profile";
-import UserProfileSkeleton from "../Loader/user-profile/skeleton";
+import UserProfileSkeleton from "../loader/user-profile/skeleton";
 
 interface UserSidebarProps {
   isOpen: boolean;

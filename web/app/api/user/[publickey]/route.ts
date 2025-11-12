@@ -6,6 +6,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ publ
     let publickey;
     try {
         publickey = (await params).publickey
+        console.log("Fetching user for publickey:", publickey);
     } catch (error) {
         return NextResponse.json(
             {

@@ -8,6 +8,7 @@ export const POST = async (req: NextRequest) => {
     let body;
     try {
         body = await req.json()
+        console.log("bdy",body)
     } catch (error) {
         return NextResponse.json(
             { error: "Invalid JSON in request body" },

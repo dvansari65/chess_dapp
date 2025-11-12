@@ -1,7 +1,7 @@
 "use client";
 import { getAllPlayers } from "@/apis/getAllPlayers";
 import { getPlayer } from "@/apis/getUser";
-import OpponentsLoader from "@/components/Loader/oppenent-loader";
+import OpponentsLoader from "@/components/loader/oppenent-loader";
 import LobbyHeader from "@/components/lobby/header";
 import UserSidebar from "@/components/lobby/user-sidebar";
 import Oppenent from "@/components/opponent";
@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useSocket } from "@/utils/socketProvider";
 import { SendChallengeProps } from "@/types/player";
 import { RegisterUserProps } from "@/server";
+import { ErrorLable } from "@/components/error/error";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -44,11 +45,6 @@ export default function Lobby() {
           currentUserName: UserData?.user?.userName,
     };
     socket.emit("register-user", payload);
-
-    const handleSuccessfulRegister = (data: any) => {
-        console.log("Successfully registered:", data);
-        toast.success(`Welcome ${data.currentUserName}!`);
-    };
     
     const handleOpponentPlayerStatus = (data:any)=>{
       if(data?.opponentPlayerKey){
@@ -63,7 +59,6 @@ export default function Lobby() {
       toast.success(`challenge send successfully :${data?.opponentPlayerKey}`)
     }
 
-    socket.on("successfully-register", handleSuccessfulRegister);
     socket.on("user-offline",handlePlayerOffline)
     socket.on("opponent-offline",handleOpponentPlayerStatus)
     socket.on("challenge-sent-successfully",handleSuccessfullChallenge)
@@ -76,6 +71,7 @@ export default function Lobby() {
   const handleSendChallenge = ({
     currentPlayerKey,
     opponentPlayerKey,
+    currentPlayerStats
   }: SendChallengeProps) => {
 
     if(!connected){
@@ -90,6 +86,7 @@ export default function Lobby() {
     const payload = {
       currentPlayerKey,
       opponentPlayerKey,
+      currentPlayerStats
     };
     if (socket && socket.connected) {
       socket.emit("send-challenge", payload);
@@ -111,6 +108,12 @@ export default function Lobby() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  if(error){
+    return (
+      <ErrorLable error={error.message}/>
+    )
+  }
 
   return (
     <div className="w-full h-full ">
