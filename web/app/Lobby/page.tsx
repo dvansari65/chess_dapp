@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { useSocket } from "@/utils/socketProvider";
 import { SendChallengeProps } from "@/types/player";
 import { RegisterUserProps } from "@/server";
-import { ErrorLable } from "@/components/error/error";
+import ErrorLabel from "../../components/error/error"
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -111,7 +111,7 @@ export default function Lobby() {
 
   if(error){
     return (
-      <ErrorLable error={error.message}/>
+      <ErrorLabel error={error.message}/>
     )
   }
 
