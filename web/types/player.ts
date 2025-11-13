@@ -41,6 +41,6 @@ export interface SendChallengeProps {
 
 export interface ReceiveChallenge {
   currentPlayerKey: string | undefined;  // ✅ Fixed typo: recieve -> Receive, consistent camelCase
-  currentPlayerStats: player | undefined;
+  opponentPlayerStats: player | undefined;
   opponentPlayerKey: string | undefined;
 }

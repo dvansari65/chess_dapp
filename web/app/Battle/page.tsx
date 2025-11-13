@@ -6,7 +6,7 @@ import PlayerStatsModal from "@/components/modals/player-stats-modal";
 import { player } from "@/types/player";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Swords } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 const BattlePage = () => {

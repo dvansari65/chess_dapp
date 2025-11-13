@@ -9,7 +9,7 @@ interface PlayerCardProps {
 function PlayerCard({
    player,
 }:PlayerCardProps) {
-    const calculateWinRate = (matchesPlayed:number | null,wins:number | null)=>{
+    const calculateWinRate = (matchesPlayed:number | undefined,wins:number | undefined)=>{
         if(wins == null ){
             return null;
         }
@@ -33,7 +33,7 @@ function PlayerCard({
             </div>
             <div
               className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-slate-800 ${
-                player.status === "Online" ? "bg-green-500" : "bg-gray-500"
+                player.status === "online" ? "bg-green-500" : "bg-gray-500"
               }`}
             />
           </div>
@@ -64,7 +64,7 @@ function PlayerCard({
         </div>
         <div className="bg-slate-900/50 rounded-lg p-2 text-center">
           <div className="text-lg font-bold text-green-400">
-            {calculateWinRate(player.matchesPlayed,player.wins)}%
+            {calculateWinRate(player?.matchesPlayed,player.wins)}%
           </div>
           <div className="text-xs text-gray-500">Win Rate</div>
         </div>
