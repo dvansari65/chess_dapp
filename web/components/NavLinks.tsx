@@ -1,4 +1,4 @@
-import { Challenge } from "@/types/challenge";
+
 import { ReceiveChallenge } from "@/types/player";
 import { Home, Swords } from "lucide-react";
 import Link from "next/link";
