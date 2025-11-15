@@ -49,7 +49,7 @@ const ChallengeTabs: React.FC<ChallengeTabsProps> = ({
           const player =
             type === "received" ? challenge.sender : challenge.receiver;
           if (!player) return null;
-
+          
           return (
             <button
               key={index}

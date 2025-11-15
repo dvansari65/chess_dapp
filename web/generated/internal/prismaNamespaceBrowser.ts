@@ -88,6 +88,7 @@ export type PlayerScalarFieldEnum = (typeof PlayerScalarFieldEnum)[keyof typeof 
 export const ChallengeScalarFieldEnum = {
   id: 'id',
   senderPubKey: 'senderPubKey',
+  amount: 'amount',
   receiverPubKey: 'receiverPubKey',
   createdAt: 'createdAt'
 } as const

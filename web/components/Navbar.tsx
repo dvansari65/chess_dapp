@@ -3,7 +3,7 @@
 import { Sparkles, LogOut, Copy, ExternalLink, Swords } from "lucide-react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { getPlayer } from "@/apis/getUser";
@@ -25,10 +25,9 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
   const { setVisible } = useWalletModal();
   const [showDropdown, setShowDropdown] = useState(false);
   const [challenges, setChallenges] = useState<ReceiveChallenge[]>([]);
-  const { isNameSetModalOpen } = useSelector(
-    (state: RootState) => state.setName
-  );
+  const [unviewedCount, setUnviewedCount] = useState(0);
   const router = useRouter();
+  const registeredWalletRef = useRef<string | null>(null);
   const { data, refetch } = getPlayer(publicKey);
   const socket = useSocket();
   const queryClient = useQueryClient();
@@ -55,57 +54,75 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
   }, [connected, publicKey]);
 
   useEffect(() => {
-    console.log("user data", data);
-  }, [data]);
-
-  useEffect(() => {
     if (!socket) {
       console.log("socket not connected from navbar!");
       return;
     }
 
-    const handleReceiveChallenge = (data: ReceiveChallenge) => {
-      queryClient.invalidateQueries({
-        queryKey: ["challenges", publicKey?.toString()],
-      });
-      console.log("✅ Challenge received:", data);
+    const currentWallet = publicKey?.toString();
+    const userName = data?.user?.userName;
 
-      if (!data || !data.currentPlayerKey) {
-        toast.error("Invalid challenge data received");
-        return;
-      }
+    if (connected && currentWallet && userName) {
+      const handleReceiveChallenge = (data: ReceiveChallenge) => {
+        queryClient.invalidateQueries({
+          queryKey: ["challenges", publicKey?.toString()],
+        });
+        console.log("✅ Challenge received:", data);
 
-      console.log(`Challenge from: ${data.opponentPlayerKey}`);
-      console.log("Challenger stats:", data.opponentPlayerKey);
-      toast.success(
-        `challenge recieved from ${data?.opponentPlayerStats?.userName}`
+        if (!data || !data.currentPlayerKey) {
+          toast.error("Invalid challenge data received");
+          return;
+        }
+        toast.success(
+          `challenge recieved from ${data?.opponentPlayerStats?.userName}`
+        );
+        // Add to challenges state
+        setChallenges((prev) => [...prev, data]);
+        setUnviewedCount((prev) => prev + 1);
+      };
+
+      const payload: RegisterUserProps = {
+        currentUserKey: publicKey?.toString(),
+        currentUserName: data?.user?.userName,
+      };
+
+      socket.emit("register-user", payload);
+
+      // Listen for successful registration
+      const handleSuccessfulRegister = (data: any) => {
+        console.log("Successfully registered:", data);
+      };
+
+      socket.on("successfully-register", handleSuccessfulRegister);
+      socket.on("recieve-challenge", handleReceiveChallenge);
+
+      return () => {
+        const walletToUnregister = registeredWalletRef.current;
+
+        if (walletToUnregister) {
+          console.log("🔴 Unregistering wallet:", walletToUnregister);
+          socket.emit("unregister-user", { userKey: walletToUnregister });
+          registeredWalletRef.current = null;
+        }
+        socket.off("successfully-register", handleSuccessfulRegister);
+        socket.off("recieve-challenge", handleReceiveChallenge);
+      };
+    }
+    if (!connected && registeredWalletRef.current) {
+      console.log(
+        "🔴 Wallet disconnected, unregistering:",
+        registeredWalletRef.current
       );
-      // Add to challenges state
-      setChallenges((prev) => [...prev, data]);
-    };
+      socket.emit("unregister-user", { userKey: registeredWalletRef.current });
+      registeredWalletRef.current = null;
+    }
+  }, [socket, connected, data?.user, publicKey]);
 
-    const payload: RegisterUserProps = {
-      currentUserKey: publicKey?.toString(),
-      currentUserName: data?.user?.userName,
-    };
-
-    socket.emit("register-user", payload);
-    console.log("Emitting register-user with payload:", payload);
-
-    // Listen for successful registration
-    const handleSuccessfulRegister = (data: any) => {
-      console.log("Successfully registered:", data);
-      toast.success(`Welcome ${data.currentUserName}!`);
-    };
-
-    socket.on("successfully-register", handleSuccessfulRegister);
-    socket.on("recieve-challenge", handleReceiveChallenge);
-
-    return () => {
-      socket.off("successfully-register", handleSuccessfulRegister);
-      socket.off("recieve-challenge", handleReceiveChallenge);
-    };
-  }, [socket]);
+  useEffect(() => {
+    if (pathname === "/Battle") {
+      setUnviewedCount(0); // Clear the badge, but keep challenges data
+    }
+  }, [pathname]);
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
@@ -114,7 +131,7 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
   const handleNavigate = () => {
     router.push("/Battle");
   };
-
+  
   return (
     <header
       className={`sticky top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6 bg-slate-950/80 backdrop-blur-xl border-b border-emerald-500/20`}
@@ -133,7 +150,12 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
         {connected &&
           links.map(({ label, path }) => (
             <li>
-              <NavLinks path={path} label={label} challenges={challenges} isActive={isActive}/>
+              <NavLinks
+                path={path}
+                label={label}
+                unViewedCount={unviewedCount}
+                isActive={isActive}
+              />
             </li>
           ))}
 

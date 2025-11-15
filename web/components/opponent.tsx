@@ -9,13 +9,7 @@ interface oppenentProps {
   publickey: string | undefined;
   currentPlayer: string | undefined;
   challengeStatus: "Sent" | "Accepted" | "Rejected";
-  sendChallenge: ({
-    currentPlayerkey,
-    opponentPlayerKey,
-  }: {
-    currentPlayerkey: string | undefined;
-    opponentPlayerKey: string | undefined;
-  }) => void;
+  sendChallenge: ()=>void
 }
 
 function Opponent({
@@ -92,12 +86,8 @@ function Opponent({
           </span>
         </div>
         <button
-          onClick={() =>
-            sendChallenge({
-              currentPlayerkey: currentPlayer,
-              opponentPlayerKey: publickey,
-            })
-          }
+          onClick={sendChallenge}
+          
           disabled={challengeStatus === "Sent" || status == "offline" }
           className={`relative px-6 py-2 rounded-xl font-semibold text-sm transition-all duration-300 
             ${

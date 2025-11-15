@@ -1,20 +1,20 @@
 
 import { ReceiveChallenge } from "@/types/player";
-import { Home, Swords } from "lucide-react";
+import { Building, Home, Swords } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 interface NavLinksProps {
   label: string;
   path: string;
-  challenges: ReceiveChallenge[];
+  unViewedCount:number,
   isActive(path: string): boolean;
 }
 export default function  NavLinks({
   label,
   path,
-  challenges,
+  unViewedCount,
   isActive,
 }: NavLinksProps) {
+ 
   return (
     <Link
       href={path}
@@ -34,6 +34,9 @@ export default function  NavLinks({
         {path === "/" && (
           <Home className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
         )}
+        {path === "/Lobby" && (
+          <Building className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+        )}
         {/* Subtle pulsing glow behind icon */}
         <div className="absolute inset-0 bg-emerald-400/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
@@ -41,18 +44,16 @@ export default function  NavLinks({
         {label}
       </span>
       {/* Challenge count badge */}
-      {path === "/Battle"
-        ? challenges.length > 0 && (
+      { label === "Battles" && unViewedCount > 0 && (
             <span className="absolute -top-1.5 -right-1.5 min-w-[22px] h-[22px] px-1.5 bg-gradient-to-br from-red-500 via-red-600 to-orange-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/50 animate-pulse">
               <span className="text-[11px] font-bold text-white leading-none">
-                {challenges.length > 9 ? "9+" : challenges.length}
+                {unViewedCount > 9 ? "9+" : unViewedCount}
               </span>
               {/* Animated ring */}
               <div className="absolute inset-0 rounded-full border-2 border-red-400/50 animate-ping" />
             </span>
           )
-        : null}
-
+        }
       {/* Bottom accent line */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-3/4 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent transition-all duration-500 rounded-full" />
     </Link>

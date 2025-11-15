@@ -42,6 +42,7 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                 createdAt:true,
                 receiverPubKey:true,
                 senderPubKey:true,
+                amount:true,
                 sender:{
                     select:{
                         id:true,

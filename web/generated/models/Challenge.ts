@@ -27,15 +27,18 @@ export type AggregateChallenge = {
 
 export type ChallengeAvgAggregateOutputType = {
   id: number | null
+  amount: number | null
 }
 
 export type ChallengeSumAggregateOutputType = {
   id: number | null
+  amount: number | null
 }
 
 export type ChallengeMinAggregateOutputType = {
   id: number | null
   senderPubKey: string | null
+  amount: number | null
   receiverPubKey: string | null
   createdAt: string | null
 }
@@ -43,6 +46,7 @@ export type ChallengeMinAggregateOutputType = {
 export type ChallengeMaxAggregateOutputType = {
   id: number | null
   senderPubKey: string | null
+  amount: number | null
   receiverPubKey: string | null
   createdAt: string | null
 }
@@ -50,6 +54,7 @@ export type ChallengeMaxAggregateOutputType = {
 export type ChallengeCountAggregateOutputType = {
   id: number
   senderPubKey: number
+  amount: number
   receiverPubKey: number
   createdAt: number
   _all: number
@@ -58,15 +63,18 @@ export type ChallengeCountAggregateOutputType = {
 
 export type ChallengeAvgAggregateInputType = {
   id?: true
+  amount?: true
 }
 
 export type ChallengeSumAggregateInputType = {
   id?: true
+  amount?: true
 }
 
 export type ChallengeMinAggregateInputType = {
   id?: true
   senderPubKey?: true
+  amount?: true
   receiverPubKey?: true
   createdAt?: true
 }
@@ -74,6 +82,7 @@ export type ChallengeMinAggregateInputType = {
 export type ChallengeMaxAggregateInputType = {
   id?: true
   senderPubKey?: true
+  amount?: true
   receiverPubKey?: true
   createdAt?: true
 }
@@ -81,6 +90,7 @@ export type ChallengeMaxAggregateInputType = {
 export type ChallengeCountAggregateInputType = {
   id?: true
   senderPubKey?: true
+  amount?: true
   receiverPubKey?: true
   createdAt?: true
   _all?: true
@@ -175,6 +185,7 @@ export type ChallengeGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type ChallengeGroupByOutputType = {
   id: number
   senderPubKey: string
+  amount: number
   receiverPubKey: string
   createdAt: string
   _count: ChallengeCountAggregateOutputType | null
@@ -205,6 +216,7 @@ export type ChallengeWhereInput = {
   NOT?: Prisma.ChallengeWhereInput | Prisma.ChallengeWhereInput[]
   id?: Prisma.IntFilter<"Challenge"> | number
   senderPubKey?: Prisma.StringFilter<"Challenge"> | string
+  amount?: Prisma.IntFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
@@ -214,6 +226,7 @@ export type ChallengeWhereInput = {
 export type ChallengeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   senderPubKey?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   sender?: Prisma.PlayerOrderByWithRelationInput
@@ -226,6 +239,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ChallengeWhereInput[]
   NOT?: Prisma.ChallengeWhereInput | Prisma.ChallengeWhereInput[]
   senderPubKey?: Prisma.StringFilter<"Challenge"> | string
+  amount?: Prisma.IntFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
@@ -235,6 +249,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
 export type ChallengeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   senderPubKey?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ChallengeCountOrderByAggregateInput
@@ -250,11 +265,13 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChallengeScalarWhereWithAggregatesInput | Prisma.ChallengeScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Challenge"> | number
   senderPubKey?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
+  amount?: Prisma.IntWithAggregatesFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
   createdAt?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
 }
 
 export type ChallengeCreateInput = {
+  amount: number
   createdAt: string
   sender: Prisma.PlayerCreateNestedOneWithoutSentChallengesInput
   receiver: Prisma.PlayerCreateNestedOneWithoutRecievedChallengesInput
@@ -263,11 +280,13 @@ export type ChallengeCreateInput = {
 export type ChallengeUncheckedCreateInput = {
   id?: number
   senderPubKey: string
+  amount: number
   receiverPubKey: string
   createdAt: string
 }
 
 export type ChallengeUpdateInput = {
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.PlayerUpdateOneRequiredWithoutSentChallengesNestedInput
   receiver?: Prisma.PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput
@@ -276,6 +295,7 @@ export type ChallengeUpdateInput = {
 export type ChallengeUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -283,17 +303,20 @@ export type ChallengeUncheckedUpdateInput = {
 export type ChallengeCreateManyInput = {
   id?: number
   senderPubKey: string
+  amount: number
   receiverPubKey: string
   createdAt: string
 }
 
 export type ChallengeUpdateManyMutationInput = {
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -311,17 +334,20 @@ export type ChallengeOrderByRelationAggregateInput = {
 export type ChallengeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   senderPubKey?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type ChallengeAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
 }
 
 export type ChallengeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   senderPubKey?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -329,12 +355,14 @@ export type ChallengeMaxOrderByAggregateInput = {
 export type ChallengeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   senderPubKey?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type ChallengeSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
 }
 
 export type ChallengeCreateNestedManyWithoutSenderInput = {
@@ -422,12 +450,14 @@ export type ChallengeUncheckedUpdateManyWithoutReceiverNestedInput = {
 }
 
 export type ChallengeCreateWithoutSenderInput = {
+  amount: number
   createdAt: string
   receiver: Prisma.PlayerCreateNestedOneWithoutRecievedChallengesInput
 }
 
 export type ChallengeUncheckedCreateWithoutSenderInput = {
   id?: number
+  amount: number
   receiverPubKey: string
   createdAt: string
 }
@@ -443,6 +473,7 @@ export type ChallengeCreateManySenderInputEnvelope = {
 }
 
 export type ChallengeCreateWithoutReceiverInput = {
+  amount: number
   createdAt: string
   sender: Prisma.PlayerCreateNestedOneWithoutSentChallengesInput
 }
@@ -450,6 +481,7 @@ export type ChallengeCreateWithoutReceiverInput = {
 export type ChallengeUncheckedCreateWithoutReceiverInput = {
   id?: number
   senderPubKey: string
+  amount: number
   createdAt: string
 }
 
@@ -485,6 +517,7 @@ export type ChallengeScalarWhereInput = {
   NOT?: Prisma.ChallengeScalarWhereInput | Prisma.ChallengeScalarWhereInput[]
   id?: Prisma.IntFilter<"Challenge"> | number
   senderPubKey?: Prisma.StringFilter<"Challenge"> | string
+  amount?: Prisma.IntFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
 }
@@ -507,6 +540,7 @@ export type ChallengeUpdateManyWithWhereWithoutReceiverInput = {
 
 export type ChallengeCreateManySenderInput = {
   id?: number
+  amount: number
   receiverPubKey: string
   createdAt: string
 }
@@ -514,27 +548,32 @@ export type ChallengeCreateManySenderInput = {
 export type ChallengeCreateManyReceiverInput = {
   id?: number
   senderPubKey: string
+  amount: number
   createdAt: string
 }
 
 export type ChallengeUpdateWithoutSenderInput = {
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   receiver?: Prisma.PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput
 }
 
 export type ChallengeUncheckedUpdateWithoutSenderInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUncheckedUpdateManyWithoutSenderInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUpdateWithoutReceiverInput = {
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.PlayerUpdateOneRequiredWithoutSentChallengesNestedInput
 }
@@ -542,12 +581,14 @@ export type ChallengeUpdateWithoutReceiverInput = {
 export type ChallengeUncheckedUpdateWithoutReceiverInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUncheckedUpdateManyWithoutReceiverInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -556,6 +597,7 @@ export type ChallengeUncheckedUpdateManyWithoutReceiverInput = {
 export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   senderPubKey?: boolean
+  amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
@@ -565,6 +607,7 @@ export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   senderPubKey?: boolean
+  amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
@@ -574,6 +617,7 @@ export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   senderPubKey?: boolean
+  amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
@@ -583,11 +627,12 @@ export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type ChallengeSelectScalar = {
   id?: boolean
   senderPubKey?: boolean
+  amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
 }
 
-export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "senderPubKey" | "receiverPubKey" | "createdAt", ExtArgs["result"]["challenge"]>
+export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "senderPubKey" | "amount" | "receiverPubKey" | "createdAt", ExtArgs["result"]["challenge"]>
 export type ChallengeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
   receiver?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
@@ -610,6 +655,7 @@ export type $ChallengePayload<ExtArgs extends runtime.Types.Extensions.InternalA
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     senderPubKey: string
+    amount: number
     receiverPubKey: string
     createdAt: string
   }, ExtArgs["result"]["challenge"]>
@@ -1039,6 +1085,7 @@ export interface Prisma__ChallengeClient<T, Null = never, ExtArgs extends runtim
 export interface ChallengeFieldRefs {
   readonly id: Prisma.FieldRef<"Challenge", 'Int'>
   readonly senderPubKey: Prisma.FieldRef<"Challenge", 'String'>
+  readonly amount: Prisma.FieldRef<"Challenge", 'Int'>
   readonly receiverPubKey: Prisma.FieldRef<"Challenge", 'String'>
   readonly createdAt: Prisma.FieldRef<"Challenge", 'String'>
 }

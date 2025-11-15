@@ -1,6 +1,7 @@
 "use client"
 import { Register } from "@/apis/register";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
@@ -11,6 +12,7 @@ function SetName({}) {
   const {connected,publicKey} = useWallet()
   const {mutate,isPending,error,isError,reset} = Register()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const handleSaveUser = (e: React.FormEvent)=>{
     e.preventDefault();
     if(userName.trim() === ""){
@@ -25,6 +27,7 @@ function SetName({}) {
     console.log("publickey",publicKey)
     mutate({userName,publickey},{
       onSuccess:(data)=>{
+        queryClient.invalidateQueries({queryKey:["players"]})
         setUserName("")
         toast.success(`user ${data?.user.userName} created successfully!`)
       },

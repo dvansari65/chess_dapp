@@ -23,7 +23,7 @@ const links: { label: string; path: string }[] = [
   // More links...
   { label: 'Home', path: '/' },
   {label:"Battles",path:"/Battle"},
-
+  {label:"Lobby",path:"/Lobby"},
 ]
 
 export default function RootLayout({

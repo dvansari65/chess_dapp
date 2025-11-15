@@ -3,17 +3,19 @@ import { getAllChallenges } from "@/apis/getAllChallenges";
 import ChallengeTabs from "@/components/challenge-tabs";
 import ErrorLabel from "@/components/error/error";
 import PlayerStatsModal from "@/components/modals/player-stats-modal";
-import { player } from "@/types/player";
+import { amountValuesTypes } from "@/types/escrow";
+import { player, ReceiveChallenge } from "@/types/player";
+import { useSocket } from "@/utils/socketProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Swords } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 
 const BattlePage = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<player | null>(null);
-  const { publicKey } = useWallet();
+  const { publicKey,connected } = useWallet();
   const { data, isPending, error } = getAllChallenges(publicKey?.toString());
-
+  const [betAmount,setBetAmount] = useState<amountValuesTypes>(0.001)
+  const socket = useSocket()
   const challenges = data?.challenges || [];
 
   const handleAcceptChallenge = () => {
@@ -25,7 +27,25 @@ const BattlePage = () => {
     console.log("Challenge declined!");
     setSelectedPlayer(null);
   };
-  if (!publicKey) {
+
+  useEffect(()=>{
+    const handleReceiveChallenge = (data:ReceiveChallenge)=>{
+      console.log("dara at battle",data);
+      
+      if(!data){
+        console.log("recieve data not found!")
+        return;
+      }
+      setBetAmount(data?.amount)
+    }
+    socket.on("recieve-challenge",handleReceiveChallenge)
+    
+    return ()=>{
+      socket.off("recieve-challenge",handleReceiveChallenge)
+    }
+  },[socket])
+
+  if (!publicKey || !connected) {
     return (
       <ErrorLabel error="Please connect your wallet!!"/>
     );
@@ -58,6 +78,7 @@ const BattlePage = () => {
       {/* Player Stats Modal */}
       {selectedPlayer && (
         <PlayerStatsModal
+        betAmount={betAmount}
           player={selectedPlayer}
           onClose={() => setSelectedPlayer(null)}
           onAccept={handleAcceptChallenge}

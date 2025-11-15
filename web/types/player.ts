@@ -1,4 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
+import { amountValuesTypes } from "./escrow";
 
 export interface player {
   id:            number | undefined;
@@ -34,6 +35,7 @@ export interface getAllPlayersResponse {
 }
 
 export interface SendChallengeProps {
+  amount:amountValuesTypes
   currentPlayerStats: player | undefined;
   currentPlayerKey: string | undefined;  
   opponentPlayerKey: string | undefined;
@@ -43,4 +45,5 @@ export interface ReceiveChallenge {
   currentPlayerKey: string | undefined;  // ✅ Fixed typo: recieve -> Receive, consistent camelCase
   opponentPlayerStats: player | undefined;
   opponentPlayerKey: string | undefined;
+  amount:amountValuesTypes
 }
