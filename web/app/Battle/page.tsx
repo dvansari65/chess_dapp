@@ -29,6 +29,10 @@ const BattlePage = () => {
   };
 
   useEffect(()=>{
+    console.log("socket ",socket)
+    if(!socket){
+      return;
+    }
     const handleReceiveChallenge = (data:ReceiveChallenge)=>{
       console.log("dara at battle",data);
       

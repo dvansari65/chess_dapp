@@ -18,14 +18,23 @@ pub mod chess {
         ctx: Context<InitializeGame>,
         wagered_amount:u64
     ) -> Result<()> {
-        require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         let player_balance = ctx.accounts.player_1.to_account_info().lamports();
+
+        require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
+
         let game_counter = &mut ctx.accounts.game_counter;
+
         game_counter.game_id += 1;
+
         let game = &mut ctx.accounts.game;
         let escrow = &mut ctx.accounts.game_escrow;
-        escrow.amount_status = AmountStatus::NotObtainedYet;
+
+        game.game_status = GameStatus::Processing;
+
+        escrow.p1_paid = false;
+        escrow.p2_paid = false;
+       
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             Transfer {
@@ -34,9 +43,14 @@ pub mod chess {
             }
         );
         transfer(cpi_context, player_balance)?;
-        escrow.amount_status = AmountStatus::ObtainedFromPlayer1;
+
+        escrow.p1_paid = true;
+    
         msg!("Wagered transfer from player 1 to escrow account");
+
         println!("game id{}",game_counter.game_id);
+        require!(game_counter.game_id >= 1,ChessError::InvalidGameID);
+
         game.game_id = game_counter.game_id;
         game.amount_wagered = wagered_amount;
         game.game_status = GameStatus::WaitingForPlayer2;
@@ -48,10 +62,13 @@ pub mod chess {
     }
     pub fn join_game (ctx: Context<InitializeJoinGame>,wagered_amount:u64)-> Result<()>{
         let game= &mut ctx.accounts.join_game;
-        require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         let player_balance = ctx.accounts.player_2.to_account_info().lamports();
+
+        require!(wagered_amount > 0 , ChessError::InvalidWageredAmount);
         require!(player_balance >= wagered_amount , ChessError::InvalidWageredAmount);
+
         let escrow = &mut ctx.accounts.game_escrow;
+
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             Transfer {
@@ -60,7 +77,7 @@ pub mod chess {
             }
         );
         transfer(cpi_context, player_balance)?;
-        escrow.amount_status = AmountStatus::ObtainedFromPlayer2;
+       
         game.amount_wagered = wagered_amount;
         game.bump = ctx.bumps.join_game;
         game.game_status = GameStatus::Player2Connected;
@@ -79,13 +96,15 @@ pub mod chess {
 }
 
 #[derive(Accounts)]
-#[instruction(game_id:String)]
+#[instruction(game_id:u64)]
 pub struct InitializeGame<'info> {
-    #[account(init , space = 8 + 8  , payer = player_1, seeds = [b"game",game_id.as_bytes().as_ref()], bump , has_one = player_1)]
+    #[account(init , space = 8 + 8  , payer = player_1, seeds = [b"game",game_id.to_le_bytes().as_ref()], bump )]
     pub game: Account<'info, Game>,
     #[account(
-        mut,
-        seeds = [b"escrow",game_id.as_bytes().as_ref().as_ref()],
+        init,
+        space = 8 + 8 ,
+        payer = player_1,
+        seeds = [b"escrow",game_id.to_le_bytes().as_ref()],
         bump
     )]
     pub game_escrow: Account<'info,Escrow>,
@@ -107,7 +126,7 @@ pub struct InitializeJoinGame <'info>{
     pub join_game : Account<'info,Game>,
     #[account(
         mut,
-        seeds = [b"escrow",game_id.to_be_bytes().as_ref()],
+        seeds = [b"escrow",game_id.to_le_bytes().as_ref()],
         bump
     )]
     pub game_escrow : Account<'info,Escrow>,
@@ -144,7 +163,7 @@ pub struct InitializeGameId<'info> {
         init,
         payer = signer,
         space = 8 + 8,
-        seeds = [b"counter",signer.key().as_ref()],
+        seeds = [b"counter"],
         bump
     )]
     pub counter : Account<'info,Counter>,
@@ -154,7 +173,8 @@ pub struct InitializeGameId<'info> {
 }
 
 #[account]
-struct Game {
+#[derive(InitSpace)]
+pub struct Game {
     pub game_id: u64,
     pub player_1: Pubkey,
     pub player_2:Pubkey,
@@ -164,8 +184,25 @@ struct Game {
     pub bump:u8
 }
 
+#[account]
+#[derive(InitSpace)]
+pub struct Escrow {
+    game_id:u64,
+    #[max_len(20)]
+    player_1:String,
+    #[max_len(20)]
+    player_2:String,
+    wagered_amount:u64,
+    pub p1_paid: bool,
+    pub p2_paid: bool,
+}
+#[account]
+pub struct Counter {
+    game_id:u64
+}
+
 #[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq, Eq, InitSpace)]
-enum GameStatus {
+pub enum GameStatus {
     Processing,
     Player2Connected,
     WaitingForPlayer2
@@ -175,7 +212,9 @@ pub enum ChessError {
     #[msg("Invalid wagered amount!")]
     InvalidWageredAmount,
     #[msg("Invalid PDA found!")]
-    InvalidPda
+    InvalidPda,
+    #[msg("Invalid game ID")]
+    InvalidGameID
 }
 #[error_code]
 pub enum  PlayerError {
@@ -188,26 +227,6 @@ pub enum EscrowError {
     GameIdError
 }
 
-#[account]
-#[derive(InitSpace)]
-pub struct Escrow {
-    game_id:u64,
-    #[max_len(20)]
-    player_1:String,
-    #[max_len(20)]
-    player_2:String,
-    wagered_amount:u64,
-    amount_status:AmountStatus
-}
-#[account]
-pub struct Counter {
-    game_id:u64
-}
 
-#[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq, Eq, InitSpace)]
-pub enum AmountStatus {
-    NotObtainedYet,
-    ObtainedFromPlayer1,
-    ObtainedFromPlayer2,
-    Returned
-}
+
+

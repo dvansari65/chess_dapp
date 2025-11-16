@@ -37,10 +37,6 @@
               {
                 "kind": "arg",
                 "path": "game_id"
-              },
-              {
-                "kind": "account",
-                "path": "player_1"
               }
             ]
           }
@@ -69,12 +65,29 @@
           }
         },
         {
+          "name": "game_counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "player_1",
           "writable": true,
-          "signer": true,
-          "relations": [
-            "game"
-          ]
+          "signer": true
         },
         {
           "name": "system_program",
@@ -82,10 +95,6 @@
         }
       ],
       "args": [
-        {
-          "name": "game_id",
-          "type": "u64"
-        },
         {
           "name": "wagered_amount",
           "type": "u64"
@@ -146,37 +155,34 @@
       ]
     },
     {
-      "name": "initialize_player",
+      "name": "initialize_game_id",
       "discriminator": [
-        79,
-        249,
-        88,
-        177,
-        220,
-        62,
-        56,
-        128
+        174,
+        195,
+        132,
+        138,
+        84,
+        225,
+        31,
+        60
       ],
       "accounts": [
         {
-          "name": "player",
+          "name": "counter",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  108,
-                  97,
-                  121,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
                   101,
                   114
                 ]
-              },
-              {
-                "kind": "arg",
-                "path": "user_name"
               }
             ]
           }
@@ -191,12 +197,7 @@
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": [
-        {
-          "name": "user_name",
-          "type": "string"
-        }
-      ]
+      "args": []
     },
     {
       "name": "join_game",
@@ -228,10 +229,6 @@
               {
                 "kind": "arg",
                 "path": "game_id"
-              },
-              {
-                "kind": "account",
-                "path": "player_2"
               }
             ]
           }
@@ -260,6 +257,26 @@
           }
         },
         {
+          "name": "game_counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "player_2",
           "writable": true,
           "signer": true
@@ -271,10 +288,6 @@
       ],
       "args": [
         {
-          "name": "game_id",
-          "type": "u64"
-        },
-        {
           "name": "wagered_amount",
           "type": "u64"
         }
@@ -282,6 +295,19 @@
     }
   ],
   "accounts": [
+    {
+      "name": "Counter",
+      "discriminator": [
+        255,
+        176,
+        4,
+        245,
+        188,
+        253,
+        124,
+        25
+      ]
+    },
     {
       "name": "Escrow",
       "discriminator": [
@@ -307,45 +333,24 @@
         121,
         18
       ]
-    },
-    {
-      "name": "Player",
-      "discriminator": [
-        205,
-        222,
-        112,
-        7,
-        165,
-        155,
-        206,
-        218
-      ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidUserNameLength",
-      "msg": "User name length should be less than 20 characters!"
+      "name": "GameIdError",
+      "msg": "Game id not provided!"
     }
   ],
   "types": [
     {
-      "name": "AmountStatus",
+      "name": "Counter",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "NotObtainedYet"
-          },
-          {
-            "name": "ObtainedFromPlayer1"
-          },
-          {
-            "name": "ObtainedFromPlayer2"
-          },
-          {
-            "name": "Returned"
+            "name": "game_id",
+            "type": "u64"
           }
         ]
       }
@@ -372,12 +377,12 @@
             "type": "u64"
           },
           {
-            "name": "amount_status",
-            "type": {
-              "defined": {
-                "name": "AmountStatus"
-              }
-            }
+            "name": "p1_paid",
+            "type": "bool"
+          },
+          {
+            "name": "p2_paid",
+            "type": "bool"
           }
         ]
       }
@@ -437,18 +442,6 @@
           },
           {
             "name": "WaitingForPlayer2"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Player",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "user_name",
-            "type": "string"
           }
         ]
       }
