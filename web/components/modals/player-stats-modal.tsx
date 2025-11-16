@@ -103,21 +103,6 @@ const PlayerStatsModal = ({
                         </div>
                     </div>
 
-                    {/* Total SOL Won */}
-                    <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl p-4 border border-yellow-500/30">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                                <span className="text-yellow-500 text-sm">◎</span>
-                            </div>
-                            <div>
-                                <p className="text-xs text-slate-400">Total SOL Won</p>
-                                <p className="text-lg font-bold text-yellow-500">
-                                    {player.solWon?.toFixed(4) || "0.0000"} SOL
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                     {/* ⭐ Bet Amount (New UI Section) */}
                     <div className="bg-gradient-to-r from-emerald-500/10 to-green-500/10 rounded-xl p-4 border border-emerald-500/30">
                         <div className="flex items-center gap-3">
@@ -127,15 +112,15 @@ const PlayerStatsModal = ({
                             <div>
                                 <p className="text-xs text-slate-400">Bet Amount</p>
                                 <p className="text-lg font-bold text-emerald-400">
-                                    {betAmount ??  "0"} SOL
+                                    {betAmount } SOL
                                 </p>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 {/* Buttons */}
+                {/* TODO : implement delete the challenege when the player declines the request! */}
                 <div className="p-6 pt-0 flex gap-3">
                     <button
                         onClick={onDecline}
