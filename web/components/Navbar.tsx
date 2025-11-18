@@ -63,6 +63,7 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
     const userName = data?.user?.userName;
 
     if (connected && currentWallet && userName) {
+
       const handleReceiveChallenge = (data: ReceiveChallenge) => {
         queryClient.invalidateQueries({
           queryKey: ["challenges", publicKey?.toString()],
@@ -76,10 +77,16 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
         toast.success(
           `challenge recieved from ${data?.opponentPlayerStats?.userName}`
         );
+
         // Add to challenges state
         setChallenges((prev) => [...prev, data]);
         setUnviewedCount((prev) => prev + 1);
       };
+
+      const handleError = (data:any)=>{
+        console.log("message",data)
+        toast.error(data.message)
+      }
 
       const payload: RegisterUserProps = {
         currentUserKey: publicKey?.toString(),
@@ -93,6 +100,7 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
         console.log("Successfully registered:", data);
       };
 
+      socket.on("error",handleError)
       socket.on("successfully-register", handleSuccessfulRegister);
       socket.on("recieve-challenge", handleReceiveChallenge);
 
