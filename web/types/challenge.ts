@@ -7,6 +7,7 @@ export interface GetAllChallengesResponse {
 }
 
 export interface Challenge {
+  amount:number | undefined
   id: number | undefined;
   senderPubKey: string | undefined;
   receiverPubKey: string | undefined;
