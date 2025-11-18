@@ -29,13 +29,13 @@ const BattlePage = () => {
   };
 
   useEffect(()=>{
-    console.log("socket ",socket)
+    console.log("socket started ",socket)
     if(!socket){
       return;
     }
+    console.log("socket started..")
     const handleReceiveChallenge = (data:ReceiveChallenge)=>{
-      console.log("dara at battle",data);
-      
+      console.log("event  triggered..")
       if(!data){
         console.log("recieve data not found!")
         return;
@@ -76,19 +76,7 @@ const BattlePage = () => {
       <ChallengeTabs
         challenges={challenges}
         currentPubKey={publicKey?.toString()}
-        onSelectPlayer={setSelectedPlayer}
       />
-
-      {/* Player Stats Modal */}
-      {selectedPlayer && (
-        <PlayerStatsModal
-        betAmount={betAmount}
-          player={selectedPlayer}
-          onClose={() => setSelectedPlayer(null)}
-          onAccept={handleAcceptChallenge}
-          onDecline={handleDeclineChallenge}
-        />
-      )}
     </div>
   );
 };
