@@ -114,6 +114,7 @@ io.on("connect", (socket) => {
       amount
     });
 
+
     try {
       if (!currentPlayerKey || !opponentPlayerKey) {
         socket.emit("error", { message: "Missing player keys" });
@@ -159,7 +160,10 @@ io.on("connect", (socket) => {
           });
         } catch (error) {
           console.error(error);
+          throw error
         }
+
+        console.log("created challenge", challenge);
 
         if (!challenge) {
           socket.emit("error", { message: "challenge not created!" });
@@ -167,7 +171,6 @@ io.on("connect", (socket) => {
 
         io.to(opponentSocketId).emit("recieve-challenge", challengeData);
 
-        console.log("created challenge", challenge);
         if (!challenge) {
           throw new Error("challenge not created in DB");
         }
