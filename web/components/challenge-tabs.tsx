@@ -3,20 +3,20 @@ import { useState } from "react";
 import { player } from "@/types/player";
 import { Crown, Swords, Target, Trophy } from "lucide-react";
 import { Challenge } from "@/types/challenge";
+import PlayerStatsModal from "./modals/player-stats-modal";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
   currentPubKey: string | undefined;
-  onSelectPlayer: (player: player) => void;
 }
 
 const ChallengeTabs: React.FC<ChallengeTabsProps> = ({
   challenges,
   currentPubKey,
-  onSelectPlayer,
 }) => {
   const [activeTab, setActiveTab] = useState<"received" | "sent">("received");
-
+  const [selectedChallenge,setSelectedChallenge] = useState<Challenge | null>(null)
+  const [selectedPlayer,setSelectedPlayer] = useState<player | null>(null)
   // Split challenges
   const receivedChallenges = challenges.filter(
     (ch) => ch.receiverPubKey === currentPubKey
@@ -24,6 +24,19 @@ const ChallengeTabs: React.FC<ChallengeTabsProps> = ({
   const sentChallenges = challenges.filter(
     (ch) => ch.senderPubKey === currentPubKey
   );
+
+  const handleSelectedChallenge = (challenge:Challenge | null,player:player | null)=>{
+    console.log("challenge",challenge)
+    console.log("player",player);
+      
+     setSelectedChallenge(challenge);
+     setSelectedPlayer(player)
+  }
+
+  const handleClose = ()=>{
+    setSelectedChallenge(null);
+    setSelectedChallenge(null)
+  }
 
   // Helper function to render player cards
   const renderChallengeCards = (list: Challenge[], type: "received" | "sent") => {
@@ -53,7 +66,7 @@ const ChallengeTabs: React.FC<ChallengeTabsProps> = ({
           return (
             <button
               key={index}
-              onClick={() => onSelectPlayer(player)}
+              onClick={()=>handleSelectedChallenge(challenge,player)}
               className="w-full text-left p-5 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-emerald-500/50 rounded-2xl transition-all duration-200 group"
             >
               <div className="flex items-center gap-4">
@@ -100,6 +113,15 @@ const ChallengeTabs: React.FC<ChallengeTabsProps> = ({
             </button>
           );
         })}
+        {
+          selectedPlayer && selectedChallenge && (
+            <PlayerStatsModal
+              player={selectedPlayer}
+              challenge={selectedChallenge}
+              onClose={handleClose}
+            />
+          )
+        }
       </div>
     );
   };
