@@ -1,19 +1,21 @@
+import { Challenge } from "@/types/challenge";
 import { amountValuesTypes } from "@/types/escrow";
 import { player } from "@/types/player";
 import { Crown, Target, TrendingUp, Trophy, X, Zap } from "lucide-react";
 
 const PlayerStatsModal = ({ 
+    challenge,
     player, 
     onClose, 
     onAccept, 
     onDecline ,
-    betAmount
+    
 }: { 
+    challenge:Challenge;
     player: player | undefined; 
-    onClose: () => void;
-    onAccept: () => void;
-    onDecline: () => void;
-    betAmount:amountValuesTypes
+    onClose?: () => void;
+    onAccept?: () => void;
+    onDecline?: () => void
 }) => {
 
     if (!player) return null;
@@ -112,7 +114,7 @@ const PlayerStatsModal = ({
                             <div>
                                 <p className="text-xs text-slate-400">Bet Amount</p>
                                 <p className="text-lg font-bold text-emerald-400">
-                                    {betAmount } SOL
+                                    {challenge.amount } SOL
                                 </p>
                             </div>
                         </div>

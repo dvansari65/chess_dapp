@@ -33,7 +33,7 @@ model Player {
 model Challenge {
   id             Int             @id @default(autoincrement())
   senderPubKey   String
-  amount         Int
+  amount         Float
   receiverPubKey String
   sender         Player          @relation("sender", fields: [senderPubKey], references: [publickey])
   receiver       Player          @relation("receiver", fields: [receiverPubKey], references: [publickey])

@@ -216,7 +216,7 @@ export type ChallengeWhereInput = {
   NOT?: Prisma.ChallengeWhereInput | Prisma.ChallengeWhereInput[]
   id?: Prisma.IntFilter<"Challenge"> | number
   senderPubKey?: Prisma.StringFilter<"Challenge"> | string
-  amount?: Prisma.IntFilter<"Challenge"> | number
+  amount?: Prisma.FloatFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
@@ -239,7 +239,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ChallengeWhereInput[]
   NOT?: Prisma.ChallengeWhereInput | Prisma.ChallengeWhereInput[]
   senderPubKey?: Prisma.StringFilter<"Challenge"> | string
-  amount?: Prisma.IntFilter<"Challenge"> | number
+  amount?: Prisma.FloatFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
@@ -265,7 +265,7 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChallengeScalarWhereWithAggregatesInput | Prisma.ChallengeScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Challenge"> | number
   senderPubKey?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
-  amount?: Prisma.IntWithAggregatesFilter<"Challenge"> | number
+  amount?: Prisma.FloatWithAggregatesFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
   createdAt?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
 }
@@ -286,7 +286,7 @@ export type ChallengeUncheckedCreateInput = {
 }
 
 export type ChallengeUpdateInput = {
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.PlayerUpdateOneRequiredWithoutSentChallengesNestedInput
   receiver?: Prisma.PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput
@@ -295,7 +295,7 @@ export type ChallengeUpdateInput = {
 export type ChallengeUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -309,14 +309,14 @@ export type ChallengeCreateManyInput = {
 }
 
 export type ChallengeUpdateManyMutationInput = {
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -449,6 +449,14 @@ export type ChallengeUncheckedUpdateManyWithoutReceiverNestedInput = {
   deleteMany?: Prisma.ChallengeScalarWhereInput | Prisma.ChallengeScalarWhereInput[]
 }
 
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type ChallengeCreateWithoutSenderInput = {
   amount: number
   createdAt: string
@@ -517,7 +525,7 @@ export type ChallengeScalarWhereInput = {
   NOT?: Prisma.ChallengeScalarWhereInput | Prisma.ChallengeScalarWhereInput[]
   id?: Prisma.IntFilter<"Challenge"> | number
   senderPubKey?: Prisma.StringFilter<"Challenge"> | string
-  amount?: Prisma.IntFilter<"Challenge"> | number
+  amount?: Prisma.FloatFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
 }
@@ -553,27 +561,27 @@ export type ChallengeCreateManyReceiverInput = {
 }
 
 export type ChallengeUpdateWithoutSenderInput = {
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   receiver?: Prisma.PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput
 }
 
 export type ChallengeUncheckedUpdateWithoutSenderInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUncheckedUpdateManyWithoutSenderInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUpdateWithoutReceiverInput = {
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.PlayerUpdateOneRequiredWithoutSentChallengesNestedInput
 }
@@ -581,14 +589,14 @@ export type ChallengeUpdateWithoutReceiverInput = {
 export type ChallengeUncheckedUpdateWithoutReceiverInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ChallengeUncheckedUpdateManyWithoutReceiverInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -1085,7 +1093,7 @@ export interface Prisma__ChallengeClient<T, Null = never, ExtArgs extends runtim
 export interface ChallengeFieldRefs {
   readonly id: Prisma.FieldRef<"Challenge", 'Int'>
   readonly senderPubKey: Prisma.FieldRef<"Challenge", 'String'>
-  readonly amount: Prisma.FieldRef<"Challenge", 'Int'>
+  readonly amount: Prisma.FieldRef<"Challenge", 'Float'>
   readonly receiverPubKey: Prisma.FieldRef<"Challenge", 'String'>
   readonly createdAt: Prisma.FieldRef<"Challenge", 'String'>
 }
