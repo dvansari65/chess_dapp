@@ -72,11 +72,31 @@ const BattlePage = () => {
         </div>
       </div>
 
-      {/* Tabs Component */}
-      <ChallengeTabs
-        challenges={challenges}
-        currentPubKey={publicKey?.toString()}
-      />
+     {/* Challenge Content */}
+     <div className="max-w-5xl mx-auto">
+        {challenges.length === 0 ? (
+          <div className="text-center py-16">
+            <Swords className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-slate-400 mb-2">
+              No challenges yet
+            </h3>
+            <p className="text-slate-500">
+              Start by challenging other players!
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {challenges.map((challenge) => (
+              <div key={challenge?.id}>
+                <ChallengeTabs 
+                  challenge={challenge}
+                  currentPlayerPubKey={publicKey.toString()}
+                 />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
