@@ -3,24 +3,21 @@ import { amountValuesTypes } from "@/types/escrow";
 import { player } from "@/types/player";
 import { Crown, Target, TrendingUp, Trophy, X, Zap } from "lucide-react";
 
-const PlayerStatsModal = ({ 
-    challenge,
-    player, 
-    onClose, 
-    onAccept, 
-    onDecline ,
-    
-}: { 
-    challenge:Challenge | null;
-    player: player | undefined; 
-    onClose?: () => void;
-    onAccept?: () => void;
-    onDecline?: () => void
-}) => {
+interface PlayerStatsModalProps {
+    isOpen:boolean,
+    onClose:()=>void,
+    onDecline?:()=>void;
+    player:player | undefined;
+    challenge:Challenge | undefined
+    onAccept:()=>void
+}
 
+const PlayerStatsModal = ({isOpen,onClose,onDecline,player,challenge,onAccept}:PlayerStatsModalProps) => {
+
+    if (!isOpen) return null;
     if (!player) return null;
-
-    const winRate = player.matchesPlayed 
+    
+    const winRate = player?.matchesPlayed 
         ? ((player.wins || 0) / player.matchesPlayed * 100).toFixed(1)
         : "0.0";
 
