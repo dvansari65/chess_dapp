@@ -38,10 +38,16 @@ model Challenge {
   sender         Player          @relation("sender", fields: [senderPubKey], references: [publickey])
   receiver       Player          @relation("receiver", fields: [receiverPubKey], references: [publickey])
   createdAt      String
+  status         ChallengeStatus
 }
 
 enum playerStatus {
   Online
   offline
 }
-
+enum ChallengeStatus {
+   pending
+   accepted
+   rejected
+   expired
+}

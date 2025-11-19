@@ -157,7 +157,7 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
         {/* Battles Button - Elegant Dark SaaS Style */}
         {connected &&
           links.map(({ label, path }) => (
-            <li>
+            <li key={path}>
               <NavLinks
                 path={path}
                 label={label}

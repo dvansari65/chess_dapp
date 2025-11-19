@@ -41,6 +41,7 @@ export type ChallengeMinAggregateOutputType = {
   amount: number | null
   receiverPubKey: string | null
   createdAt: string | null
+  status: $Enums.ChallengeStatus | null
 }
 
 export type ChallengeMaxAggregateOutputType = {
@@ -49,6 +50,7 @@ export type ChallengeMaxAggregateOutputType = {
   amount: number | null
   receiverPubKey: string | null
   createdAt: string | null
+  status: $Enums.ChallengeStatus | null
 }
 
 export type ChallengeCountAggregateOutputType = {
@@ -57,6 +59,7 @@ export type ChallengeCountAggregateOutputType = {
   amount: number
   receiverPubKey: number
   createdAt: number
+  status: number
   _all: number
 }
 
@@ -77,6 +80,7 @@ export type ChallengeMinAggregateInputType = {
   amount?: true
   receiverPubKey?: true
   createdAt?: true
+  status?: true
 }
 
 export type ChallengeMaxAggregateInputType = {
@@ -85,6 +89,7 @@ export type ChallengeMaxAggregateInputType = {
   amount?: true
   receiverPubKey?: true
   createdAt?: true
+  status?: true
 }
 
 export type ChallengeCountAggregateInputType = {
@@ -93,6 +98,7 @@ export type ChallengeCountAggregateInputType = {
   amount?: true
   receiverPubKey?: true
   createdAt?: true
+  status?: true
   _all?: true
 }
 
@@ -188,6 +194,7 @@ export type ChallengeGroupByOutputType = {
   amount: number
   receiverPubKey: string
   createdAt: string
+  status: $Enums.ChallengeStatus
   _count: ChallengeCountAggregateOutputType | null
   _avg: ChallengeAvgAggregateOutputType | null
   _sum: ChallengeSumAggregateOutputType | null
@@ -219,6 +226,7 @@ export type ChallengeWhereInput = {
   amount?: Prisma.FloatFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
+  status?: Prisma.EnumChallengeStatusFilter<"Challenge"> | $Enums.ChallengeStatus
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
   receiver?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
 }
@@ -229,6 +237,7 @@ export type ChallengeOrderByWithRelationInput = {
   amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   sender?: Prisma.PlayerOrderByWithRelationInput
   receiver?: Prisma.PlayerOrderByWithRelationInput
 }
@@ -242,6 +251,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   amount?: Prisma.FloatFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
+  status?: Prisma.EnumChallengeStatusFilter<"Challenge"> | $Enums.ChallengeStatus
   sender?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
   receiver?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
 }, "id">
@@ -252,6 +262,7 @@ export type ChallengeOrderByWithAggregationInput = {
   amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   _count?: Prisma.ChallengeCountOrderByAggregateInput
   _avg?: Prisma.ChallengeAvgOrderByAggregateInput
   _max?: Prisma.ChallengeMaxOrderByAggregateInput
@@ -268,11 +279,13 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   amount?: Prisma.FloatWithAggregatesFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
   createdAt?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
+  status?: Prisma.EnumChallengeStatusWithAggregatesFilter<"Challenge"> | $Enums.ChallengeStatus
 }
 
 export type ChallengeCreateInput = {
   amount: number
   createdAt: string
+  status: $Enums.ChallengeStatus
   sender: Prisma.PlayerCreateNestedOneWithoutSentChallengesInput
   receiver: Prisma.PlayerCreateNestedOneWithoutRecievedChallengesInput
 }
@@ -283,11 +296,13 @@ export type ChallengeUncheckedCreateInput = {
   amount: number
   receiverPubKey: string
   createdAt: string
+  status: $Enums.ChallengeStatus
 }
 
 export type ChallengeUpdateInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
   sender?: Prisma.PlayerUpdateOneRequiredWithoutSentChallengesNestedInput
   receiver?: Prisma.PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput
 }
@@ -298,6 +313,7 @@ export type ChallengeUncheckedUpdateInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 export type ChallengeCreateManyInput = {
@@ -306,11 +322,13 @@ export type ChallengeCreateManyInput = {
   amount: number
   receiverPubKey: string
   createdAt: string
+  status: $Enums.ChallengeStatus
 }
 
 export type ChallengeUpdateManyMutationInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 export type ChallengeUncheckedUpdateManyInput = {
@@ -319,6 +337,7 @@ export type ChallengeUncheckedUpdateManyInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 export type ChallengeListRelationFilter = {
@@ -337,6 +356,7 @@ export type ChallengeCountOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type ChallengeAvgOrderByAggregateInput = {
@@ -350,6 +370,7 @@ export type ChallengeMaxOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type ChallengeMinOrderByAggregateInput = {
@@ -358,6 +379,7 @@ export type ChallengeMinOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   receiverPubKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type ChallengeSumOrderByAggregateInput = {
@@ -457,9 +479,14 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumChallengeStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ChallengeStatus
+}
+
 export type ChallengeCreateWithoutSenderInput = {
   amount: number
   createdAt: string
+  status: $Enums.ChallengeStatus
   receiver: Prisma.PlayerCreateNestedOneWithoutRecievedChallengesInput
 }
 
@@ -468,6 +495,7 @@ export type ChallengeUncheckedCreateWithoutSenderInput = {
   amount: number
   receiverPubKey: string
   createdAt: string
+  status: $Enums.ChallengeStatus
 }
 
 export type ChallengeCreateOrConnectWithoutSenderInput = {
@@ -483,6 +511,7 @@ export type ChallengeCreateManySenderInputEnvelope = {
 export type ChallengeCreateWithoutReceiverInput = {
   amount: number
   createdAt: string
+  status: $Enums.ChallengeStatus
   sender: Prisma.PlayerCreateNestedOneWithoutSentChallengesInput
 }
 
@@ -491,6 +520,7 @@ export type ChallengeUncheckedCreateWithoutReceiverInput = {
   senderPubKey: string
   amount: number
   createdAt: string
+  status: $Enums.ChallengeStatus
 }
 
 export type ChallengeCreateOrConnectWithoutReceiverInput = {
@@ -528,6 +558,7 @@ export type ChallengeScalarWhereInput = {
   amount?: Prisma.FloatFilter<"Challenge"> | number
   receiverPubKey?: Prisma.StringFilter<"Challenge"> | string
   createdAt?: Prisma.StringFilter<"Challenge"> | string
+  status?: Prisma.EnumChallengeStatusFilter<"Challenge"> | $Enums.ChallengeStatus
 }
 
 export type ChallengeUpsertWithWhereUniqueWithoutReceiverInput = {
@@ -551,6 +582,7 @@ export type ChallengeCreateManySenderInput = {
   amount: number
   receiverPubKey: string
   createdAt: string
+  status: $Enums.ChallengeStatus
 }
 
 export type ChallengeCreateManyReceiverInput = {
@@ -558,11 +590,13 @@ export type ChallengeCreateManyReceiverInput = {
   senderPubKey: string
   amount: number
   createdAt: string
+  status: $Enums.ChallengeStatus
 }
 
 export type ChallengeUpdateWithoutSenderInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
   receiver?: Prisma.PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput
 }
 
@@ -571,6 +605,7 @@ export type ChallengeUncheckedUpdateWithoutSenderInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 export type ChallengeUncheckedUpdateManyWithoutSenderInput = {
@@ -578,11 +613,13 @@ export type ChallengeUncheckedUpdateManyWithoutSenderInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   receiverPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 export type ChallengeUpdateWithoutReceiverInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
   sender?: Prisma.PlayerUpdateOneRequiredWithoutSentChallengesNestedInput
 }
 
@@ -591,6 +628,7 @@ export type ChallengeUncheckedUpdateWithoutReceiverInput = {
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 export type ChallengeUncheckedUpdateManyWithoutReceiverInput = {
@@ -598,6 +636,7 @@ export type ChallengeUncheckedUpdateManyWithoutReceiverInput = {
   senderPubKey?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
 }
 
 
@@ -608,6 +647,7 @@ export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
+  status?: boolean
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
   receiver?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challenge"]>
@@ -618,6 +658,7 @@ export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
+  status?: boolean
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
   receiver?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challenge"]>
@@ -628,6 +669,7 @@ export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
+  status?: boolean
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
   receiver?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["challenge"]>
@@ -638,9 +680,10 @@ export type ChallengeSelectScalar = {
   amount?: boolean
   receiverPubKey?: boolean
   createdAt?: boolean
+  status?: boolean
 }
 
-export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "senderPubKey" | "amount" | "receiverPubKey" | "createdAt", ExtArgs["result"]["challenge"]>
+export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "senderPubKey" | "amount" | "receiverPubKey" | "createdAt" | "status", ExtArgs["result"]["challenge"]>
 export type ChallengeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sender?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
   receiver?: boolean | Prisma.PlayerDefaultArgs<ExtArgs>
@@ -666,6 +709,7 @@ export type $ChallengePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     amount: number
     receiverPubKey: string
     createdAt: string
+    status: $Enums.ChallengeStatus
   }, ExtArgs["result"]["challenge"]>
   composites: {}
 }
@@ -1096,6 +1140,7 @@ export interface ChallengeFieldRefs {
   readonly amount: Prisma.FieldRef<"Challenge", 'Float'>
   readonly receiverPubKey: Prisma.FieldRef<"Challenge", 'String'>
   readonly createdAt: Prisma.FieldRef<"Challenge", 'String'>
+  readonly status: Prisma.FieldRef<"Challenge", 'ChallengeStatus'>
 }
     
 

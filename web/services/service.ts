@@ -55,7 +55,6 @@ export const createChallenge = async ({
     if(!amount){
         throw new Error("Please provide amount first!")
     }
-    console.log("amount",amount)
     try {
         const challenge = await prisma.challenge.create({
             data: {
@@ -63,6 +62,7 @@ export const createChallenge = async ({
                 receiverPubKey: receiverPublicKey,
                 createdAt: new Date().toISOString(),
                 amount:Number(amount),
+                status:"pending"
             },
         });
         console.log("challenge from utils", challenge);

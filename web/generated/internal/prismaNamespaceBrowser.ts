@@ -90,7 +90,8 @@ export const ChallengeScalarFieldEnum = {
   senderPubKey: 'senderPubKey',
   amount: 'amount',
   receiverPubKey: 'receiverPubKey',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  status: 'status'
 } as const
 
 export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]

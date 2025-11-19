@@ -14,3 +14,13 @@ export const playerStatus = {
 } as const
 
 export type playerStatus = (typeof playerStatus)[keyof typeof playerStatus]
+
+
+export const ChallengeStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  rejected: 'rejected',
+  expired: 'expired'
+} as const
+
+export type ChallengeStatus = (typeof ChallengeStatus)[keyof typeof ChallengeStatus]
