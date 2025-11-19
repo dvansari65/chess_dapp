@@ -11,7 +11,7 @@ const PlayerStatsModal = ({
     onDecline ,
     
 }: { 
-    challenge:Challenge;
+    challenge:Challenge | null;
     player: player | undefined; 
     onClose?: () => void;
     onAccept?: () => void;
@@ -114,7 +114,7 @@ const PlayerStatsModal = ({
                             <div>
                                 <p className="text-xs text-slate-400">Bet Amount</p>
                                 <p className="text-lg font-bold text-emerald-400">
-                                    {challenge.amount } SOL
+                                    {challenge?.amount } SOL
                                 </p>
                             </div>
                         </div>
