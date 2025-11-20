@@ -2,7 +2,8 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { player, SendChallengeProps } from "./types/player";
 import { createChallenge, updateUser } from "./services/service";
-import { Challenge } from "./types/challenge";
+import { Challenge, RejectChallengeInputs } from "./types/challenge";
+import { RejectChallenge } from "./services/change-status";
 
 const server = createServer();
 const io = new Server(server, {
@@ -70,15 +71,15 @@ io.on("connect", (socket) => {
       console.error("user not updated!", error.message);
     }
   });
-  
+
   socket.on("unregister-user", async (data: { userKey: string }) => {
     const { userKey } = data;
     console.log("🔴 Unregistering user:", userKey);
-    
+
     if (!userKey) {
       return;
     }
-    
+
     // Find and remove all sockets for this user
     let removedCount = 0;
     for (const [socketId, pubKey] of onlineUsers.entries()) {
@@ -88,16 +89,16 @@ io.on("connect", (socket) => {
         console.log(`Removed socket ${socketId} for user ${userKey}`);
       }
     }
-    
+
     if (removedCount > 0) {
       try {
         await updateUser(userKey, "Offline");
         console.log(`✅ User ${userKey} set to Offline`);
-        
+
         // Notify other users
-        socket.broadcast.emit("user-offline", { 
-          currentUser: userKey, 
-          status: "Offline" 
+        socket.broadcast.emit("user-offline", {
+          currentUser: userKey,
+          status: "Offline",
         });
       } catch (error: any) {
         console.error("❌ Error updating user status:", error.message);
@@ -106,26 +107,26 @@ io.on("connect", (socket) => {
   });
 
   socket.on("send-challenge", async (data: SendChallengeProps) => {
-    const { currentPlayerKey, opponentPlayerKey, currentPlayerStats,amount } = data;
+    const { currentPlayerKey, opponentPlayerKey, currentPlayerStats, amount } =
+      data;
+
     console.log("📤 Challenge request received:", {
       from: currentPlayerKey,
       to: opponentPlayerKey,
       stats: currentPlayerStats,
-      amount
+      amount,
     });
-
 
     try {
       if (!currentPlayerKey || !opponentPlayerKey) {
         socket.emit("error", { message: "Missing player keys" });
         return;
       }
-      if(!amount){
+
+      if (!amount) {
         socket.emit("error", { message: "Amount is missing!" });
         return;
       }
-
-      console.log("amount recieved",amount)
 
       let opponentSocketId: string | undefined;
 
@@ -137,18 +138,12 @@ io.on("connect", (socket) => {
         }
       }
 
-      console.log("🔍 Opponent socket lookup:", {
-        opponentKey: opponentPlayerKey,
-        foundSocketId: opponentSocketId,
-        onlineUsersCount: onlineUsers.size,
-      });
-
       if (opponentSocketId) {
         const challengeData = {
           currentPlayerKey: opponentPlayerKey,
           opponentPlayerStats: currentPlayerStats,
           opponentPlayerKey: currentPlayerKey,
-          amount
+          amount,
         };
 
         let challenge;
@@ -156,14 +151,12 @@ io.on("connect", (socket) => {
           challenge = await createChallenge({
             senderPublickey: currentPlayerKey,
             receiverPublicKey: opponentPlayerKey,
-            amount
+            amount,
           });
         } catch (error) {
           console.error(error);
-          throw error
+          throw error;
         }
-
-        console.log("created challenge", challenge);
 
         if (!challenge) {
           socket.emit("error", { message: "challenge not created!" });
@@ -171,16 +164,10 @@ io.on("connect", (socket) => {
 
         io.to(opponentSocketId).emit("recieve-challenge", challengeData);
 
-        if (!challenge) {
-          throw new Error("challenge not created in DB");
-        }
-  
         socket.emit("challenge-sent-successfully", {
           opponentPlayerKey,
           timestamp: Date.now(),
         });
-
-        console.log("✅ Challenge sent successfully to:", opponentPlayerKey);
       } else {
         socket.emit("opponent-offline", { opponentPlayerKey });
         console.log("❌ Opponent is offline:", opponentPlayerKey);
@@ -188,6 +175,38 @@ io.on("connect", (socket) => {
     } catch (error: any) {
       socket.emit("error", { message: error.message });
       console.error("❌ Error in send-challenge:", error);
+    }
+  });
+
+  socket.on("reject-challenge", async (data: RejectChallengeInputs) => {
+    const { challengeId, currentPlayerPubKey, opponentPlayerPubKey } = data;
+    try {
+
+      if(!challengeId){
+        return;
+      }
+
+      const challengeStatus = await RejectChallenge(challengeId);
+      if (challengeStatus !== "rejected") {
+        socket.emit("error", { message: "status not updated!" });
+      }
+
+      let opponentSocketId: string | undefined;
+      for (const [socketID, pubKey] of onlineUsers.entries()) {
+        if (opponentPlayerPubKey === pubKey) {
+          opponentSocketId = socketID;
+          break;
+        }
+      }
+
+      if (opponentSocketId) {
+        io.to(opponentSocketId).emit("challenge-rejected", {
+          currentPlayerPubKey,
+          challengeStatus
+        });
+      }
+    } catch (error: any) {
+      socket.emit("error", { message: error.message });
     }
   });
 
