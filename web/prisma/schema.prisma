@@ -11,7 +11,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Player {
@@ -24,7 +23,7 @@ model Player {
   lost               Int          @default(0)
   rating             Int          @default(0)
   solWon             Int          @default(0)
-  createdAt          String
+  createdAt          DateTime
   isPlaying          Boolean      @default(false)
   sentChallenges     Challenge[]  @relation("sender")
   recievedChallenges Challenge[]  @relation("receiver")
@@ -37,7 +36,8 @@ model Challenge {
   receiverPubKey String
   sender         Player          @relation("sender", fields: [senderPubKey], references: [publickey])
   receiver       Player          @relation("receiver", fields: [receiverPubKey], references: [publickey])
-  createdAt      String
+  createdAt      DateTime
+  expiresAt      DateTime    
   status         ChallengeStatus
 }
 
@@ -45,9 +45,10 @@ enum playerStatus {
   Online
   offline
 }
+
 enum ChallengeStatus {
-   pending
-   accepted
-   rejected
-   expired
+  pending
+  accepted
+  rejected
+  expired
 }
