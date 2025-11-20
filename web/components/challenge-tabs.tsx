@@ -1,9 +1,13 @@
+"use client";
 import { Challenge } from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { player } from "@/types/player";
 import PlayerStatsModal from "./modals/player-stats-modal";
+import { useSocket } from "@/utils/socketProvider";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
@@ -17,6 +21,9 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
+
+  const socket = useSocket();
+  const queryClient = useQueryClient()
   // FILTERS
   const received = challenges?.filter(
     (c) => c?.receiverPubKey === currentPubKey
@@ -30,6 +37,30 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     setIsChallengeModal(true);
     setPlayerStats(player);
     setChallengeDataForModal(challenge);
+  };
+
+  const handleRejectChallenge = ({
+    challengeId,
+    currentPlayerPubKey,
+    opponentPlayerPubKey,
+  }: {
+    challengeId: number | undefined;
+    currentPlayerPubKey: string | undefined;
+    opponentPlayerPubKey: string | undefined;
+  }) => {
+    if (!challengeId || !currentPlayerPubKey || !opponentPlayerPubKey) {
+      toast.error("Provide all inputs!");
+      return;
+    }
+    const payload = {
+      challengeId,
+      currentPlayerPubKey,
+      opponentPlayerPubKey,
+    };
+    socket.emit("reject-challenge",payload);
+    queryClient.invalidateQueries({queryKey:["challenges",currentPlayerPubKey]})
+    setIsChallengeModal(false)
+    toast.success("Declined!")
   };
 
   return (
@@ -155,7 +186,15 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           challenge={challengeDataForModal}
           player={playerStats}
           isOpen={isChallengeModalOpen}
-          onClose={()=>setIsChallengeModal(false)}
+          onClose={() => setIsChallengeModal(false)}
+          onAccept={() => {}}
+          onDecline={() =>
+            handleRejectChallenge({
+              challengeId: challengeDataForModal?.id,
+              currentPlayerPubKey: currentPubKey,
+              opponentPlayerPubKey: playerStats?.publickey?.toString(),
+            })
+          }
         />
       )}
     </div>
