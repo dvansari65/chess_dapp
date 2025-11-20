@@ -15,3 +15,9 @@ export interface Challenge {
   receiver: player | undefined;
   createdAt: string;
 }
+
+export interface RejectChallengeInputs {
+  challengeId:number | undefined , 
+  currentPlayerPubKey:string | undefined ,
+  opponentPlayerPubKey: string  | undefined
+}
