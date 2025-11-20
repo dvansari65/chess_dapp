@@ -62,7 +62,8 @@ export const createChallenge = async ({
                 receiverPubKey: receiverPublicKey,
                 createdAt: new Date().toISOString(),
                 amount:Number(amount),
-                status:"pending"
+                status:"pending",
+                expiresAt:new Date(Date.now() + 5*60*1000)
             },
         });
         console.log("challenge from utils", challenge);
