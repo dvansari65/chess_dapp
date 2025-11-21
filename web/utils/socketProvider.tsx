@@ -29,6 +29,8 @@ export const SocketProvider = ({
   const {publicKey} = useWallet()
   const {data} = getPlayer(publicKey)
   useEffect(() => {
+    if(!socket) return;
+    console.log("event started!")
     socket.connect();
 
     const handlerRejectedChallenge = (data: {
@@ -39,23 +41,33 @@ export const SocketProvider = ({
         toast.info("Your challenge was rejected!");
       }
     };
+
+    const handleSuccessfullRegistration = (data:any)=>{
+      console.log("data ",data)
+      toast.success(`${data?.currentUserName} successfully registered!`)
+    }
     
     if(!data?.user){
       return;
     }
 
     const payload = {
-      currentUserKey: publicKey?.toString,
+      currentUserKey: publicKey?.toString(),
       currentUserName: data?.user?.userName
     }
-
+    console.log("paylaod",payload)
     socket.emit("register-user",payload)
 
     socket.on("challenge-rejected",handlerRejectedChallenge)
-
+    socket.on("successfully-register",handleSuccessfullRegistration)
+    
     socket.on("connect", () => {
       console.log("✅ Socket connected:", socket.id);
     });
+
+    socket.on("successfully-rejected",()=>{
+      toast.success("Successfully rejected!")
+    })
 
     socket.on("disconnect", () => {
       console.log("❌ Socket disconnected");
@@ -64,8 +76,9 @@ export const SocketProvider = ({
     return () => {
       socket.disconnect();
       socket.off("challenge-rejected",handlerRejectedChallenge)
+      socket.off("successfully-register",handleSuccessfullRegistration)
     };
-  }, [socket]);
+  }, [socket,data,publicKey]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
