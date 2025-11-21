@@ -54,7 +54,6 @@ io.on("connect", (socket) => {
 
     onlineUsers.set(socket.id, currentUserKey);
     const userPubKey = onlineUsers.get(socket.id);
-    console.log("obtained pub key", userPubKey);
 
     socket.emit("successfully-register", {
       currentUserKey,
@@ -179,6 +178,8 @@ io.on("connect", (socket) => {
   });
 
   socket.on("reject-challenge", async (data: RejectChallengeInputs) => {
+    console.log("reject challenge triggered!!");
+    
     const { challengeId, currentPlayerPubKey, opponentPlayerPubKey } = data;
     try {
 
@@ -191,6 +192,8 @@ io.on("connect", (socket) => {
         socket.emit("error", { message: "status not updated!" });
       }
 
+      console.log("status changes to",challengeStatus)
+
       let opponentSocketId: string | undefined;
       for (const [socketID, pubKey] of onlineUsers.entries()) {
         if (opponentPlayerPubKey === pubKey) {
@@ -199,12 +202,17 @@ io.on("connect", (socket) => {
         }
       }
 
-      if (opponentSocketId) {
-        io.to(opponentSocketId).emit("challenge-rejected", {
+      if (currentPlayerPubKey) {
+        io.to(currentPlayerPubKey).emit("challenge-rejected", {
           currentPlayerPubKey,
           challengeStatus
         });
       }
+
+      if(opponentSocketId){
+        io.to(opponentSocketId).emit("successfully-rejected")
+      }
+
     } catch (error: any) {
       socket.emit("error", { message: error.message });
     }
