@@ -43,6 +43,7 @@ export default function Lobby() {
   const queryClient = useQueryClient();
   const { data, isPending, error } = getAllPlayers();
   const {data:currenPlayer} = getPlayer(publicKey)
+
   useEffect(() => {
     console.log("socket", socket);
     
@@ -56,17 +57,12 @@ export default function Lobby() {
       return;
     }
 
-    const payload: RegisterUserProps = {
-      currentUserKey: publicKey?.toString(),
-      currentUserName: UserData?.user?.userName,
-    };
-    socket.emit("register-user", payload);
-
     const handleOpponentPlayerStatus = (data: any) => {
       if (data?.opponentPlayerKey) {
         toast.error("opponent is offline!");
       }
     };
+    
     const handlePlayerOffline = (data: any) => {
       console.log(`user ${data.status} ${data.currentUser}`);
     };
@@ -80,6 +76,7 @@ export default function Lobby() {
 
     return () => {
       socket.off("opponent-offline", handleOpponentPlayerStatus);
+      socket.off("user-offline", handlePlayerOffline);
     };
   }, [socket, UserData]);
 

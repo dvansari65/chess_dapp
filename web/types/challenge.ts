@@ -7,7 +7,8 @@ export interface GetAllChallengesResponse {
 }
 
 export interface Challenge {
-  amount:number | undefined
+  amount:number | undefined;
+  status:ChallengeStatus;
   id: number | undefined;
   senderPubKey: string | undefined;
   receiverPubKey: string | undefined;
@@ -20,4 +21,11 @@ export interface RejectChallengeInputs {
   challengeId:number | undefined , 
   currentPlayerPubKey:string | undefined ,
   opponentPlayerPubKey: string  | undefined
+}
+
+export enum ChallengeStatus {
+  pending,
+  accepted,
+  rejected,
+  expired
 }

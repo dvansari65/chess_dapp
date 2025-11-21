@@ -39,6 +39,8 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                 createdAt:"desc"
             },
             select:{
+                status:true,
+                id:true,
                 createdAt:true,
                 receiverPubKey:true,
                 senderPubKey:true,
@@ -75,7 +77,7 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                 }
             }
         })
-        console.log("challemges",challenges)
+
         if(!challenges || challenges.length === 0){
             return NextResponse.json(
                 {
@@ -86,6 +88,7 @@ export const GET = async (req:NextRequest,{params}:{params:Promise<{publickey:st
                 {status:404}
             )
         }
+        
         return NextResponse.json(
             {
                 message:"Challenges found successfully!",

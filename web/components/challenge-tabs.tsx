@@ -1,5 +1,5 @@
 "use client";
-import { Challenge } from "@/types/challenge";
+import { Challenge, ChallengeStatus } from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -23,46 +23,43 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   >(undefined);
 
   const socket = useSocket();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   // FILTERS
   const received = challenges?.filter(
     (c) => c?.receiverPubKey === currentPubKey
   );
   const sent = challenges?.filter((c) => c?.senderPubKey === currentPubKey);
 
-  useEffect(()=>{},[])
+  useEffect(() => {}, []);
 
   const handleChallengeModal = (
     player: player | undefined,
     challenge: Challenge | undefined
   ) => {
-    setIsChallengeModal(true);
-    setPlayerStats(player);
-    setChallengeDataForModal(challenge);
-  };
-
-  const handleRejectChallenge = ({
-    challengeId,
-    currentPlayerPubKey,
-    opponentPlayerPubKey,
-  }: {
-    challengeId: number | undefined;
-    currentPlayerPubKey: string | undefined;
-    opponentPlayerPubKey: string | undefined;
-  }) => {
-    if (!challengeId || !currentPlayerPubKey || !opponentPlayerPubKey) {
-      toast.error("Provide all inputs!");
+    if (!player || !challenge) {
       return;
     }
+
+    setPlayerStats(player);
+    setChallengeDataForModal(challenge);
+    console.log("challenge ", challenge);
+    setIsChallengeModal(true);
+  };
+
+  const handleRejectChallenge = () => {
+    if (!currentPubKey || !playerStats || !challengeDataForModal?.id) {
+      return;
+    }
+
     const payload = {
-      challengeId,
-      currentPlayerPubKey,
-      opponentPlayerPubKey,
+      challengeId: challengeDataForModal?.id,
+      currentPlayerPubKey: currentPubKey.toString(),
+      opponentPlayerPubKey: playerStats?.publickey?.toString(),
     };
-    socket.emit("reject-challenge",payload);
-    queryClient.invalidateQueries({queryKey:["challenges",currentPlayerPubKey]})
-    setIsChallengeModal(false)
-    toast.success("Declined!")
+    socket.emit("reject-challenge", payload);
+    queryClient.invalidateQueries({ queryKey: ["challenges", currentPubKey] });
+    setIsChallengeModal(false);
+    toast.success("Declined!");
   };
 
   return (
@@ -100,27 +97,31 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           (received?.length > 0 ? (
             received?.map((challenge) => (
               <Button
-                key={challenge?.id}
-                onClick={() =>
-                  handleChallengeModal(challenge?.receiver, challenge)
+                disabled={
+                  challenge?.status.toString() ===
+                  ChallengeStatus.rejected.toString()
                 }
+                key={challenge?.id}
+                onClick={() => {
+                  if (!challenge || !challenge.receiver) return;
+                  handleChallengeModal(challenge.receiver, challenge);
+                }}
                 className="
-                  flex w-full items-center justify-between
-                  bg-slate-800 border border-slate-700
-                  hover:bg-slate-700 hover:border-slate-500
-                  transition-all rounded-xl
-                  px-5 py-4 h-auto
-                  text-white gap-4
+                    flex w-full items-center justify-between                 
+                   bg-slate-800 border border-slate-700
+                   hover:bg-slate-700 hover:border-slate-500
+                    transition-all rounded-xl
+                    px-5 py-4 h-auto
+                   text-white gap-4
                 "
               >
+                {/* Left: Sender info */}
                 <div className="flex items-center gap-4 text-left">
                   <User className="text-slate-300 h-6 w-6" />
-
                   <div>
                     <p className="text-lg font-semibold">
                       {challenge?.sender?.userName}
                     </p>
-
                     <p className="text-sm text-slate-400">
                       Rating: {challenge.sender?.rating} • Wins:{" "}
                       {challenge?.sender?.solWon}
@@ -128,11 +129,30 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
                   </div>
                 </div>
 
-                <div className="text-right">
+                {/* Right: Amount + Status */}
+                <div className="flex flex-col items-end">
                   <p className="text-xs text-slate-400">Bet Amount</p>
                   <p className="text-2xl font-bold text-yellow-400">
                     ◎ {challenge?.amount}
                   </p>
+
+                  {/* Challenge status badge */}
+                  <span
+                    className={`mt-1 px-2 py-0.5 text-xs font-semibold rounded-full
+                      ${
+                        challenge?.status.toString() === ChallengeStatus.pending.toString()
+                        ? "bg-blue-600 text-white"
+                        : challenge?.status.toString() ===
+                          ChallengeStatus.accepted.toString()
+                        ? "bg-green-600 text-white"
+                        : challenge?.status.toString() ===
+                          ChallengeStatus.rejected.toString()
+                        ? "bg-red-600 text-white"
+                        : "bg-gray-500 text-white"
+                      }`} >
+                    
+                    {challenge?.status.toString().toUpperCase()}
+                  </span>
                 </div>
               </Button>
             ))
@@ -190,13 +210,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           isOpen={isChallengeModalOpen}
           onClose={() => setIsChallengeModal(false)}
           onAccept={() => {}}
-          onDecline={() =>
-            handleRejectChallenge({
-              challengeId: challengeDataForModal?.id,
-              currentPlayerPubKey: currentPubKey,
-              opponentPlayerPubKey: playerStats?.publickey?.toString(),
-            })
-          }
+          onDecline={handleRejectChallenge}
         />
       )}
     </div>
