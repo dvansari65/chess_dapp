@@ -30,6 +30,8 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   );
   const sent = challenges?.filter((c) => c?.senderPubKey === currentPubKey);
 
+  useEffect(()=>{},[])
+
   const handleChallengeModal = (
     player: player | undefined,
     challenge: Challenge | undefined

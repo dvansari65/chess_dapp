@@ -42,8 +42,10 @@ export default function Lobby() {
   const socket = useSocket();
   const queryClient = useQueryClient();
   const { data, isPending, error } = getAllPlayers();
+  const {data:currenPlayer} = getPlayer(publicKey)
   useEffect(() => {
     console.log("socket", socket);
+    
     if (!socket) {
       console.log("❌ Socket not available");
       return;
@@ -87,6 +89,13 @@ export default function Lobby() {
     currentPlayerStats,
     amount
   }: SendChallengeProps) => {
+
+    if(!currenPlayer?.user){
+      toast.error("First register your name!")
+      setEscrowModal(false)
+      return;
+    }
+
     if (!connected) {
       toast.error("Connect your wallet!");
       return;
@@ -143,6 +152,12 @@ export default function Lobby() {
 
   if (error) {
     return <ErrorLabel error={error.message} />;
+  }
+
+  if(data?.users.length === 0){
+    return <div>
+      There is no players in lobby!
+    </div>
   }
 
   return (

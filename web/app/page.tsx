@@ -11,13 +11,7 @@ import { RegisterUserProps } from "@/server";
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<any[]>([]);
-  const { publicKey } = useWallet();
-  const {
-    data: UserData,
-    refetch,
-    isPending: isUserLoading,
-  } = getPlayer(publicKey);
-  const socket = useSocket();
+
   useEffect(() => {
     // Generate floating particles
     const newParticles = Array.from({ length: 15 }, (_, i) => ({
@@ -38,33 +32,7 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  useEffect(() => {
-    if (!socket || !publicKey || !UserData?.user?.userName) {
-      console.log("Waiting for socket, wallet, or user data...");
-      return;
-    }
-    if (!socket || !socket.connected) {
-      toast.error("socket not connected!");
-      return;
-    }
-    const payload: RegisterUserProps = {
-      currentUserKey: publicKey?.toString(),
-      currentUserName: UserData?.user?.userName,
-    };
-    socket.emit("register-user", payload);
-    console.log("Emitting register-user with payload:", payload);
-    // Listen for successful registration
-    const handleSuccessfulRegister = (data: any) => {
-      console.log("Successfully registered:", data);
-      toast.success(`Welcome ${data.currentUserName}!`);
-    };
-    socket.on("successfully-register", handleSuccessfulRegister);
-    // Cleanup
-    return () => {
-      socket.off("successfully-register", handleSuccessfulRegister);
-    };
-  }, [socket, UserData, publicKey]);
-
+ 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 text-white overflow-hidden relative">
       {/* Animated Chess Pattern Background */}

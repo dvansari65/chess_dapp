@@ -10,13 +10,13 @@ interface AppProviderProps {
 
 function AppProvider({ children }: AppProviderProps) {
   return (
-    <SocketProvider>
-      <ReduxProvider>
-      <ReactQueryProvider>
-          <SolanaWalletProvider>{children}</SolanaWalletProvider>
-      </ReactQueryProvider>
-    </ReduxProvider>
-    </SocketProvider>
+    <ReduxProvider>
+    <ReactQueryProvider>
+      <SolanaWalletProvider>
+        <SocketProvider>{children}</SocketProvider>
+      </SolanaWalletProvider>
+    </ReactQueryProvider>
+  </ReduxProvider>
   );
 }
 

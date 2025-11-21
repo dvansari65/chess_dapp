@@ -77,7 +77,6 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
         toast.success(
           `challenge recieved from ${data?.opponentPlayerStats?.userName}`
         );
-
         // Add to challenges state
         setChallenges((prev) => [...prev, data]);
         setUnviewedCount((prev) => prev + 1);
@@ -88,20 +87,7 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
         toast.error(data.message)
       }
 
-      const payload: RegisterUserProps = {
-        currentUserKey: publicKey?.toString(),
-        currentUserName: data?.user?.userName,
-      };
-
-      socket.emit("register-user", payload);
-
-      // Listen for successful registration
-      const handleSuccessfulRegister = (data: any) => {
-        console.log("Successfully registered:", data);
-      };
-
       socket.on("error",handleError)
-      socket.on("successfully-register", handleSuccessfulRegister);
       socket.on("recieve-challenge", handleReceiveChallenge);
 
       return () => {
@@ -112,7 +98,6 @@ function Navbar({ links = [] }: { links: { label: string; path: string }[] }) {
           socket.emit("unregister-user", { userKey: walletToUnregister });
           registeredWalletRef.current = null;
         }
-        socket.off("successfully-register", handleSuccessfulRegister);
         socket.off("recieve-challenge", handleReceiveChallenge);
       };
     }
