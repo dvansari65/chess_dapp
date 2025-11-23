@@ -25,7 +25,7 @@ pub mod chess {
 
         let game_counter = &mut ctx.accounts.game_counter;
 
-        game_counter.game_id += 1;
+        game_counter.game_id = game_counter.game_id.checked_add(1).unwrap();
 
         let game = &mut ctx.accounts.game;
         let escrow = &mut ctx.accounts.game_escrow;
@@ -42,7 +42,7 @@ pub mod chess {
                 to:escrow.to_account_info()
             }
         );
-        transfer(cpi_context, player_balance)?;
+        transfer(cpi_context, wagered_amount)?;
 
         escrow.p1_paid = true;
     
@@ -76,7 +76,7 @@ pub mod chess {
                 to:escrow.to_account_info()
             }
         );
-        transfer(cpi_context, player_balance)?;
+        transfer(cpi_context, wagered_amount)?;
        
         game.amount_wagered = wagered_amount;
         game.bump = ctx.bumps.join_game;
@@ -122,7 +122,7 @@ pub struct InitializeGame<'info> {
 #[derive(Accounts)]
 #[instruction(game_id:u64)]
 pub struct InitializeJoinGame <'info>{
-    #[account(init, payer = player_2 , space = 8 + 8  , seeds = [b"game",game_id.to_le_bytes().as_ref()] ,bump)]
+    #[account(mut, seeds = [b"game",game_id.to_le_bytes().as_ref()] ,bump)]
     pub join_game : Account<'info,Game>,
     #[account(
         mut,
