@@ -2,7 +2,7 @@
 import { Challenge, ChallengeStatus } from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { player } from "@/types/player";
 import PlayerStatsModal from "./modals/player-stats-modal";
 import { useSocket } from "@/utils/socketProvider";
@@ -21,6 +21,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [activeTab, setActiveTab] = useState<"receive" | "sent">("receive");
   const [isChallengeModalOpen, setIsChallengeModal] = useState(false);
   const [playerStats, setPlayerStats] = useState<player | undefined>(undefined);
+  const [gameId,setGameId] = useState<number | null>(null)
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
@@ -54,6 +55,11 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
         return "bg-gray-500 text-white";
     }
   };
+
+  useEffect(()=>{
+    if(!socket) return;
+
+  },[socket])
 
   const handleChallengeModal = (
     player: player | undefined,
@@ -100,14 +106,14 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
         if(data?.game.id && data?.success){
           if(data?.game.player1PubKey.toString() === currentPlayerKey.toString()){
             toast.success("Game created successfully!")
-            
+
             const socketPayload = {
               recieverPlayerKey:data?.game.player1PubKey,
               opponentPlayerKey:data?.game.player2PubKey,
               gameId:data.game.id
             }
             socket.emit("challenge-accepted",socketPayload)
-            queryClient.invalidateQueries({queryKey:["challenge"]})
+            queryClient.invalidateQueries({queryKey:["challenges",currentPubKey]})
             router.push(`/WaitingRoom/${data?.game.id.toString()}`)
             setIsChallengeModal(false)
           }else{
@@ -118,8 +124,8 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
               gameId:data?.game.id
             }
             socket.emit("challenge-accepted",socketPayload)
-            queryClient.invalidateQueries({queryKey:["challenge"]})
-            router.push(`/WaitingRoom/${data?.id.toString()}`)
+            queryClient.invalidateQueries({queryKey:["challenges",currentPubKey]})
+            router.push(`/WaitingRoom/${data?.game.id.toString()}`)
             setIsChallengeModal(false)
           }
         }
@@ -169,7 +175,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
                 disabled={
                   challenge?.status.toString() ===
                   ChallengeStatus.rejected.toString() || 
-                  challenge?.status === ChallengeStatus.accepted
+                  challenge?.status as string === ChallengeStatus.accepted as string
                 }
                 key={challenge?.id}
                 onClick={() => {
