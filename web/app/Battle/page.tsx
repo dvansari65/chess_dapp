@@ -18,15 +18,6 @@ const BattlePage = () => {
   const socket = useSocket()
   const challenges = data?.challenges || [];
 
-  const handleAcceptChallenge = () => {
-    console.log("Challenge accepted!");
-    setSelectedPlayer(null);
-  };
-
-  const handleDeclineChallenge = () => {
-    console.log("Challenge declined!");
-    setSelectedPlayer(null);
-  };
 
   useEffect(()=>{
     console.log("socket started ",socket)
