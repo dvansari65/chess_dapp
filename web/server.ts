@@ -28,6 +28,12 @@ export interface RegisterUserProps {
   currentUserName: string | undefined;
 }
 
+export interface AcceptChallengeData {
+  receiverPlayerKey:string ;
+  opponenentPlayerKey:string;
+  gameId:number
+}
+
 const onlineUsers = new Map<string, string>(); // ✅ Changed to Map<string, string>
 
 io.on("connect", (socket) => {
@@ -220,8 +226,24 @@ io.on("connect", (socket) => {
     }
   });
 
-  socket.on("accept-challenge",(data)=>{
-      socket.emit("successfully-accepted",)
+  socket.on("accept-challenge",(data:AcceptChallengeData)=>{
+    const {receiverPlayerKey,opponenentPlayerKey,gameId} = data
+    let opponentSocketId:string | undefined;
+      for(const [socketId,pubKey] of onlineUsers.entries()){
+        if(opponenentPlayerKey === pubKey){
+          opponentSocketId = socketId
+        }
+      }
+      if(opponentSocketId){
+        io.to(opponentSocketId).emit("successfully-accepted",{
+          currentPlayerPubKey:opponenentPlayerKey,
+          opponenentPlayerKey:receiverPlayerKey,
+          gameId
+        })
+      }else{
+        io.to(socket.id).emit("user-offline",{opponenentPlayerKey})
+      }
+      
   })
 
   socket.on("disconnect", async () => {
