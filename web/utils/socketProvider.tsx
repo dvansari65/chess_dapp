@@ -12,7 +12,6 @@ import { Socket } from "socket.io-client";
 import { ChallengeStatus } from "@/generated/enums";
 import { toast } from "react-toastify";
 import { getPlayer } from "@/apis/getUser";
-import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 interface SocketProviderProps {
@@ -46,6 +45,10 @@ export const SocketProvider = ({
       console.log("data ",data)
       toast.success(`${data?.currentUserName} successfully registered!`)
     }
+
+    const handleUserOffline = (data:any)=>{
+        toast.error(`opponent is offline , PubKey:${data.opponenentPlayerKey}`)
+    }
     
     if(!data?.user){
       return;
@@ -58,6 +61,7 @@ export const SocketProvider = ({
     console.log("paylaod",payload)
     socket.emit("register-user",payload)
 
+    socket.on("user-offline",handleUserOffline)
     socket.on("challenge-rejected",handlerRejectedChallenge)
     socket.on("successfully-register",handleSuccessfullRegistration)
     
