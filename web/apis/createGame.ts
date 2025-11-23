@@ -1,13 +1,10 @@
-import { Game } from "@/types/game"
+import { CreateGameOffChainResponse, CreateGameVariables, Game } from "@/types/game"
 import { useMutation } from "@tanstack/react-query"
 
-interface CreateGameVariables {
-    challengeId:number;
-    currentPlayerKey:string
-}
+
 
 export const createGameOffChain = ()=>{
-    return useMutation<Game,Error,CreateGameVariables>({
+    return useMutation<CreateGameOffChainResponse,Error,CreateGameVariables>({
         mutationKey:["offChainGame"],
         mutationFn:async({challengeId,currentPlayerKey}:CreateGameVariables)=>{
             try {

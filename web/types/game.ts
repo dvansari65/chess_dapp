@@ -10,10 +10,19 @@ export interface Game {
     createdAt: Date;
     finishedAt: Date | null;
   }
-  
+  export interface CreateGameOffChainResponse {
+    game:Game;
+    success:boolean;
+    message:string
+  }
   enum GameStatus {
     pending="pending",
     waitingForOnChainGameId="waitingForOnChainGameId",
     draw="draw",
     finished="finished"
   }
+
+  export interface CreateGameVariables {
+    challengeId:number;
+    currentPlayerKey:string
+}

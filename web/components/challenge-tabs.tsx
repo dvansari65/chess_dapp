@@ -2,12 +2,15 @@
 import { Challenge, ChallengeStatus } from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { player } from "@/types/player";
 import PlayerStatsModal from "./modals/player-stats-modal";
 import { useSocket } from "@/utils/socketProvider";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { createGameOffChain } from "@/apis/createGame";
+import { CreateGameVariables } from "@/types/game";
+import { useRouter } from "next/navigation";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
@@ -21,9 +24,11 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
+  const {mutate,error,isPending,isError} = createGameOffChain()
 
   const socket = useSocket();
   const queryClient = useQueryClient();
+  const router = useRouter()
   // FILTERS
   const received = useMemo(()=>{
     return challenges?.filter(
@@ -81,6 +86,51 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     toast.success("Declined!");
   };
 
+  const handleAcceptChallenge = ({challengeId,currentPlayerKey}:CreateGameVariables)=>{
+    const payload = {
+      challengeId,
+      currentPlayerKey
+    }
+    if(!challengeId || !currentPlayerKey){
+      toast.error("Challenge ID or current player public key is missing!")
+    }
+    mutate(payload,{
+      onSuccess:(data)=>{
+
+        if(data?.game.id && data?.success){
+          if(data?.game.player1PubKey.toString() === currentPlayerKey.toString()){
+            toast.success("Game created successfully!")
+            
+            const socketPayload = {
+              recieverPlayerKey:data?.game.player1PubKey,
+              opponentPlayerKey:data?.game.player2PubKey,
+              gameId:data.game.id
+            }
+            socket.emit("challenge-accepted",socketPayload)
+            queryClient.invalidateQueries({queryKey:["challenge"]})
+            router.push(`/WaitingRoom/${data?.game.id.toString()}`)
+            setIsChallengeModal(false)
+          }else{
+            toast.success("Game created successfully!")
+            const socketPayload = {
+              recieverPlayerKey:data?.game.player2PubKey,
+              opponentPlayerKey:data?.game.player1PubKey,
+              gameId:data?.game.id
+            }
+            socket.emit("challenge-accepted",socketPayload)
+            queryClient.invalidateQueries({queryKey:["challenge"]})
+            router.push(`/WaitingRoom/${data?.id.toString()}`)
+            setIsChallengeModal(false)
+          }
+        }
+      },
+      onError:(error)=>{
+        toast.error(error.message)
+      }
+    })
+  }
+
+
   return (
     <div className="w-full max-w-2xl mx-auto mt-6 p-6 rounded-xl bg-slate-900 border border-slate-800 shadow-xl text-white">
       {/* TABS */}
@@ -118,7 +168,8 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
               <Button
                 disabled={
                   challenge?.status.toString() ===
-                  ChallengeStatus.rejected.toString()
+                  ChallengeStatus.rejected.toString() || 
+                  challenge?.status === ChallengeStatus.accepted
                 }
                 key={challenge?.id}
                 onClick={() => {
@@ -219,7 +270,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           player={playerStats}
           isOpen={isChallengeModalOpen}
           onClose={() => setIsChallengeModal(false)}
-          onAccept={() => {}}
+          onAccept={()=>handleAcceptChallenge({challengeId:Number(challengeDataForModal?.id),currentPlayerKey:currentPubKey})}
           onDecline={handleRejectChallenge}
         />
       )}

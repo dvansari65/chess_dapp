@@ -268,18 +268,18 @@ export type GameOrderByWithRelationInput = {
 export type GameWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   onChainGameId?: number
-  player1PubKey?: string
-  player2PubKey?: string
   AND?: Prisma.GameWhereInput | Prisma.GameWhereInput[]
   OR?: Prisma.GameWhereInput[]
   NOT?: Prisma.GameWhereInput | Prisma.GameWhereInput[]
+  player1PubKey?: Prisma.StringFilter<"Game"> | string
+  player2PubKey?: Prisma.StringFilter<"Game"> | string
   status?: Prisma.EnumGameStatusFilter<"Game"> | $Enums.GameStatus
   wageredAmount?: Prisma.IntFilter<"Game"> | number
   createdAt?: Prisma.DateTimeFilter<"Game"> | Date | string
   finishedAt?: Prisma.DateTimeNullableFilter<"Game"> | Date | string | null
   player1?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
   player2?: Prisma.XOR<Prisma.PlayerScalarRelationFilter, Prisma.PlayerWhereInput>
-}, "id" | "onChainGameId" | "player1PubKey" | "player2PubKey">
+}, "id" | "onChainGameId">
 
 export type GameOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -317,8 +317,8 @@ export type GameCreateInput = {
   wageredAmount: number
   createdAt: Date | string
   finishedAt?: Date | string | null
-  player1: Prisma.PlayerCreateNestedOneWithoutPlayer1InGameInput
-  player2: Prisma.PlayerCreateNestedOneWithoutPlayer2InGameInput
+  player1: Prisma.PlayerCreateNestedOneWithoutGamesAsPlayer1Input
+  player2: Prisma.PlayerCreateNestedOneWithoutGamesAsPlayer2Input
 }
 
 export type GameUncheckedCreateInput = {
@@ -338,8 +338,8 @@ export type GameUpdateInput = {
   wageredAmount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  player1?: Prisma.PlayerUpdateOneRequiredWithoutPlayer1InGameNestedInput
-  player2?: Prisma.PlayerUpdateOneRequiredWithoutPlayer2InGameNestedInput
+  player1?: Prisma.PlayerUpdateOneRequiredWithoutGamesAsPlayer1NestedInput
+  player2?: Prisma.PlayerUpdateOneRequiredWithoutGamesAsPlayer2NestedInput
 }
 
 export type GameUncheckedUpdateInput = {
@@ -383,9 +383,14 @@ export type GameUncheckedUpdateManyInput = {
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type GameNullableScalarRelationFilter = {
-  is?: Prisma.GameWhereInput | null
-  isNot?: Prisma.GameWhereInput | null
+export type GameListRelationFilter = {
+  every?: Prisma.GameWhereInput
+  some?: Prisma.GameWhereInput
+  none?: Prisma.GameWhereInput
+}
+
+export type GameOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type GameCountOrderByAggregateInput = {
@@ -433,68 +438,88 @@ export type GameSumOrderByAggregateInput = {
   wageredAmount?: Prisma.SortOrder
 }
 
-export type GameCreateNestedOneWithoutPlayer1Input = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input
-  connect?: Prisma.GameWhereUniqueInput
+export type GameCreateNestedManyWithoutPlayer1Input = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input> | Prisma.GameCreateWithoutPlayer1Input[] | Prisma.GameUncheckedCreateWithoutPlayer1Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input | Prisma.GameCreateOrConnectWithoutPlayer1Input[]
+  createMany?: Prisma.GameCreateManyPlayer1InputEnvelope
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
 }
 
-export type GameCreateNestedOneWithoutPlayer2Input = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input
-  connect?: Prisma.GameWhereUniqueInput
+export type GameCreateNestedManyWithoutPlayer2Input = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input> | Prisma.GameCreateWithoutPlayer2Input[] | Prisma.GameUncheckedCreateWithoutPlayer2Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input | Prisma.GameCreateOrConnectWithoutPlayer2Input[]
+  createMany?: Prisma.GameCreateManyPlayer2InputEnvelope
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
 }
 
-export type GameUncheckedCreateNestedOneWithoutPlayer1Input = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input
-  connect?: Prisma.GameWhereUniqueInput
+export type GameUncheckedCreateNestedManyWithoutPlayer1Input = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input> | Prisma.GameCreateWithoutPlayer1Input[] | Prisma.GameUncheckedCreateWithoutPlayer1Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input | Prisma.GameCreateOrConnectWithoutPlayer1Input[]
+  createMany?: Prisma.GameCreateManyPlayer1InputEnvelope
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
 }
 
-export type GameUncheckedCreateNestedOneWithoutPlayer2Input = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input
-  connect?: Prisma.GameWhereUniqueInput
+export type GameUncheckedCreateNestedManyWithoutPlayer2Input = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input> | Prisma.GameCreateWithoutPlayer2Input[] | Prisma.GameUncheckedCreateWithoutPlayer2Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input | Prisma.GameCreateOrConnectWithoutPlayer2Input[]
+  createMany?: Prisma.GameCreateManyPlayer2InputEnvelope
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
 }
 
-export type GameUpdateOneWithoutPlayer1NestedInput = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input
-  upsert?: Prisma.GameUpsertWithoutPlayer1Input
-  disconnect?: Prisma.GameWhereInput | boolean
-  delete?: Prisma.GameWhereInput | boolean
-  connect?: Prisma.GameWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GameUpdateToOneWithWhereWithoutPlayer1Input, Prisma.GameUpdateWithoutPlayer1Input>, Prisma.GameUncheckedUpdateWithoutPlayer1Input>
+export type GameUpdateManyWithoutPlayer1NestedInput = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input> | Prisma.GameCreateWithoutPlayer1Input[] | Prisma.GameUncheckedCreateWithoutPlayer1Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input | Prisma.GameCreateOrConnectWithoutPlayer1Input[]
+  upsert?: Prisma.GameUpsertWithWhereUniqueWithoutPlayer1Input | Prisma.GameUpsertWithWhereUniqueWithoutPlayer1Input[]
+  createMany?: Prisma.GameCreateManyPlayer1InputEnvelope
+  set?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  disconnect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  delete?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  update?: Prisma.GameUpdateWithWhereUniqueWithoutPlayer1Input | Prisma.GameUpdateWithWhereUniqueWithoutPlayer1Input[]
+  updateMany?: Prisma.GameUpdateManyWithWhereWithoutPlayer1Input | Prisma.GameUpdateManyWithWhereWithoutPlayer1Input[]
+  deleteMany?: Prisma.GameScalarWhereInput | Prisma.GameScalarWhereInput[]
 }
 
-export type GameUpdateOneWithoutPlayer2NestedInput = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input
-  upsert?: Prisma.GameUpsertWithoutPlayer2Input
-  disconnect?: Prisma.GameWhereInput | boolean
-  delete?: Prisma.GameWhereInput | boolean
-  connect?: Prisma.GameWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GameUpdateToOneWithWhereWithoutPlayer2Input, Prisma.GameUpdateWithoutPlayer2Input>, Prisma.GameUncheckedUpdateWithoutPlayer2Input>
+export type GameUpdateManyWithoutPlayer2NestedInput = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input> | Prisma.GameCreateWithoutPlayer2Input[] | Prisma.GameUncheckedCreateWithoutPlayer2Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input | Prisma.GameCreateOrConnectWithoutPlayer2Input[]
+  upsert?: Prisma.GameUpsertWithWhereUniqueWithoutPlayer2Input | Prisma.GameUpsertWithWhereUniqueWithoutPlayer2Input[]
+  createMany?: Prisma.GameCreateManyPlayer2InputEnvelope
+  set?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  disconnect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  delete?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  update?: Prisma.GameUpdateWithWhereUniqueWithoutPlayer2Input | Prisma.GameUpdateWithWhereUniqueWithoutPlayer2Input[]
+  updateMany?: Prisma.GameUpdateManyWithWhereWithoutPlayer2Input | Prisma.GameUpdateManyWithWhereWithoutPlayer2Input[]
+  deleteMany?: Prisma.GameScalarWhereInput | Prisma.GameScalarWhereInput[]
 }
 
-export type GameUncheckedUpdateOneWithoutPlayer1NestedInput = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input
-  upsert?: Prisma.GameUpsertWithoutPlayer1Input
-  disconnect?: Prisma.GameWhereInput | boolean
-  delete?: Prisma.GameWhereInput | boolean
-  connect?: Prisma.GameWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GameUpdateToOneWithWhereWithoutPlayer1Input, Prisma.GameUpdateWithoutPlayer1Input>, Prisma.GameUncheckedUpdateWithoutPlayer1Input>
+export type GameUncheckedUpdateManyWithoutPlayer1NestedInput = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input> | Prisma.GameCreateWithoutPlayer1Input[] | Prisma.GameUncheckedCreateWithoutPlayer1Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer1Input | Prisma.GameCreateOrConnectWithoutPlayer1Input[]
+  upsert?: Prisma.GameUpsertWithWhereUniqueWithoutPlayer1Input | Prisma.GameUpsertWithWhereUniqueWithoutPlayer1Input[]
+  createMany?: Prisma.GameCreateManyPlayer1InputEnvelope
+  set?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  disconnect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  delete?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  update?: Prisma.GameUpdateWithWhereUniqueWithoutPlayer1Input | Prisma.GameUpdateWithWhereUniqueWithoutPlayer1Input[]
+  updateMany?: Prisma.GameUpdateManyWithWhereWithoutPlayer1Input | Prisma.GameUpdateManyWithWhereWithoutPlayer1Input[]
+  deleteMany?: Prisma.GameScalarWhereInput | Prisma.GameScalarWhereInput[]
 }
 
-export type GameUncheckedUpdateOneWithoutPlayer2NestedInput = {
-  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
-  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input
-  upsert?: Prisma.GameUpsertWithoutPlayer2Input
-  disconnect?: Prisma.GameWhereInput | boolean
-  delete?: Prisma.GameWhereInput | boolean
-  connect?: Prisma.GameWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GameUpdateToOneWithWhereWithoutPlayer2Input, Prisma.GameUpdateWithoutPlayer2Input>, Prisma.GameUncheckedUpdateWithoutPlayer2Input>
+export type GameUncheckedUpdateManyWithoutPlayer2NestedInput = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input> | Prisma.GameCreateWithoutPlayer2Input[] | Prisma.GameUncheckedCreateWithoutPlayer2Input[]
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutPlayer2Input | Prisma.GameCreateOrConnectWithoutPlayer2Input[]
+  upsert?: Prisma.GameUpsertWithWhereUniqueWithoutPlayer2Input | Prisma.GameUpsertWithWhereUniqueWithoutPlayer2Input[]
+  createMany?: Prisma.GameCreateManyPlayer2InputEnvelope
+  set?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  disconnect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  delete?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  connect?: Prisma.GameWhereUniqueInput | Prisma.GameWhereUniqueInput[]
+  update?: Prisma.GameUpdateWithWhereUniqueWithoutPlayer2Input | Prisma.GameUpdateWithWhereUniqueWithoutPlayer2Input[]
+  updateMany?: Prisma.GameUpdateManyWithWhereWithoutPlayer2Input | Prisma.GameUpdateManyWithWhereWithoutPlayer2Input[]
+  deleteMany?: Prisma.GameScalarWhereInput | Prisma.GameScalarWhereInput[]
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -519,7 +544,7 @@ export type GameCreateWithoutPlayer1Input = {
   wageredAmount: number
   createdAt: Date | string
   finishedAt?: Date | string | null
-  player2: Prisma.PlayerCreateNestedOneWithoutPlayer2InGameInput
+  player2: Prisma.PlayerCreateNestedOneWithoutGamesAsPlayer2Input
 }
 
 export type GameUncheckedCreateWithoutPlayer1Input = {
@@ -537,13 +562,18 @@ export type GameCreateOrConnectWithoutPlayer1Input = {
   create: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
 }
 
+export type GameCreateManyPlayer1InputEnvelope = {
+  data: Prisma.GameCreateManyPlayer1Input | Prisma.GameCreateManyPlayer1Input[]
+  skipDuplicates?: boolean
+}
+
 export type GameCreateWithoutPlayer2Input = {
   onChainGameId?: number | null
   status?: $Enums.GameStatus
   wageredAmount: number
   createdAt: Date | string
   finishedAt?: Date | string | null
-  player1: Prisma.PlayerCreateNestedOneWithoutPlayer1InGameInput
+  player1: Prisma.PlayerCreateNestedOneWithoutGamesAsPlayer1Input
 }
 
 export type GameUncheckedCreateWithoutPlayer2Input = {
@@ -561,15 +591,75 @@ export type GameCreateOrConnectWithoutPlayer2Input = {
   create: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
 }
 
-export type GameUpsertWithoutPlayer1Input = {
-  update: Prisma.XOR<Prisma.GameUpdateWithoutPlayer1Input, Prisma.GameUncheckedUpdateWithoutPlayer1Input>
-  create: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
-  where?: Prisma.GameWhereInput
+export type GameCreateManyPlayer2InputEnvelope = {
+  data: Prisma.GameCreateManyPlayer2Input | Prisma.GameCreateManyPlayer2Input[]
+  skipDuplicates?: boolean
 }
 
-export type GameUpdateToOneWithWhereWithoutPlayer1Input = {
-  where?: Prisma.GameWhereInput
+export type GameUpsertWithWhereUniqueWithoutPlayer1Input = {
+  where: Prisma.GameWhereUniqueInput
+  update: Prisma.XOR<Prisma.GameUpdateWithoutPlayer1Input, Prisma.GameUncheckedUpdateWithoutPlayer1Input>
+  create: Prisma.XOR<Prisma.GameCreateWithoutPlayer1Input, Prisma.GameUncheckedCreateWithoutPlayer1Input>
+}
+
+export type GameUpdateWithWhereUniqueWithoutPlayer1Input = {
+  where: Prisma.GameWhereUniqueInput
   data: Prisma.XOR<Prisma.GameUpdateWithoutPlayer1Input, Prisma.GameUncheckedUpdateWithoutPlayer1Input>
+}
+
+export type GameUpdateManyWithWhereWithoutPlayer1Input = {
+  where: Prisma.GameScalarWhereInput
+  data: Prisma.XOR<Prisma.GameUpdateManyMutationInput, Prisma.GameUncheckedUpdateManyWithoutPlayer1Input>
+}
+
+export type GameScalarWhereInput = {
+  AND?: Prisma.GameScalarWhereInput | Prisma.GameScalarWhereInput[]
+  OR?: Prisma.GameScalarWhereInput[]
+  NOT?: Prisma.GameScalarWhereInput | Prisma.GameScalarWhereInput[]
+  id?: Prisma.IntFilter<"Game"> | number
+  onChainGameId?: Prisma.IntNullableFilter<"Game"> | number | null
+  player1PubKey?: Prisma.StringFilter<"Game"> | string
+  player2PubKey?: Prisma.StringFilter<"Game"> | string
+  status?: Prisma.EnumGameStatusFilter<"Game"> | $Enums.GameStatus
+  wageredAmount?: Prisma.IntFilter<"Game"> | number
+  createdAt?: Prisma.DateTimeFilter<"Game"> | Date | string
+  finishedAt?: Prisma.DateTimeNullableFilter<"Game"> | Date | string | null
+}
+
+export type GameUpsertWithWhereUniqueWithoutPlayer2Input = {
+  where: Prisma.GameWhereUniqueInput
+  update: Prisma.XOR<Prisma.GameUpdateWithoutPlayer2Input, Prisma.GameUncheckedUpdateWithoutPlayer2Input>
+  create: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
+}
+
+export type GameUpdateWithWhereUniqueWithoutPlayer2Input = {
+  where: Prisma.GameWhereUniqueInput
+  data: Prisma.XOR<Prisma.GameUpdateWithoutPlayer2Input, Prisma.GameUncheckedUpdateWithoutPlayer2Input>
+}
+
+export type GameUpdateManyWithWhereWithoutPlayer2Input = {
+  where: Prisma.GameScalarWhereInput
+  data: Prisma.XOR<Prisma.GameUpdateManyMutationInput, Prisma.GameUncheckedUpdateManyWithoutPlayer2Input>
+}
+
+export type GameCreateManyPlayer1Input = {
+  id?: number
+  onChainGameId?: number | null
+  player2PubKey: string
+  status?: $Enums.GameStatus
+  wageredAmount: number
+  createdAt: Date | string
+  finishedAt?: Date | string | null
+}
+
+export type GameCreateManyPlayer2Input = {
+  id?: number
+  onChainGameId?: number | null
+  player1PubKey: string
+  status?: $Enums.GameStatus
+  wageredAmount: number
+  createdAt: Date | string
+  finishedAt?: Date | string | null
 }
 
 export type GameUpdateWithoutPlayer1Input = {
@@ -578,7 +668,7 @@ export type GameUpdateWithoutPlayer1Input = {
   wageredAmount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  player2?: Prisma.PlayerUpdateOneRequiredWithoutPlayer2InGameNestedInput
+  player2?: Prisma.PlayerUpdateOneRequiredWithoutGamesAsPlayer2NestedInput
 }
 
 export type GameUncheckedUpdateWithoutPlayer1Input = {
@@ -591,15 +681,14 @@ export type GameUncheckedUpdateWithoutPlayer1Input = {
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type GameUpsertWithoutPlayer2Input = {
-  update: Prisma.XOR<Prisma.GameUpdateWithoutPlayer2Input, Prisma.GameUncheckedUpdateWithoutPlayer2Input>
-  create: Prisma.XOR<Prisma.GameCreateWithoutPlayer2Input, Prisma.GameUncheckedCreateWithoutPlayer2Input>
-  where?: Prisma.GameWhereInput
-}
-
-export type GameUpdateToOneWithWhereWithoutPlayer2Input = {
-  where?: Prisma.GameWhereInput
-  data: Prisma.XOR<Prisma.GameUpdateWithoutPlayer2Input, Prisma.GameUncheckedUpdateWithoutPlayer2Input>
+export type GameUncheckedUpdateManyWithoutPlayer1Input = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  onChainGameId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  player2PubKey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+  wageredAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type GameUpdateWithoutPlayer2Input = {
@@ -608,10 +697,20 @@ export type GameUpdateWithoutPlayer2Input = {
   wageredAmount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  player1?: Prisma.PlayerUpdateOneRequiredWithoutPlayer1InGameNestedInput
+  player1?: Prisma.PlayerUpdateOneRequiredWithoutGamesAsPlayer1NestedInput
 }
 
 export type GameUncheckedUpdateWithoutPlayer2Input = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  onChainGameId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  player1PubKey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+  wageredAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type GameUncheckedUpdateManyWithoutPlayer2Input = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   onChainGameId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   player1PubKey?: Prisma.StringFieldUpdateOperationsInput | string

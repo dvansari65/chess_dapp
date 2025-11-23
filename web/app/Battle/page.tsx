@@ -2,7 +2,6 @@
 import { getAllChallenges } from "@/apis/getAllChallenges";
 import ChallengeTabs from "@/components/challenge-tabs";
 import ErrorLabel from "@/components/error/error";
-import PlayerStatsModal from "@/components/modals/player-stats-modal";
 import { amountValuesTypes } from "@/types/escrow";
 import { player, ReceiveChallenge } from "@/types/player";
 import { useSocket } from "@/utils/socketProvider";

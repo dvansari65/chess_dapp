@@ -27,8 +27,8 @@ model Player {
   isPlaying          Boolean      @default(false)
   sentChallenges     Challenge[]  @relation("sender")
   recievedChallenges Challenge[]  @relation("receiver")
-  player1InGame      Game?        @relation("player1")
-  player2InGame      Game?        @relation("player2")
+  gamesAsPlayer1     Game[]       @relation("player1")
+  gamesAsPlayer2     Game[]       @relation("player2")
 }
 
 model Challenge {
@@ -46,9 +46,9 @@ model Challenge {
 model Game {
   id            Int        @id @default(autoincrement())
   onChainGameId Int?        @unique  
-  player1PubKey String     @unique
+  player1PubKey String     
   player1       Player     @relation("player1", fields: [player1PubKey], references: [publickey])
-  player2PubKey String     @unique
+  player2PubKey String     
   player2       Player     @relation("player2", fields: [player2PubKey], references: [publickey])
   status        GameStatus @default(pending)
   wageredAmount Int

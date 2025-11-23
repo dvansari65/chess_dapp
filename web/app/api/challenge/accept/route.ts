@@ -2,9 +2,11 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
+    console.log("api hit...")
     let body;
     try {
         body = await req.json();
+        console.log("body",body)
     } catch (error) { 
         return NextResponse.json(
             {
@@ -18,10 +20,22 @@ export const POST = async (req: NextRequest) => {
         const { challengeId, currentPlayerKey } = body;
 
         if (!challengeId || !currentPlayerKey) {
-            throw new Error("Please provide challenge ID and current player Key!");
+            return NextResponse.json(
+                {
+                  message: "Please provide challenge ID and current player Key!",
+                  success: false
+                },
+                { status: 400 }
+              )
         }
         if (typeof challengeId !== "number") {
-            throw new Error("Unexpected type of challenge ID!");
+            return NextResponse.json(
+                {
+                  message: "Unexpected type of challenge ID!",
+                  success: false
+                },
+                { status: 400 }
+              )
         }
 
         const challenge = await prisma.challenge.findUnique({
@@ -39,7 +53,7 @@ export const POST = async (req: NextRequest) => {
                 { status: 404 }
             );
         }
-        if (!challenge.receiverPubKey !== currentPlayerKey) {
+        if (challenge.receiverPubKey !== currentPlayerKey) {
             return NextResponse.json(
                 {
                     message: "Invalid request!",
@@ -49,7 +63,13 @@ export const POST = async (req: NextRequest) => {
             );
         }
         if (challenge.status !== "pending") {
-            throw new Error("Challenge already processed!");
+            return NextResponse.json(
+                {
+                  message: "Challenge already processed!",
+                  success: false
+                },
+                { status: 400 }
+              )
         }
 
         const game = await prisma.game.create({

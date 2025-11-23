@@ -286,8 +286,8 @@ export type PlayerWhereInput = {
   isPlaying?: Prisma.BoolFilter<"Player"> | boolean
   sentChallenges?: Prisma.ChallengeListRelationFilter
   recievedChallenges?: Prisma.ChallengeListRelationFilter
-  player1InGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
-  player2InGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
+  gamesAsPlayer1?: Prisma.GameListRelationFilter
+  gamesAsPlayer2?: Prisma.GameListRelationFilter
 }
 
 export type PlayerOrderByWithRelationInput = {
@@ -304,8 +304,8 @@ export type PlayerOrderByWithRelationInput = {
   isPlaying?: Prisma.SortOrder
   sentChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
   recievedChallenges?: Prisma.ChallengeOrderByRelationAggregateInput
-  player1InGame?: Prisma.GameOrderByWithRelationInput
-  player2InGame?: Prisma.GameOrderByWithRelationInput
+  gamesAsPlayer1?: Prisma.GameOrderByRelationAggregateInput
+  gamesAsPlayer2?: Prisma.GameOrderByRelationAggregateInput
 }
 
 export type PlayerWhereUniqueInput = Prisma.AtLeast<{
@@ -325,8 +325,8 @@ export type PlayerWhereUniqueInput = Prisma.AtLeast<{
   isPlaying?: Prisma.BoolFilter<"Player"> | boolean
   sentChallenges?: Prisma.ChallengeListRelationFilter
   recievedChallenges?: Prisma.ChallengeListRelationFilter
-  player1InGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
-  player2InGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
+  gamesAsPlayer1?: Prisma.GameListRelationFilter
+  gamesAsPlayer2?: Prisma.GameListRelationFilter
 }, "id" | "userName" | "publickey">
 
 export type PlayerOrderByWithAggregationInput = {
@@ -378,8 +378,8 @@ export type PlayerCreateInput = {
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeCreateNestedManyWithoutSenderInput
   recievedChallenges?: Prisma.ChallengeCreateNestedManyWithoutReceiverInput
-  player1InGame?: Prisma.GameCreateNestedOneWithoutPlayer1Input
-  player2InGame?: Prisma.GameCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer1?: Prisma.GameCreateNestedManyWithoutPlayer1Input
+  gamesAsPlayer2?: Prisma.GameCreateNestedManyWithoutPlayer2Input
 }
 
 export type PlayerUncheckedCreateInput = {
@@ -396,8 +396,8 @@ export type PlayerUncheckedCreateInput = {
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutSenderInput
   recievedChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutReceiverInput
-  player1InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer1Input
-  player2InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer1?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer1Input
+  gamesAsPlayer2?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type PlayerUpdateInput = {
@@ -413,8 +413,8 @@ export type PlayerUpdateInput = {
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUpdateManyWithoutSenderNestedInput
   recievedChallenges?: Prisma.ChallengeUpdateManyWithoutReceiverNestedInput
-  player1InGame?: Prisma.GameUpdateOneWithoutPlayer1NestedInput
-  player2InGame?: Prisma.GameUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer1?: Prisma.GameUpdateManyWithoutPlayer1NestedInput
+  gamesAsPlayer2?: Prisma.GameUpdateManyWithoutPlayer2NestedInput
 }
 
 export type PlayerUncheckedUpdateInput = {
@@ -431,8 +431,8 @@ export type PlayerUncheckedUpdateInput = {
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutSenderNestedInput
   recievedChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutReceiverNestedInput
-  player1InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer1NestedInput
-  player2InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer1?: Prisma.GameUncheckedUpdateManyWithoutPlayer1NestedInput
+  gamesAsPlayer2?: Prisma.GameUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type PlayerCreateManyInput = {
@@ -593,32 +593,32 @@ export type PlayerUpdateOneRequiredWithoutRecievedChallengesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutRecievedChallengesInput, Prisma.PlayerUpdateWithoutRecievedChallengesInput>, Prisma.PlayerUncheckedUpdateWithoutRecievedChallengesInput>
 }
 
-export type PlayerCreateNestedOneWithoutPlayer1InGameInput = {
-  create?: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer1InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer1InGameInput>
-  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutPlayer1InGameInput
+export type PlayerCreateNestedOneWithoutGamesAsPlayer1Input = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer1Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer1Input>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutGamesAsPlayer1Input
   connect?: Prisma.PlayerWhereUniqueInput
 }
 
-export type PlayerCreateNestedOneWithoutPlayer2InGameInput = {
-  create?: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer2InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer2InGameInput>
-  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutPlayer2InGameInput
+export type PlayerCreateNestedOneWithoutGamesAsPlayer2Input = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer2Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer2Input>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutGamesAsPlayer2Input
   connect?: Prisma.PlayerWhereUniqueInput
 }
 
-export type PlayerUpdateOneRequiredWithoutPlayer1InGameNestedInput = {
-  create?: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer1InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer1InGameInput>
-  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutPlayer1InGameInput
-  upsert?: Prisma.PlayerUpsertWithoutPlayer1InGameInput
+export type PlayerUpdateOneRequiredWithoutGamesAsPlayer1NestedInput = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer1Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer1Input>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutGamesAsPlayer1Input
+  upsert?: Prisma.PlayerUpsertWithoutGamesAsPlayer1Input
   connect?: Prisma.PlayerWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutPlayer1InGameInput, Prisma.PlayerUpdateWithoutPlayer1InGameInput>, Prisma.PlayerUncheckedUpdateWithoutPlayer1InGameInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutGamesAsPlayer1Input, Prisma.PlayerUpdateWithoutGamesAsPlayer1Input>, Prisma.PlayerUncheckedUpdateWithoutGamesAsPlayer1Input>
 }
 
-export type PlayerUpdateOneRequiredWithoutPlayer2InGameNestedInput = {
-  create?: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer2InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer2InGameInput>
-  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutPlayer2InGameInput
-  upsert?: Prisma.PlayerUpsertWithoutPlayer2InGameInput
+export type PlayerUpdateOneRequiredWithoutGamesAsPlayer2NestedInput = {
+  create?: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer2Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer2Input>
+  connectOrCreate?: Prisma.PlayerCreateOrConnectWithoutGamesAsPlayer2Input
+  upsert?: Prisma.PlayerUpsertWithoutGamesAsPlayer2Input
   connect?: Prisma.PlayerWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutPlayer2InGameInput, Prisma.PlayerUpdateWithoutPlayer2InGameInput>, Prisma.PlayerUncheckedUpdateWithoutPlayer2InGameInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlayerUpdateToOneWithWhereWithoutGamesAsPlayer2Input, Prisma.PlayerUpdateWithoutGamesAsPlayer2Input>, Prisma.PlayerUncheckedUpdateWithoutGamesAsPlayer2Input>
 }
 
 export type PlayerCreateWithoutSentChallengesInput = {
@@ -633,8 +633,8 @@ export type PlayerCreateWithoutSentChallengesInput = {
   createdAt: Date | string
   isPlaying?: boolean
   recievedChallenges?: Prisma.ChallengeCreateNestedManyWithoutReceiverInput
-  player1InGame?: Prisma.GameCreateNestedOneWithoutPlayer1Input
-  player2InGame?: Prisma.GameCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer1?: Prisma.GameCreateNestedManyWithoutPlayer1Input
+  gamesAsPlayer2?: Prisma.GameCreateNestedManyWithoutPlayer2Input
 }
 
 export type PlayerUncheckedCreateWithoutSentChallengesInput = {
@@ -650,8 +650,8 @@ export type PlayerUncheckedCreateWithoutSentChallengesInput = {
   createdAt: Date | string
   isPlaying?: boolean
   recievedChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutReceiverInput
-  player1InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer1Input
-  player2InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer1?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer1Input
+  gamesAsPlayer2?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type PlayerCreateOrConnectWithoutSentChallengesInput = {
@@ -671,8 +671,8 @@ export type PlayerCreateWithoutRecievedChallengesInput = {
   createdAt: Date | string
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeCreateNestedManyWithoutSenderInput
-  player1InGame?: Prisma.GameCreateNestedOneWithoutPlayer1Input
-  player2InGame?: Prisma.GameCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer1?: Prisma.GameCreateNestedManyWithoutPlayer1Input
+  gamesAsPlayer2?: Prisma.GameCreateNestedManyWithoutPlayer2Input
 }
 
 export type PlayerUncheckedCreateWithoutRecievedChallengesInput = {
@@ -688,8 +688,8 @@ export type PlayerUncheckedCreateWithoutRecievedChallengesInput = {
   createdAt: Date | string
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutSenderInput
-  player1InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer1Input
-  player2InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer1?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer1Input
+  gamesAsPlayer2?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type PlayerCreateOrConnectWithoutRecievedChallengesInput = {
@@ -720,8 +720,8 @@ export type PlayerUpdateWithoutSentChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recievedChallenges?: Prisma.ChallengeUpdateManyWithoutReceiverNestedInput
-  player1InGame?: Prisma.GameUpdateOneWithoutPlayer1NestedInput
-  player2InGame?: Prisma.GameUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer1?: Prisma.GameUpdateManyWithoutPlayer1NestedInput
+  gamesAsPlayer2?: Prisma.GameUpdateManyWithoutPlayer2NestedInput
 }
 
 export type PlayerUncheckedUpdateWithoutSentChallengesInput = {
@@ -737,8 +737,8 @@ export type PlayerUncheckedUpdateWithoutSentChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recievedChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutReceiverNestedInput
-  player1InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer1NestedInput
-  player2InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer1?: Prisma.GameUncheckedUpdateManyWithoutPlayer1NestedInput
+  gamesAsPlayer2?: Prisma.GameUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type PlayerUpsertWithoutRecievedChallengesInput = {
@@ -764,8 +764,8 @@ export type PlayerUpdateWithoutRecievedChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUpdateManyWithoutSenderNestedInput
-  player1InGame?: Prisma.GameUpdateOneWithoutPlayer1NestedInput
-  player2InGame?: Prisma.GameUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer1?: Prisma.GameUpdateManyWithoutPlayer1NestedInput
+  gamesAsPlayer2?: Prisma.GameUpdateManyWithoutPlayer2NestedInput
 }
 
 export type PlayerUncheckedUpdateWithoutRecievedChallengesInput = {
@@ -781,11 +781,11 @@ export type PlayerUncheckedUpdateWithoutRecievedChallengesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutSenderNestedInput
-  player1InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer1NestedInput
-  player2InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer1?: Prisma.GameUncheckedUpdateManyWithoutPlayer1NestedInput
+  gamesAsPlayer2?: Prisma.GameUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
-export type PlayerCreateWithoutPlayer1InGameInput = {
+export type PlayerCreateWithoutGamesAsPlayer1Input = {
   userName: string
   publickey: string
   status?: $Enums.playerStatus
@@ -798,10 +798,10 @@ export type PlayerCreateWithoutPlayer1InGameInput = {
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeCreateNestedManyWithoutSenderInput
   recievedChallenges?: Prisma.ChallengeCreateNestedManyWithoutReceiverInput
-  player2InGame?: Prisma.GameCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer2?: Prisma.GameCreateNestedManyWithoutPlayer2Input
 }
 
-export type PlayerUncheckedCreateWithoutPlayer1InGameInput = {
+export type PlayerUncheckedCreateWithoutGamesAsPlayer1Input = {
   id?: number
   userName: string
   publickey: string
@@ -815,15 +815,15 @@ export type PlayerUncheckedCreateWithoutPlayer1InGameInput = {
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutSenderInput
   recievedChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutReceiverInput
-  player2InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer2Input
+  gamesAsPlayer2?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
-export type PlayerCreateOrConnectWithoutPlayer1InGameInput = {
+export type PlayerCreateOrConnectWithoutGamesAsPlayer1Input = {
   where: Prisma.PlayerWhereUniqueInput
-  create: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer1InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer1InGameInput>
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer1Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer1Input>
 }
 
-export type PlayerCreateWithoutPlayer2InGameInput = {
+export type PlayerCreateWithoutGamesAsPlayer2Input = {
   userName: string
   publickey: string
   status?: $Enums.playerStatus
@@ -836,10 +836,10 @@ export type PlayerCreateWithoutPlayer2InGameInput = {
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeCreateNestedManyWithoutSenderInput
   recievedChallenges?: Prisma.ChallengeCreateNestedManyWithoutReceiverInput
-  player1InGame?: Prisma.GameCreateNestedOneWithoutPlayer1Input
+  gamesAsPlayer1?: Prisma.GameCreateNestedManyWithoutPlayer1Input
 }
 
-export type PlayerUncheckedCreateWithoutPlayer2InGameInput = {
+export type PlayerUncheckedCreateWithoutGamesAsPlayer2Input = {
   id?: number
   userName: string
   publickey: string
@@ -853,26 +853,26 @@ export type PlayerUncheckedCreateWithoutPlayer2InGameInput = {
   isPlaying?: boolean
   sentChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutSenderInput
   recievedChallenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutReceiverInput
-  player1InGame?: Prisma.GameUncheckedCreateNestedOneWithoutPlayer1Input
+  gamesAsPlayer1?: Prisma.GameUncheckedCreateNestedManyWithoutPlayer1Input
 }
 
-export type PlayerCreateOrConnectWithoutPlayer2InGameInput = {
+export type PlayerCreateOrConnectWithoutGamesAsPlayer2Input = {
   where: Prisma.PlayerWhereUniqueInput
-  create: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer2InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer2InGameInput>
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer2Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer2Input>
 }
 
-export type PlayerUpsertWithoutPlayer1InGameInput = {
-  update: Prisma.XOR<Prisma.PlayerUpdateWithoutPlayer1InGameInput, Prisma.PlayerUncheckedUpdateWithoutPlayer1InGameInput>
-  create: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer1InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer1InGameInput>
+export type PlayerUpsertWithoutGamesAsPlayer1Input = {
+  update: Prisma.XOR<Prisma.PlayerUpdateWithoutGamesAsPlayer1Input, Prisma.PlayerUncheckedUpdateWithoutGamesAsPlayer1Input>
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer1Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer1Input>
   where?: Prisma.PlayerWhereInput
 }
 
-export type PlayerUpdateToOneWithWhereWithoutPlayer1InGameInput = {
+export type PlayerUpdateToOneWithWhereWithoutGamesAsPlayer1Input = {
   where?: Prisma.PlayerWhereInput
-  data: Prisma.XOR<Prisma.PlayerUpdateWithoutPlayer1InGameInput, Prisma.PlayerUncheckedUpdateWithoutPlayer1InGameInput>
+  data: Prisma.XOR<Prisma.PlayerUpdateWithoutGamesAsPlayer1Input, Prisma.PlayerUncheckedUpdateWithoutGamesAsPlayer1Input>
 }
 
-export type PlayerUpdateWithoutPlayer1InGameInput = {
+export type PlayerUpdateWithoutGamesAsPlayer1Input = {
   userName?: Prisma.StringFieldUpdateOperationsInput | string
   publickey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
@@ -885,10 +885,10 @@ export type PlayerUpdateWithoutPlayer1InGameInput = {
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUpdateManyWithoutSenderNestedInput
   recievedChallenges?: Prisma.ChallengeUpdateManyWithoutReceiverNestedInput
-  player2InGame?: Prisma.GameUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer2?: Prisma.GameUpdateManyWithoutPlayer2NestedInput
 }
 
-export type PlayerUncheckedUpdateWithoutPlayer1InGameInput = {
+export type PlayerUncheckedUpdateWithoutGamesAsPlayer1Input = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userName?: Prisma.StringFieldUpdateOperationsInput | string
   publickey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -902,21 +902,21 @@ export type PlayerUncheckedUpdateWithoutPlayer1InGameInput = {
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutSenderNestedInput
   recievedChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutReceiverNestedInput
-  player2InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer2NestedInput
+  gamesAsPlayer2?: Prisma.GameUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
-export type PlayerUpsertWithoutPlayer2InGameInput = {
-  update: Prisma.XOR<Prisma.PlayerUpdateWithoutPlayer2InGameInput, Prisma.PlayerUncheckedUpdateWithoutPlayer2InGameInput>
-  create: Prisma.XOR<Prisma.PlayerCreateWithoutPlayer2InGameInput, Prisma.PlayerUncheckedCreateWithoutPlayer2InGameInput>
+export type PlayerUpsertWithoutGamesAsPlayer2Input = {
+  update: Prisma.XOR<Prisma.PlayerUpdateWithoutGamesAsPlayer2Input, Prisma.PlayerUncheckedUpdateWithoutGamesAsPlayer2Input>
+  create: Prisma.XOR<Prisma.PlayerCreateWithoutGamesAsPlayer2Input, Prisma.PlayerUncheckedCreateWithoutGamesAsPlayer2Input>
   where?: Prisma.PlayerWhereInput
 }
 
-export type PlayerUpdateToOneWithWhereWithoutPlayer2InGameInput = {
+export type PlayerUpdateToOneWithWhereWithoutGamesAsPlayer2Input = {
   where?: Prisma.PlayerWhereInput
-  data: Prisma.XOR<Prisma.PlayerUpdateWithoutPlayer2InGameInput, Prisma.PlayerUncheckedUpdateWithoutPlayer2InGameInput>
+  data: Prisma.XOR<Prisma.PlayerUpdateWithoutGamesAsPlayer2Input, Prisma.PlayerUncheckedUpdateWithoutGamesAsPlayer2Input>
 }
 
-export type PlayerUpdateWithoutPlayer2InGameInput = {
+export type PlayerUpdateWithoutGamesAsPlayer2Input = {
   userName?: Prisma.StringFieldUpdateOperationsInput | string
   publickey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumplayerStatusFieldUpdateOperationsInput | $Enums.playerStatus
@@ -929,10 +929,10 @@ export type PlayerUpdateWithoutPlayer2InGameInput = {
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUpdateManyWithoutSenderNestedInput
   recievedChallenges?: Prisma.ChallengeUpdateManyWithoutReceiverNestedInput
-  player1InGame?: Prisma.GameUpdateOneWithoutPlayer1NestedInput
+  gamesAsPlayer1?: Prisma.GameUpdateManyWithoutPlayer1NestedInput
 }
 
-export type PlayerUncheckedUpdateWithoutPlayer2InGameInput = {
+export type PlayerUncheckedUpdateWithoutGamesAsPlayer2Input = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userName?: Prisma.StringFieldUpdateOperationsInput | string
   publickey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -946,7 +946,7 @@ export type PlayerUncheckedUpdateWithoutPlayer2InGameInput = {
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sentChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutSenderNestedInput
   recievedChallenges?: Prisma.ChallengeUncheckedUpdateManyWithoutReceiverNestedInput
-  player1InGame?: Prisma.GameUncheckedUpdateOneWithoutPlayer1NestedInput
+  gamesAsPlayer1?: Prisma.GameUncheckedUpdateManyWithoutPlayer1NestedInput
 }
 
 
@@ -957,11 +957,15 @@ export type PlayerUncheckedUpdateWithoutPlayer2InGameInput = {
 export type PlayerCountOutputType = {
   sentChallenges: number
   recievedChallenges: number
+  gamesAsPlayer1: number
+  gamesAsPlayer2: number
 }
 
 export type PlayerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sentChallenges?: boolean | PlayerCountOutputTypeCountSentChallengesArgs
   recievedChallenges?: boolean | PlayerCountOutputTypeCountRecievedChallengesArgs
+  gamesAsPlayer1?: boolean | PlayerCountOutputTypeCountGamesAsPlayer1Args
+  gamesAsPlayer2?: boolean | PlayerCountOutputTypeCountGamesAsPlayer2Args
 }
 
 /**
@@ -988,6 +992,20 @@ export type PlayerCountOutputTypeCountRecievedChallengesArgs<ExtArgs extends run
   where?: Prisma.ChallengeWhereInput
 }
 
+/**
+ * PlayerCountOutputType without action
+ */
+export type PlayerCountOutputTypeCountGamesAsPlayer1Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GameWhereInput
+}
+
+/**
+ * PlayerCountOutputType without action
+ */
+export type PlayerCountOutputTypeCountGamesAsPlayer2Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GameWhereInput
+}
+
 
 export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1003,8 +1021,8 @@ export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   isPlaying?: boolean
   sentChallenges?: boolean | Prisma.Player$sentChallengesArgs<ExtArgs>
   recievedChallenges?: boolean | Prisma.Player$recievedChallengesArgs<ExtArgs>
-  player1InGame?: boolean | Prisma.Player$player1InGameArgs<ExtArgs>
-  player2InGame?: boolean | Prisma.Player$player2InGameArgs<ExtArgs>
+  gamesAsPlayer1?: boolean | Prisma.Player$gamesAsPlayer1Args<ExtArgs>
+  gamesAsPlayer2?: boolean | Prisma.Player$gamesAsPlayer2Args<ExtArgs>
   _count?: boolean | Prisma.PlayerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["player"]>
 
@@ -1054,8 +1072,8 @@ export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type PlayerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sentChallenges?: boolean | Prisma.Player$sentChallengesArgs<ExtArgs>
   recievedChallenges?: boolean | Prisma.Player$recievedChallengesArgs<ExtArgs>
-  player1InGame?: boolean | Prisma.Player$player1InGameArgs<ExtArgs>
-  player2InGame?: boolean | Prisma.Player$player2InGameArgs<ExtArgs>
+  gamesAsPlayer1?: boolean | Prisma.Player$gamesAsPlayer1Args<ExtArgs>
+  gamesAsPlayer2?: boolean | Prisma.Player$gamesAsPlayer2Args<ExtArgs>
   _count?: boolean | Prisma.PlayerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PlayerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1066,8 +1084,8 @@ export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     sentChallenges: Prisma.$ChallengePayload<ExtArgs>[]
     recievedChallenges: Prisma.$ChallengePayload<ExtArgs>[]
-    player1InGame: Prisma.$GamePayload<ExtArgs> | null
-    player2InGame: Prisma.$GamePayload<ExtArgs> | null
+    gamesAsPlayer1: Prisma.$GamePayload<ExtArgs>[]
+    gamesAsPlayer2: Prisma.$GamePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1477,8 +1495,8 @@ export interface Prisma__PlayerClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   sentChallenges<T extends Prisma.Player$sentChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$sentChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   recievedChallenges<T extends Prisma.Player$recievedChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$recievedChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  player1InGame<T extends Prisma.Player$player1InGameArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$player1InGameArgs<ExtArgs>>): Prisma.Prisma__GameClient<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  player2InGame<T extends Prisma.Player$player2InGameArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$player2InGameArgs<ExtArgs>>): Prisma.Prisma__GameClient<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  gamesAsPlayer1<T extends Prisma.Player$gamesAsPlayer1Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$gamesAsPlayer1Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  gamesAsPlayer2<T extends Prisma.Player$gamesAsPlayer2Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Player$gamesAsPlayer2Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1955,9 +1973,9 @@ export type Player$recievedChallengesArgs<ExtArgs extends runtime.Types.Extensio
 }
 
 /**
- * Player.player1InGame
+ * Player.gamesAsPlayer1
  */
-export type Player$player1InGameArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Player$gamesAsPlayer1Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Game
    */
@@ -1971,12 +1989,17 @@ export type Player$player1InGameArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   include?: Prisma.GameInclude<ExtArgs> | null
   where?: Prisma.GameWhereInput
+  orderBy?: Prisma.GameOrderByWithRelationInput | Prisma.GameOrderByWithRelationInput[]
+  cursor?: Prisma.GameWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GameScalarFieldEnum | Prisma.GameScalarFieldEnum[]
 }
 
 /**
- * Player.player2InGame
+ * Player.gamesAsPlayer2
  */
-export type Player$player2InGameArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Player$gamesAsPlayer2Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Game
    */
@@ -1990,6 +2013,11 @@ export type Player$player2InGameArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   include?: Prisma.GameInclude<ExtArgs> | null
   where?: Prisma.GameWhereInput
+  orderBy?: Prisma.GameOrderByWithRelationInput | Prisma.GameOrderByWithRelationInput[]
+  cursor?: Prisma.GameWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GameScalarFieldEnum | Prisma.GameScalarFieldEnum[]
 }
 
 /**

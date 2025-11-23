@@ -4,6 +4,7 @@ import { player, SendChallengeProps } from "./types/player";
 import { createChallenge, updateUser } from "./services/service";
 import { Challenge, RejectChallengeInputs } from "./types/challenge";
 import { RejectChallenge } from "./services/change-status";
+import { Game } from "./types/game";
 
 const server = createServer();
 const io = new Server(server, {
@@ -189,6 +190,7 @@ io.on("connect", (socket) => {
       const challengeStatus = await RejectChallenge(challengeId);
       if (challengeStatus !== "rejected") {
         socket.emit("error", { message: "status not updated!" });
+        return;
       }
 
       console.log("status changes to",challengeStatus)
@@ -214,11 +216,12 @@ io.on("connect", (socket) => {
 
     } catch (error: any) {
       socket.emit("error", { message: error.message });
+      return;
     }
   });
 
-  socket.on("accept-challenge",()=>{
-
+  socket.on("accept-challenge",(data)=>{
+      socket.emit("successfully-accepted",)
   })
 
   socket.on("disconnect", async () => {
