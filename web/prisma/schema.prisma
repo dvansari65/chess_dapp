@@ -27,6 +27,8 @@ model Player {
   isPlaying          Boolean      @default(false)
   sentChallenges     Challenge[]  @relation("sender")
   recievedChallenges Challenge[]  @relation("receiver")
+  player1InGame      Game?        @relation("player1")
+  player2InGame      Game?        @relation("player2")
 }
 
 model Challenge {
@@ -37,8 +39,21 @@ model Challenge {
   sender         Player          @relation("sender", fields: [senderPubKey], references: [publickey])
   receiver       Player          @relation("receiver", fields: [receiverPubKey], references: [publickey])
   createdAt      DateTime
-  expiresAt      DateTime    
+  expiresAt      DateTime
   status         ChallengeStatus
+}
+
+model Game {
+  id            Int        @id @default(autoincrement())
+  onChainGameId Int?        @unique  
+  player1PubKey String     @unique
+  player1       Player     @relation("player1", fields: [player1PubKey], references: [publickey])
+  player2PubKey String     @unique
+  player2       Player     @relation("player2", fields: [player2PubKey], references: [publickey])
+  status        GameStatus @default(pending)
+  wageredAmount Int
+  createdAt     DateTime
+  finishedAt    DateTime?
 }
 
 enum playerStatus {
@@ -51,4 +66,11 @@ enum ChallengeStatus {
   accepted
   rejected
   expired
+}
+
+enum GameStatus {
+  pending
+  waitingForOnChainGameId
+  draw
+  finished
 }

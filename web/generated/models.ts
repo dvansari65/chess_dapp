@@ -10,4 +10,5 @@
  */
 export type * from './models/Player'
 export type * from './models/Challenge'
+export type * from './models/Game'
 export type * from './commonInputTypes'

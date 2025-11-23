@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Player: 'Player',
-  Challenge: 'Challenge'
+  Challenge: 'Challenge',
+  Game: 'Game'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -101,6 +102,20 @@ export const ChallengeScalarFieldEnum = {
 export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
 
 
+export const GameScalarFieldEnum = {
+  id: 'id',
+  onChainGameId: 'onChainGameId',
+  player1PubKey: 'player1PubKey',
+  player2PubKey: 'player2PubKey',
+  status: 'status',
+  wageredAmount: 'wageredAmount',
+  createdAt: 'createdAt',
+  finishedAt: 'finishedAt'
+} as const
+
+export type GameScalarFieldEnum = (typeof GameScalarFieldEnum)[keyof typeof GameScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -115,4 +130,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

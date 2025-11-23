@@ -24,8 +24,8 @@ export interface RejectChallengeInputs {
 }
 
 export enum ChallengeStatus {
-  pending,
-  accepted,
-  rejected,
-  expired
+  pending = "pending",
+  accepted = "accepted",
+  rejected = "rejected",
+  expired = "expired"
 }

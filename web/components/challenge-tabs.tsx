@@ -2,7 +2,7 @@
 import { Challenge, ChallengeStatus } from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { player } from "@/types/player";
 import PlayerStatsModal from "./modals/player-stats-modal";
 import { useSocket } from "@/utils/socketProvider";
@@ -25,12 +25,30 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const socket = useSocket();
   const queryClient = useQueryClient();
   // FILTERS
-  const received = challenges?.filter(
-    (c) => c?.receiverPubKey === currentPubKey
-  );
-  const sent = challenges?.filter((c) => c?.senderPubKey === currentPubKey);
+  const received = useMemo(()=>{
+    return challenges?.filter(
+      (c) => c?.receiverPubKey === currentPubKey
+    );
+  },[challenges])
 
-  useEffect(() => {}, []);
+  const sent = useMemo(()=>{
+    return challenges?.filter((c) => c?.senderPubKey === currentPubKey);
+  },[challenges])
+
+  const getStatusBadgeClass = (status: ChallengeStatus) => {
+    switch (status) {
+      case ChallengeStatus.pending:
+        return "bg-blue-600 text-white";
+      case ChallengeStatus.accepted:
+        return "bg-green-600 text-white";
+      case ChallengeStatus.rejected:
+        return "bg-red-600 text-white";
+      case ChallengeStatus.expired:
+        return "bg-gray-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
 
   const handleChallengeModal = (
     player: player | undefined,
@@ -56,6 +74,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
       currentPlayerPubKey: currentPubKey.toString(),
       opponentPlayerPubKey: playerStats?.publickey?.toString(),
     };
+
     socket.emit("reject-challenge", payload);
     queryClient.invalidateQueries({ queryKey: ["challenges", currentPubKey] });
     setIsChallengeModal(false);
@@ -138,20 +157,11 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
 
                   {/* Challenge status badge */}
                   <span
-                    className={`mt-1 px-2 py-0.5 text-xs font-semibold rounded-full
-                      ${
-                        challenge?.status.toString() === ChallengeStatus.pending.toString()
-                        ? "bg-blue-600 text-white"
-                        : challenge?.status.toString() ===
-                          ChallengeStatus.accepted.toString()
-                        ? "bg-green-600 text-white"
-                        : challenge?.status.toString() ===
-                          ChallengeStatus.rejected.toString()
-                        ? "bg-red-600 text-white"
-                        : "bg-gray-500 text-white"
-                      }`} >
-                    
-                    {challenge?.status.toString().toUpperCase()}
+                    className={`mt-1 px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusBadgeClass(
+                      challenge?.status
+                    )}`}
+                  >
+                    {challenge?.status.toUpperCase()}
                   </span>
                 </div>
               </Button>

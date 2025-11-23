@@ -25,3 +25,13 @@ export const ChallengeStatus = {
 } as const
 
 export type ChallengeStatus = (typeof ChallengeStatus)[keyof typeof ChallengeStatus]
+
+
+export const GameStatus = {
+  pending: 'pending',
+  waitingForOnChainGameId: 'waitingForOnChainGameId',
+  draw: 'draw',
+  finished: 'finished'
+} as const
+
+export type GameStatus = (typeof GameStatus)[keyof typeof GameStatus]

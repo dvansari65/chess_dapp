@@ -92,7 +92,6 @@ io.on("connect", (socket) => {
     if (removedCount > 0) {
       try {
         await updateUser(userKey, "Offline");
-        console.log(`✅ User ${userKey} set to Offline`);
 
         // Notify other users
         socket.broadcast.emit("user-offline", {
@@ -100,7 +99,7 @@ io.on("connect", (socket) => {
           status: "Offline",
         });
       } catch (error: any) {
-        console.error("❌ Error updating user status:", error.message);
+        console.error("Error updating user status:", error.message);
       }
     }
   });
@@ -109,7 +108,7 @@ io.on("connect", (socket) => {
     const { currentPlayerKey, opponentPlayerKey, currentPlayerStats, amount } =
       data;
 
-    console.log("📤 Challenge request received:", {
+    console.log("Challenge request received:", {
       from: currentPlayerKey,
       to: opponentPlayerKey,
       stats: currentPlayerStats,
@@ -169,11 +168,11 @@ io.on("connect", (socket) => {
         });
       } else {
         socket.emit("opponent-offline", { opponentPlayerKey });
-        console.log("❌ Opponent is offline:", opponentPlayerKey);
+        console.log("Opponent is offline:", opponentPlayerKey);
       }
     } catch (error: any) {
       socket.emit("error", { message: error.message });
-      console.error("❌ Error in send-challenge:", error);
+      console.error(" Error in send-challenge:", error);
     }
   });
 
@@ -218,6 +217,10 @@ io.on("connect", (socket) => {
     }
   });
 
+  socket.on("accept-challenge",()=>{
+
+  })
+
   socket.on("disconnect", async () => {
     const currentUser = onlineUsers.get(socket.id);
 
@@ -228,13 +231,13 @@ io.on("connect", (socket) => {
         status: "Offline",
       });
 
-      console.log("👋 User disconnected:", currentUser);
+      console.log("User disconnected:", currentUser);
 
       try {
         await updateUser(currentUser, "Offline");
-        console.log("✅ Status updated to offline");
+        console.log("Status updated to offline");
       } catch (error) {
-        console.error("❌ Error updating user status:", error);
+        console.error("Error updating user status:", error);
       }
     }
 
@@ -244,5 +247,5 @@ io.on("connect", (socket) => {
 
 const PORT = 3001;
 server.listen(PORT, () => {
-  console.log(`🚀 Socket.IO server running on PORT:${PORT}`); // ✅ FIXED
+  console.log(` Socket.IO server running on PORT:${PORT}`); // FIXED
 });

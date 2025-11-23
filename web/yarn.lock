@@ -3980,10 +3980,24 @@ bare-os@^3.0.1:
   resolved "https://registry.npmjs.org/bare-os/-/bare-os-3.6.2.tgz"
   integrity sha512-T+V1+1srU2qYNBmJCXZkUY5vQ0B4FSlL3QDROnKQYOqeiQR8UbjNHlPa+TIbM4cuidiN9GaTaOZgSEgsvPbh5A==
 
+bare-path@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/bare-path/-/bare-path-3.0.0.tgz"
+  integrity sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==
+  dependencies:
+    bare-os "^3.0.1"
+
 bare-semver@^1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/bare-semver/-/bare-semver-1.0.2.tgz"
   integrity sha512-ESVaN2nzWhcI5tf3Zzcq9aqCZ676VWzqw07eEZ0qxAcEOAFYBa0pWq8sK34OQeHLY3JsfKXZS9mDyzyxGjeLzA==
+
+bare-url@*, bare-url@^2.1.0:
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/bare-url/-/bare-url-2.3.2.tgz"
+  integrity sha512-ZMq4gd9ngV5aTMa5p9+UfY0b3skwhHELaDkhEHetMdX0LRkW9kzaym4oo/Eh+Ghm0CCDuMTsRIGM/ytUc1ZYmw==
+  dependencies:
+    bare-path "^3.0.0"
 
 base-x@^3.0.2:
   version "3.0.11"

@@ -27,3 +27,8 @@ export type Player = Prisma.PlayerModel
  * 
  */
 export type Challenge = Prisma.ChallengeModel
+/**
+ * Model Game
+ * 
+ */
+export type Game = Prisma.GameModel
