@@ -227,6 +227,7 @@ io.on("connect", (socket) => {
   });
 
   socket.on("accept-challenge",(data:AcceptChallengeData)=>{
+    
     const {receiverPlayerKey,opponenentPlayerKey,gameId} = data
     let opponentSocketId:string | undefined;
       for(const [socketId,pubKey] of onlineUsers.entries()){
@@ -235,13 +236,24 @@ io.on("connect", (socket) => {
         }
       }
       if(opponentSocketId){
+        console.log("successfully-accepted.....");
+        // / Emit to the OPPONENT (who was challenged)
         io.to(opponentSocketId).emit("successfully-accepted",{
-          currentPlayerPubKey:opponenentPlayerKey,
-          opponenentPlayerKey:receiverPlayerKey,
-          gameId
+            currentPlayerPubKey:opponenentPlayerKey,
+            opponenentPlayerKey:receiverPlayerKey,
+            gameId
         })
+        // ALSO emit to the ACCEPTOR (the person who accepted)
+        io.to(socket.id).emit("successfully-accepted",{
+            currentPlayerPubKey:receiverPlayerKey,
+            opponenentPlayerKey:opponenentPlayerKey,
+            gameId
+        })
+
       }else{
-        io.to(socket.id).emit("user-offline",{opponenentPlayerKey})
+        console.log("user offline...");
+        
+        io.to(socket.id).emit("user-offline",{opponenentPlayerKey,status:"Offline"})
       }
       
   })

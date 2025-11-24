@@ -66,7 +66,6 @@ export const createChallenge = async ({
                 expiresAt:new Date(Date.now() + 5*60*1000)
             },
         });
-        console.log("challenge from utils", challenge);
         if (!challenge) {
             throw new Error("failed to create challenge!");
         }

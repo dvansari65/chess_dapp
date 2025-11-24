@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createGameOffChain } from "@/apis/createGame";
 import { CreateGameVariables } from "@/types/game";
 import { useRouter } from "next/navigation";
+import { AcceptChallengeData } from "@/server";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
@@ -22,6 +23,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [isChallengeModalOpen, setIsChallengeModal] = useState(false);
   const [playerStats, setPlayerStats] = useState<player | undefined>(undefined);
   const [gameId,setGameId] = useState<number | null>(null)
+  const [playerStatus,setPlayerStatus] = useState<"Offline" | "Online">("Online")
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
@@ -58,7 +60,16 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
 
   useEffect(()=>{
     if(!socket) return;
-
+    const handleOpponentOffline = (data:any)=>{
+      console.log("offline status data",data)
+      if(data?.status === "Offline"){
+        setPlayerStatus("Offline")
+      }
+    }
+    socket.on("user-offline",handleOpponentOffline)
+    return ()=>{
+      socket.off("user-offline",handleOpponentOffline)
+    }
   },[socket])
 
   const handleChallengeModal = (
@@ -66,6 +77,12 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     challenge: Challenge | undefined
   ) => {
     if (!player || !challenge) {
+      return;
+    }
+
+    // checking opponent player is offline or not
+    if(playerStatus === "Offline"){
+      toast.error("Opponent is offline!")
       return;
     }
 
@@ -100,6 +117,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     if(!challengeId || !currentPlayerKey){
       toast.error("Challenge ID or current player public key is missing!")
     }
+    // TODO: dont create handle challenge by hitting the api, create using util function bcuz of socket events!
     mutate(payload,{
       onSuccess:(data)=>{
 
@@ -107,9 +125,9 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           if(data?.game.player1PubKey.toString() === currentPlayerKey.toString()){
             toast.success("Game created successfully!")
 
-            const socketPayload = {
-              recieverPlayerKey:data?.game.player1PubKey,
-              opponentPlayerKey:data?.game.player2PubKey,
+            const socketPayload:AcceptChallengeData = {
+              receiverPlayerKey:data?.game.player1PubKey,
+              opponenentPlayerKey:data?.game.player2PubKey,
               gameId:data.game.id
             }
             socket.emit("challenge-accepted",socketPayload)
