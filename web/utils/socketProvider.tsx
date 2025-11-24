@@ -49,6 +49,10 @@ export const SocketProvider = ({
     const handleUserOffline = (data:any)=>{
         toast.error(`opponent is offline , PubKey:${data.opponenentPlayerKey}`)
     }
+
+    const handleSuccessfullAccepted = (data:any)=>{
+      console.log("successfully accepted data",data)
+    }
     
     if(!data?.user){
       return;
@@ -61,6 +65,8 @@ export const SocketProvider = ({
     console.log("paylaod",payload)
     socket.emit("register-user",payload)
 
+
+    socket.on("successfully-accepted",handleSuccessfullAccepted)
     socket.on("user-offline",handleUserOffline)
     socket.on("challenge-rejected",handlerRejectedChallenge)
     socket.on("successfully-register",handleSuccessfullRegistration)
@@ -79,6 +85,7 @@ export const SocketProvider = ({
 
     return () => {
       socket.disconnect();
+      socket.off("successfully-accepted",handleSuccessfullAccepted)
       socket.off("challenge-rejected",handlerRejectedChallenge)
       socket.off("successfully-register",handleSuccessfullRegistration)
     };
