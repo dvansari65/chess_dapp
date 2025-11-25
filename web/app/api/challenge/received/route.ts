@@ -27,6 +27,7 @@ export const GET = async (req:NextRequest)=>{
             return NextResponse.json(
                 {
                     message:"No challenges found!",
+                    challenges:[],
                     success:false
                 },
                 {
@@ -37,7 +38,8 @@ export const GET = async (req:NextRequest)=>{
         return NextResponse.json(
             {
                 message:"Recieved challenges found successfully!",
-                success:false
+                success:true,
+                challenges
             },
             {
                 status:200
