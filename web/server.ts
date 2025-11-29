@@ -1,10 +1,14 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { player, SendChallengeProps } from "./types/player";
+import { SendChallengeProps } from "./types/player";
 import { createChallenge, updateUser } from "./services/service";
-import { Challenge, RejectChallengeInputs } from "./types/challenge";
-import { RejectChallenge } from "./services/change-status";
-import { Game } from "./types/game";
+import {
+  AcceptChallengeData,
+  Challenge,
+  RejectChallengeInputs,
+} from "./types/challenge";
+import { AcceptChallenge, RejectChallenge } from "./services/change-status";
+
 
 const server = createServer();
 const io = new Server(server, {
@@ -28,13 +32,7 @@ export interface RegisterUserProps {
   currentUserName: string | undefined;
 }
 
-export interface AcceptChallengeData {
-  receiverPlayerKey:string ;
-  opponenentPlayerKey:string;
-  gameId:number
-}
-
-const onlineUsers = new Map<string, string>(); // ✅ Changed to Map<string, string>
+const onlineUsers = new Map<string, string>(); 
 
 io.on("connect", (socket) => {
   console.log("socket started", socket.id);
@@ -45,7 +43,7 @@ io.on("connect", (socket) => {
 
     if (!currentUserKey) {
       socket.emit("error", { message: "Please provide user pubkey!" });
-      return; // ✅ Use return instead of throw
+      return;
     }
 
     // Remove any existing socket for this pubkey (prevents duplicates)
@@ -60,8 +58,6 @@ io.on("connect", (socket) => {
     }
 
     onlineUsers.set(socket.id, currentUserKey);
-    const userPubKey = onlineUsers.get(socket.id);
-
     socket.emit("successfully-register", {
       currentUserKey,
       currentUserName,
@@ -69,11 +65,12 @@ io.on("connect", (socket) => {
     });
 
     try {
-      const userStatus = await updateUser(currentUserKey, "Online");
+      await updateUser(currentUserKey, "Online");
       console.log(
         `User ${currentUserName} registered with pubkey ${currentUserKey}`
       );
     } catch (error: any) {
+      io.to(socket.id).emit("error",{message:error?.message || "Failed to update user status!"})
       console.error("user not updated!", error.message);
     }
   });
@@ -184,79 +181,96 @@ io.on("connect", (socket) => {
   });
 
   socket.on("reject-challenge", async (data: RejectChallengeInputs) => {
-    console.log("reject challenge triggered!!");
-    
+
     const { challengeId, currentPlayerPubKey, opponentPlayerPubKey } = data;
     try {
-
-      if(!challengeId){
+      if (!challengeId || !currentPlayerPubKey || !opponentPlayerPubKey) {
         return;
       }
-
+      if (currentPlayerPubKey === opponentPlayerPubKey) {
+        throw new Error("current and opponent player are same!");
+      }
       const challengeStatus = await RejectChallenge(challengeId);
+
       if (challengeStatus !== "rejected") {
         socket.emit("error", { message: "status not updated!" });
         return;
       }
-
-      console.log("status changes to",challengeStatus)
-
       let opponentSocketId: string | undefined;
+
+      console.log("=== ONLINE USERS MAP ===");
+      for (const [socketID, pubKey] of onlineUsers.entries()) {
+        console.log(`SocketID: ${socketID} -> PubKey: ${pubKey}`);
+      }
+      console.log("========================");
+
       for (const [socketID, pubKey] of onlineUsers.entries()) {
         if (opponentPlayerPubKey === pubKey) {
           opponentSocketId = socketID;
           break;
         }
       }
-
-      if (currentPlayerPubKey) {
-        io.to(currentPlayerPubKey).emit("challenge-rejected", {
-          currentPlayerPubKey,
-          challengeStatus
-        });
+      if(socket.id === opponentSocketId){
+        throw new Error("opponent player's socket id and current player's socket id are same!")
       }
-
-      if(opponentSocketId){
-        io.to(opponentSocketId).emit("successfully-rejected")
+      if (!opponentSocketId) {
+        socket.emit("error", { message: "Opponent socket id not found!" });
+        return;
       }
-
+      if (socket?.id == opponentSocketId) {
+        console.log(true);
+      }
+      io.to(opponentSocketId).emit("challenge-rejected", {
+        opponentPlayerPubKey,
+      });
+      io.to(socket?.id).emit("successfully-rejected",{success:true})
     } catch (error: any) {
       socket.emit("error", { message: error.message });
       return;
     }
   });
 
-  socket.on("accept-challenge",(data:AcceptChallengeData)=>{
-    
-    const {receiverPlayerKey,opponenentPlayerKey,gameId} = data
-    let opponentSocketId:string | undefined;
-      for(const [socketId,pubKey] of onlineUsers.entries()){
-        if(opponenentPlayerKey === pubKey){
-          opponentSocketId = socketId
-        }
-      }
-      if(opponentSocketId){
-        console.log("successfully-accepted.....");
-        // / Emit to the OPPONENT (who was challenged)
-        io.to(opponentSocketId).emit("successfully-accepted",{
-            currentPlayerPubKey:opponenentPlayerKey,
-            opponenentPlayerKey:receiverPlayerKey,
-            gameId
-        })
-        // ALSO emit to the ACCEPTOR (the person who accepted)
-        io.to(socket.id).emit("successfully-accepted",{
-            currentPlayerPubKey:receiverPlayerKey,
-            opponenentPlayerKey:opponenentPlayerKey,
-            gameId
-        })
+  socket.on("accept-challenge", async (data: AcceptChallengeData) => {
+    const { receiverPlayerKey, opponenentPlayerKey, challengeId } = data;
 
-      }else{
-        console.log("user offline...");
-        
-        io.to(socket.id).emit("user-offline",{opponenentPlayerKey,status:"Offline"})
+    if (!receiverPlayerKey || !opponenentPlayerKey || !challengeId) {
+      socket.emit("error", {
+        message: "Reciever key or Opponent key or Challenge id is missing!",
+      });
+      return;
+    }
+
+    let opponentSocketId: string | undefined;
+
+    for (const [socketId, pubKey] of onlineUsers.entries()) {
+      if (opponenentPlayerKey === pubKey) {
+        opponentSocketId = socketId;
       }
-      
-  })
+    }
+    if (opponentSocketId) {
+      const gameId = await AcceptChallenge({
+        challengeId,
+        currentPlayerKey: receiverPlayerKey,
+      });
+      // / Emit to the OPPONENT (who was challenged)
+      io.to(opponentSocketId).emit("successfully-accepted", {
+        currentPlayerPubKey: opponenentPlayerKey,
+        opponenentPlayerKey: receiverPlayerKey,
+        gameId,
+      });
+      // ALSO emit to the ACCEPTOR (the person who accepted)
+      io.to(socket.id).emit("successfully-accepted", {
+        currentPlayerPubKey: receiverPlayerKey,
+        opponenentPlayerKey: opponenentPlayerKey,
+        gameId,
+      });
+    } else {
+      io.to(socket.id).emit("user-offline", {
+        opponenentPlayerKey,
+        status: "Offline",
+      });
+    }
+  });
 
   socket.on("disconnect", async () => {
     const currentUser = onlineUsers.get(socket.id);

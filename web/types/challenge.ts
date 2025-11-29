@@ -29,3 +29,22 @@ export enum ChallengeStatus {
   rejected = "rejected",
   expired = "expired"
 }
+
+export interface SentChallenges {
+  success:boolean,
+  message: string | undefined,
+  challenges:Challenge[]
+}
+
+export interface AcceptChallengeData {
+  receiverPlayerKey:string ;
+  opponenentPlayerKey:string;
+  challengeId:number
+}
+
+//props for successfull accept challenge
+export interface SuccesfulAcceptChallenge {
+  receiverPlayerKey:string ;
+  opponenentPlayerKey:string;
+  gameId:number
+}

@@ -7,6 +7,9 @@ export const getSentChallenges = async ({publicKey}:{publicKey:string})=>{
         queryKey:["sentChallenges"],
         queryFn:async ()=>{
             try {
+                if(!publicKey){
+                    throw new Error("Please provide public key!")
+                }
                 const response = await fetch("/api/challenge/sent",{
                     method:"GET",
                     body:JSON.stringify(publicKey)

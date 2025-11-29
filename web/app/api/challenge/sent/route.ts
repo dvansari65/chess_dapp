@@ -19,6 +19,7 @@ export const GET = async (req:NextRequest)=>{
     }
     try {
         const { publicKey }:{ publicKey:string } = body
+        
         if(!publicKey || typeof publicKey !== "string"){
             return NextResponse.json(
                 {
