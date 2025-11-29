@@ -1,5 +1,5 @@
 "use client";
-import { Challenge, ChallengeStatus } from "@/types/challenge";
+import { Challenge, ChallengeStatus, RejectChallengeInputs, SuccesfulAcceptChallenge } from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -8,10 +8,8 @@ import PlayerStatsModal from "./modals/player-stats-modal";
 import { useSocket } from "@/utils/socketProvider";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
-import { createGameOffChain } from "@/apis/createGame";
 import { CreateGameVariables } from "@/types/game";
 import { useRouter } from "next/navigation";
-import { AcceptChallengeData } from "@/server";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
@@ -22,26 +20,24 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [activeTab, setActiveTab] = useState<"receive" | "sent">("receive");
   const [isChallengeModalOpen, setIsChallengeModal] = useState(false);
   const [playerStats, setPlayerStats] = useState<player | undefined>(undefined);
-  const [gameId,setGameId] = useState<number | null>(null)
-  const [playerStatus,setPlayerStatus] = useState<"Offline" | "Online">("Online")
+  const [playerStatus, setPlayerStatus] = useState<"Offline" | "Online">(
+    "Online"
+  );
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
-  const {mutate,error,isPending,isError} = createGameOffChain()
 
   const socket = useSocket();
   const queryClient = useQueryClient();
-  const router = useRouter()
+  const router = useRouter();
   // FILTERS
-  const received = useMemo(()=>{
-    return challenges?.filter(
-      (c) => c?.receiverPubKey === currentPubKey
-    );
-  },[challenges])
+  const received = useMemo(() => {
+    return challenges?.filter((c) => c?.receiverPubKey === currentPubKey);
+  }, [challenges]);
 
-  const sent = useMemo(()=>{
+  const sent = useMemo(() => {
     return challenges?.filter((c) => c?.senderPubKey === currentPubKey);
-  },[challenges])
+  }, [challenges]);
 
   const getStatusBadgeClass = (status: ChallengeStatus) => {
     switch (status) {
@@ -58,37 +54,59 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     }
   };
 
-  useEffect(()=>{
-    if(!socket) return;
-    const handleOpponentOffline = (data:any)=>{
-      console.log("offline status data",data)
-      if(data?.status === "Offline"){
-        setPlayerStatus("Offline")
+  useEffect(() => {
+    if (!socket) return;
+    const handleOpponentOffline = (data: any) => {
+      if (data?.status === "Offline") {
+        setPlayerStatus("Offline");
+      }
+    };
+
+    const handleSuccessfulAcceptChallenge = (data:SuccesfulAcceptChallenge)=>{
+      if(!data){
+        toast.error("Data not recieved!")
+        return;
+      }
+      if(data?.gameId){
+        router.push(`/WaitingRoom/${data?.gameId}`)
+        toast.success("Wait some time in waiting room!")
+      }else{
+        toast.error("Game id not found!")
+        return;
       }
     }
-    socket.on("user-offline",handleOpponentOffline)
-    return ()=>{
-      socket.off("user-offline",handleOpponentOffline)
+    const handleSuccessfulRejection = (data:any)=>{
+     if(data.success){
+      toast.success(`Successfully rejected!`)
+     }else{
+      toast.error("challenge not rejected!")
+     }
     }
-  },[socket])
+    socket.on("successfully-rejected",handleSuccessfulRejection)
+    socket.on("successfully-accepted",handleSuccessfulAcceptChallenge)
+    socket.on("user-offline", handleOpponentOffline);
+
+    return () => {
+      socket.off("user-offline", handleOpponentOffline);
+      socket.off("successfully-rejected",handleSuccessfulRejection)
+      socket.off("successfully-accepted",handleSuccessfulAcceptChallenge)
+    };
+
+  }, [socket]);
 
   const handleChallengeModal = (
-    player: player | undefined,
     challenge: Challenge | undefined
   ) => {
-    if (!player || !challenge) {
+    if (!challenge) {
       return;
     }
-
     // checking opponent player is offline or not
-    if(playerStatus === "Offline"){
-      toast.error("Opponent is offline!")
+    if (playerStatus === "Offline") {
+      toast.error("Opponent is offline!");
       return;
     }
-
-    setPlayerStats(player);
+    setPlayerStats(challenge?.sender);
     setChallengeDataForModal(challenge);
-    console.log("challenge ", challenge);
     setIsChallengeModal(true);
   };
 
@@ -96,64 +114,36 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     if (!currentPubKey || !playerStats || !challengeDataForModal?.id) {
       return;
     }
-
-    const payload = {
+    const payload:RejectChallengeInputs = {
       challengeId: challengeDataForModal?.id,
       currentPlayerPubKey: currentPubKey.toString(),
       opponentPlayerPubKey: playerStats?.publickey?.toString(),
     };
-
+    console.log("reject challenge payload",payload);
     socket.emit("reject-challenge", payload);
     queryClient.invalidateQueries({ queryKey: ["challenges", currentPubKey] });
     setIsChallengeModal(false);
-    toast.success("Declined!");
   };
 
-  const handleAcceptChallenge = ({challengeId,currentPlayerKey}:CreateGameVariables)=>{
+  const handleAcceptChallenge = ({
+    challengeId,
+    currentPlayerKey,
+    opponenentPlayerKey,
+  }: CreateGameVariables) => {
     const payload = {
+      receiverPlayerKey: currentPlayerKey,
+      opponenentPlayerKey,
       challengeId,
-      currentPlayerKey
+    };
+    if (!challengeId || !currentPlayerKey) {
+      toast.error("Challenge ID or current player public key is missing!");
     }
-    if(!challengeId || !currentPlayerKey){
-      toast.error("Challenge ID or current player public key is missing!")
+    if(challengeDataForModal?.sender?.status === "offline"){
+      toast.error("Opponent is offline!")
+      return;
     }
-    // TODO: dont create handle challenge by hitting the api, create using util function bcuz of socket events!
-    mutate(payload,{
-      onSuccess:(data)=>{
-
-        if(data?.game.id && data?.success){
-          if(data?.game.player1PubKey.toString() === currentPlayerKey.toString()){
-            toast.success("Game created successfully!")
-
-            const socketPayload:AcceptChallengeData = {
-              receiverPlayerKey:data?.game.player1PubKey,
-              opponenentPlayerKey:data?.game.player2PubKey,
-              gameId:data.game.id
-            }
-            socket.emit("challenge-accepted",socketPayload)
-            queryClient.invalidateQueries({queryKey:["challenges",currentPubKey]})
-            router.push(`/WaitingRoom/${data?.game.id.toString()}`)
-            setIsChallengeModal(false)
-          }else{
-            toast.success("Game created successfully!")
-            const socketPayload = {
-              recieverPlayerKey:data?.game.player2PubKey,
-              opponentPlayerKey:data?.game.player1PubKey,
-              gameId:data?.game.id
-            }
-            socket.emit("challenge-accepted",socketPayload)
-            queryClient.invalidateQueries({queryKey:["challenges",currentPubKey]})
-            router.push(`/WaitingRoom/${data?.game.id.toString()}`)
-            setIsChallengeModal(false)
-          }
-        }
-      },
-      onError:(error)=>{
-        toast.error(error.message)
-      }
-    })
-  }
-
+    socket.emit("accept-challenge",payload)
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto mt-6 p-6 rounded-xl bg-slate-900 border border-slate-800 shadow-xl text-white">
@@ -170,7 +160,6 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
         >
           Received Challenges
         </Button>
-
         <Button
           variant={activeTab === "sent" ? "default" : "secondary"}
           className={`px-4 py-2 rounded-lg ${
@@ -183,7 +172,6 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           Sent Challenges
         </Button>
       </div>
-
       {/* LIST SECTION */}
       <div className="space-y-4">
         {activeTab === "receive" &&
@@ -192,13 +180,14 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
               <Button
                 disabled={
                   challenge?.status.toString() ===
-                  ChallengeStatus.rejected.toString() || 
-                  challenge?.status as string === ChallengeStatus.accepted as string
+                    ChallengeStatus.rejected.toString() ||
+                  (challenge?.status as string) ===
+                    (ChallengeStatus.accepted as string)
                 }
                 key={challenge?.id}
                 onClick={() => {
                   if (!challenge || !challenge.receiver) return;
-                  handleChallengeModal(challenge.receiver, challenge);
+                  handleChallengeModal( challenge);
                 }}
                 className="
                     flex w-full items-center justify-between                 
@@ -229,7 +218,6 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
                   <p className="text-2xl font-bold text-yellow-400">
                     ◎ {challenge?.amount}
                   </p>
-
                   {/* Challenge status badge */}
                   <span
                     className={`mt-1 px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusBadgeClass(
@@ -246,14 +234,13 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
               No challenges received.
             </p>
           ))}
-
         {activeTab === "sent" &&
           (sent?.length > 0 ? (
             sent?.map((challenge) => (
               <Button
                 key={challenge?.id}
                 onClick={() =>
-                  handleChallengeModal(challenge?.sender, challenge)
+                  handleChallengeModal( challenge)
                 }
                 className="
                   flex w-full items-center justify-between
@@ -294,7 +281,13 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
           player={playerStats}
           isOpen={isChallengeModalOpen}
           onClose={() => setIsChallengeModal(false)}
-          onAccept={()=>handleAcceptChallenge({challengeId:Number(challengeDataForModal?.id),currentPlayerKey:currentPubKey})}
+          onAccept={() =>
+            handleAcceptChallenge({
+              challengeId: Number(challengeDataForModal?.id),
+              currentPlayerKey: currentPubKey,
+              opponenentPlayerKey:challengeDataForModal?.senderPubKey || ""
+            })
+          }
           onDecline={handleRejectChallenge}
         />
       )}
