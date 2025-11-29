@@ -24,5 +24,6 @@ export interface Game {
 
   export interface CreateGameVariables {
     challengeId:number;
-    currentPlayerKey:string
+    currentPlayerKey:string,
+    opponenentPlayerKey:string
 }
