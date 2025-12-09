@@ -33,7 +33,7 @@ export interface RegisterUserProps {
   currentUserName: string | undefined;
 }
 
-const onlineUsers = new Map<string, string>(); 
+const onlineUsers = new Map<string, string>();
 
 io.on("connect", (socket) => {
   console.log("socket started", socket.id);
@@ -71,7 +71,7 @@ io.on("connect", (socket) => {
         `User ${currentUserName} registered with pubkey ${currentUserKey}`
       );
     } catch (error: any) {
-      io.to(socket.id).emit("error",{message:error?.message || "Failed to update user status!"})
+      io.to(socket.id).emit("error", { message: error?.message || "Failed to update user status!" })
       console.error("user not updated!", error.message);
     }
   });
@@ -211,7 +211,7 @@ io.on("connect", (socket) => {
           break;
         }
       }
-      if(socket.id === opponentSocketId){
+      if (socket.id === opponentSocketId) {
         throw new Error("opponent player's socket id and current player's socket id are same!")
       }
       if (!opponentSocketId) {
@@ -224,7 +224,7 @@ io.on("connect", (socket) => {
       io.to(opponentSocketId).emit("challenge-rejected", {
         opponentPlayerPubKey,
       });
-      io.to(socket?.id).emit("successfully-rejected",{success:true})
+      io.to(socket?.id).emit("successfully-rejected", { success: true })
     } catch (error: any) {
       socket.emit("error", { message: error.message });
       return;
@@ -232,7 +232,7 @@ io.on("connect", (socket) => {
   });
 
   socket.on("accept-challenge", async (data: AcceptChallengeData) => {
-    const { receiverPlayerKey, opponenentPlayerKey, challengeId,playerName } = data;
+    const { receiverPlayerKey, opponenentPlayerKey, challengeId, playerName } = data;
 
     if (!receiverPlayerKey || !opponenentPlayerKey || !challengeId || !playerName) {
       socket.emit("error", {
@@ -255,9 +255,9 @@ io.on("connect", (socket) => {
       });
       // / Emit to the OPPONENT (who was challenged)
       console.log("Challenge request accepted:", {
-        whoAcceptedSocketId:socket.id,
-        whoSentSocketId:opponentSocketId,
-        from:receiverPlayerKey,
+        whoAcceptedSocketId: socket.id,
+        whoSentSocketId: opponentSocketId,
+        from: receiverPlayerKey,
         to: opponenentPlayerKey,
       });
 
@@ -268,8 +268,6 @@ io.on("connect", (socket) => {
         gameId,
         playerName
       });
-      // confirm the game acceptance from the opponent who sent the challenge first!
-
     } else {
       io.to(socket.id).emit("user-offline", {
         opponenentPlayerKey,
@@ -278,10 +276,28 @@ io.on("connect", (socket) => {
     }
   });
 
-  socket.on("start-game",(data:StartGame)=>{
-    const {gameId,opponentSocketId,playerName,currentPlayerPubKey} = data
-    
-  })
+  socket.on("start-game", (data: StartGame) => {
+    console.log("start game event started...", data);
+
+    const { gameId, opponentSocketId, playerName, currentPlayerPubKey } = data;
+
+    if (!gameId || !opponentSocketId || !playerName || !currentPlayerPubKey) {
+      socket.emit("error", {
+        message: "Fields are missing while confirming the start game!"
+      });
+      return; // Don't proceed if validation fails
+    }
+
+    // Emit to opponent
+    io.to(opponentSocketId).emit("successful-start", {
+      playerName,
+      currentPlayerPubKey,
+      gameId
+    });
+
+    // Emit to current player
+    io.to(socket.id).emit("successful-start", { gameId });
+  });
 
   socket.on("disconnect", async () => {
     const currentUser = onlineUsers.get(socket.id);
