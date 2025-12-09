@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppProvider from "@/components/app-provider";
 import AppLayout from "@/components/app-layout";
-import { ToastContainer } from "react-toastify";
+import {Toaster} from "sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +40,7 @@ export default function RootLayout({
           <AppLayout links={links}>
             {children}
           </AppLayout>
-          <ToastContainer position="top-right"/>
+          <Toaster position="top-right"/>
         </AppProvider>
       </body>
     </html>

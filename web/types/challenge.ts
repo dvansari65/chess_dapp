@@ -39,7 +39,8 @@ export interface SentChallenges {
 export interface AcceptChallengeData {
   receiverPlayerKey:string ;
   opponenentPlayerKey:string;
-  challengeId:number
+  challengeId:number;
+  playerName?:string
 }
 
 //props for successfull accept challenge

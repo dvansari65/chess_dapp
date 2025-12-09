@@ -22,7 +22,6 @@ export const getPlayer = (publickey: PublicKey | null) => {
         }
         
         const data = await response.json()
-        console.log("player data", data)
         return data
       } catch (error: any) {
         console.log(error.message)

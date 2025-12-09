@@ -5,7 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 function SetName({}) {
   const [userName,setUserName] = useState("")

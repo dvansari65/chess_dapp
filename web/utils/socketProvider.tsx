@@ -6,15 +6,16 @@ import {
   useEffect,
   ReactNode,
   useMemo,
+  useState,
 } from "react";
 import { initializeSocket } from "@/lib/socket";
 import { Socket } from "socket.io-client";
-import { ChallengeStatus } from "@/generated/enums";
-import { toast } from "react-toastify";
 import { getPlayer } from "@/apis/getUser";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useQueryClient } from "@tanstack/react-query";
-
+import {toast} from "sonner"
+import { useGameConfirm } from "./GameConfirmContext";
+import { GameConfirmData } from "@/types/game";
 interface SocketProviderProps {
   children: ReactNode;
 }
@@ -27,6 +28,7 @@ export const SocketProvider = ({
 
   const socket = useMemo(() => initializeSocket(), []);
   const queryClient = useQueryClient()
+  const {openModal,isOpen} = useGameConfirm()
   const {publicKey} = useWallet()
   const {data} = getPlayer(publicKey)
 
@@ -39,7 +41,6 @@ export const SocketProvider = ({
     };
 
     const handleSuccessfullRegistration = (data:any)=>{
-      console.log("data ",data)
       toast.success(`${data?.currentUserName} successfully registered!`)
       queryClient.invalidateQueries({queryKey:["players"]})
     }
@@ -47,9 +48,17 @@ export const SocketProvider = ({
     const handleUserOffline = (data:any)=>{
         toast.error(`opponent is offline , PubKey:${data.opponenentPlayerKey}`)
     }
+    
+    const handleSuccessfullAccepted = (data:GameConfirmData)=>{
+      console.log("sccessfull acceptance:",data)
+      openModal({
+        currentPlayerPubKey:data.currentPlayerPubKey,
+        gameId:data.gameId,
+        opponenentPlayerKey:data.opponenentPlayerKey,
+        opponentSocketId:data.opponentSocketId,
+        playerName:data?.playerName
+      });
 
-    const handleSuccessfullAccepted = (data:any)=>{
-      console.log("successfully accepted data",data)
     }
 
     const handleError = (data:any)=>{

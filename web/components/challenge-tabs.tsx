@@ -6,10 +6,12 @@ import { useEffect, useMemo, useState } from "react";
 import { player } from "@/types/player";
 import PlayerStatsModal from "./modals/player-stats-modal";
 import { useSocket } from "@/utils/socketProvider";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { CreateGameVariables } from "@/types/game";
 import { useRouter } from "next/navigation";
+import { getPlayer } from "@/apis/getUser";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
@@ -23,10 +25,11 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [playerStatus, setPlayerStatus] = useState<"Offline" | "Online">(
     "Online"
   );
+  const {publicKey} = useWallet()
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
-
+  const {data:playerData} = getPlayer(publicKey)
   const socket = useSocket();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -134,6 +137,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
       receiverPlayerKey: currentPlayerKey,
       opponenentPlayerKey,
       challengeId,
+      playerName:playerData?.user.userName
     };
     if (!challengeId || !currentPlayerKey) {
       toast.error("Challenge ID or current player public key is missing!");
@@ -143,6 +147,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
       return;
     }
     socket.emit("accept-challenge",payload)
+    setIsChallengeModal(false);
   };
 
   return (

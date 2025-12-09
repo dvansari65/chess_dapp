@@ -27,3 +27,18 @@ export interface Game {
     currentPlayerKey:string,
     opponenentPlayerKey:string
 }
+
+export interface GameConfirmData {
+  currentPlayerPubKey: string,
+  gameId: number
+  opponenentPlayerKey:string,
+  opponentSocketId: string,
+  playerName:string
+}
+
+export interface StartGame {
+  gameId: number,
+  opponentSocketId: string,
+  currentPlayerPubKey: string,
+  playerName:string
+}

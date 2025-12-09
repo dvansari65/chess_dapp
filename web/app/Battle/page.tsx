@@ -10,9 +10,8 @@ import { Swords } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const BattlePage = () => {
-  const [selectedPlayer, setSelectedPlayer] = useState<player | null>(null);
   const { publicKey,connected } = useWallet();
-  const { data, isPending, error } = getAllChallenges(publicKey?.toString());
+  const { data } = getAllChallenges(publicKey?.toString());
   const [betAmount,setBetAmount] = useState<amountValuesTypes>(0.001)
   const socket = useSocket()
   const challenges = data?.challenges || [];

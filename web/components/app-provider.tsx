@@ -3,6 +3,8 @@ import SolanaWalletProvider from "./WalletProvider";
 import ReactQueryProvider from "./react-query-provider";
 import ReduxProvider from "./redux-provider";
 import { SocketProvider } from "@/utils/socketProvider";
+import { GameConfirmProvider } from "@/utils/GameConfirmContext";
+import ChallengeConfirmModal from "./modals/ChallengeConfirmModal";
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -11,12 +13,14 @@ interface AppProviderProps {
 function AppProvider({ children }: AppProviderProps) {
   return (
     <ReduxProvider>
-    <ReactQueryProvider>
-      <SolanaWalletProvider>
-        <SocketProvider>{children}</SocketProvider>
-      </SolanaWalletProvider>
-    </ReactQueryProvider>
-  </ReduxProvider>
+      <ReactQueryProvider>
+        <SolanaWalletProvider>
+          <GameConfirmProvider>
+            <SocketProvider>{children}  <ChallengeConfirmModal/></SocketProvider>
+          </GameConfirmProvider>
+        </SolanaWalletProvider>
+      </ReactQueryProvider>
+    </ReduxProvider>
   );
 }
 

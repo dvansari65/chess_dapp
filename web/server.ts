@@ -8,6 +8,7 @@ import {
   RejectChallengeInputs,
 } from "./types/challenge";
 import { AcceptChallenge, RejectChallenge } from "./services/change-status";
+import { StartGame } from "./types/game";
 
 
 const server = createServer();
@@ -231,11 +232,11 @@ io.on("connect", (socket) => {
   });
 
   socket.on("accept-challenge", async (data: AcceptChallengeData) => {
-    const { receiverPlayerKey, opponenentPlayerKey, challengeId } = data;
+    const { receiverPlayerKey, opponenentPlayerKey, challengeId,playerName } = data;
 
-    if (!receiverPlayerKey || !opponenentPlayerKey || !challengeId) {
+    if (!receiverPlayerKey || !opponenentPlayerKey || !challengeId || !playerName) {
       socket.emit("error", {
-        message: "Reciever key or Opponent key or Challenge id is missing!",
+        message: "Reciever key or Opponent key or Challenge id,player name is missing!",
       });
       return;
     }
@@ -253,17 +254,22 @@ io.on("connect", (socket) => {
         currentPlayerKey: receiverPlayerKey,
       });
       // / Emit to the OPPONENT (who was challenged)
+      console.log("Challenge request accepted:", {
+        whoAcceptedSocketId:socket.id,
+        whoSentSocketId:opponentSocketId,
+        from:receiverPlayerKey,
+        to: opponenentPlayerKey,
+      });
+
       io.to(opponentSocketId).emit("successfully-accepted", {
+        opponentSocketId,
         currentPlayerPubKey: opponenentPlayerKey,
         opponenentPlayerKey: receiverPlayerKey,
         gameId,
+        playerName
       });
-      // ALSO emit to the ACCEPTOR (the person who accepted)
-      io.to(socket.id).emit("successfully-accepted", {
-        currentPlayerPubKey: receiverPlayerKey,
-        opponenentPlayerKey: opponenentPlayerKey,
-        gameId,
-      });
+      // confirm the game acceptance from the opponent who sent the challenge first!
+
     } else {
       io.to(socket.id).emit("user-offline", {
         opponenentPlayerKey,
@@ -271,6 +277,11 @@ io.on("connect", (socket) => {
       });
     }
   });
+
+  socket.on("start-game",(data:StartGame)=>{
+    const {gameId,opponentSocketId,playerName,currentPlayerPubKey} = data
+    
+  })
 
   socket.on("disconnect", async () => {
     const currentUser = onlineUsers.get(socket.id);
