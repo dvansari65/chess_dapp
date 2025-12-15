@@ -1,3 +1,4 @@
+import { amountValuesTypes } from "./escrow";
 import { player } from "./player";
 
 export interface GetAllChallengesResponse {
@@ -48,4 +49,16 @@ export interface SuccesfulAcceptChallenge {
   receiverPlayerKey:string ;
   opponenentPlayerKey:string;
   gameId:number
+}
+
+// this input for the create challenge api 
+export interface CreateChallengeInputs {
+  senderPublickey:string, 
+  receiverPublicKey:string, 
+  amount:amountValuesTypes 
+}
+// response data types after hitting  the create challenge api
+export interface CreateChallengeResponse {
+  message:string,
+  success:boolean
 }
