@@ -1,5 +1,6 @@
 import { createChallenge } from "@/services/service";
 import { emitToUser } from "@/socket/emit";
+import { CreateChallengeInputs } from "@/types/challenge";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: NextResponse) => {
@@ -16,7 +17,8 @@ export const POST = async (req: NextResponse) => {
     );
   }
   try {
-    const { senderPublickey, receiverPublicKey, amount } = body;
+    const { senderPublickey, receiverPublicKey, amount }:CreateChallengeInputs = body;
+    
     if (!senderPublickey) {
       return NextResponse.json(
         {

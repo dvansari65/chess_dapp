@@ -1,9 +1,9 @@
-import { CreateChallengeInputs } from "@/types/challenge"
+import { CreateChallengeInputs, CreateChallengeResponse } from "@/types/challenge"
 import { useMutation } from "@tanstack/react-query"
 
 
 export const sendChallenge = ()=>{
-    return useMutation({
+    return useMutation<CreateChallengeResponse,Error,CreateChallengeInputs>({
         mutationKey:["send-challenge"],
         mutationFn: async ({receiverPublicKey,senderPublickey,amount}:CreateChallengeInputs)=>{
             try {
