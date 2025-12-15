@@ -15,6 +15,8 @@ import ErrorLabel from "../../components/error/error";
 import { useQueryClient } from "@tanstack/react-query";
 import { amountValuesTypes } from "@/types/escrow";
 import EscrowAmountModal from "@/components/modals/escrow-amount";
+import { sendChallenge } from "@/apis/sendChallenge";
+import { CreateChallengeInputs } from "@/types/challenge";
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -32,22 +34,17 @@ export default function Lobby() {
   const [selectedOpponentStats, setSelectedOpponentStats] = useState<
     player | undefined
   >();
-  const {
-    data: UserData,
-    refetch,
-    isPending: isUserLoading,
-  } = getPlayer(publicKey);
+  const [opponentStatus,setOpponentStatus] = useState<"Offline" | "Online">("Online")
   const openUserProfile = () => setIsSidebarOpen(true);
   const closeUserProfile = () => setIsSidebarOpen(false);
   const socket = useSocket();
-  const queryClient = useQueryClient();
-  const [isChallengeCreated,setIsChallengeCreated] = useState(false)
-  const [opponentStatus,setOpponentStatus] = useState<"Offline" | "Online">("Online")
+  
   const { data, isPending, error } = getAllPlayers();
   const {data:currenPlayer} = getPlayer(publicKey)
+  const { data: UserData,isPending: isUserLoading } = getPlayer(publicKey);
+  const {mutate,isPending:sendChallengeLoading,error:sendChallengeError} = sendChallenge()
 
   useEffect(() => {
-    console.log("socket", socket);
     
     if (!socket) {
       console.log("❌ Socket not available");
@@ -71,17 +68,8 @@ export default function Lobby() {
       console.log(`user ${data.status} ${data.currentUser}`);
     };
 
-    const handleSuccessfullChallenge = (data: any) => {
-      console.log("challenge-sent-successfully",data)
-      if(data.success && data.challengeData){
-        toast.success(`challenge send successfully :${data?.opponentPlayerKey}`);
-        setIsChallengeCreated(data.success)
-      }
-    };
-
     socket.on("user-offline", handlePlayerOffline);
     socket.on("opponent-offline", handleOpponentPlayerStatus);
-    socket.on("challenge-sent-successfully", handleSuccessfullChallenge);
 
     return () => {
       socket.off("opponent-offline", handleOpponentPlayerStatus);
@@ -92,7 +80,6 @@ export default function Lobby() {
   const handleSendChallenge = ({
     currentPlayerKey,
     opponentPlayerKey,
-    currentPlayerStats,
     amount
   }: SendChallengeProps) => {
     console.log("handleSendChallenge triggered...");
@@ -113,51 +100,23 @@ export default function Lobby() {
       return;
     }
     
-    const payload = {
-      currentPlayerKey,
-      opponentPlayerKey,
-      currentPlayerStats,
+    const payload:CreateChallengeInputs = {
+      senderPublickey:currentPlayerKey || "",
+      receiverPublicKey:opponentPlayerKey || "",
       amount
     };
-   
-    // if(!isChallengeCreated){
-    //   toast.error("Failed to create challenge!")
-    //   setEscrowModal(false)
-    //   return
-    // }
-    if(opponentStatus === "Offline"){
-      toast.error("Opponent is Offline!")
-      setEscrowModal(false)
-      return;
-    }
-
-    if (socket && socket.connected) {
-
-      socket.emit("send-challenge", payload);
-
-      setChallengeStatuses((prev) => ({
-        ...prev,
-        [opponentPlayerKey as string]: "Sent",
-      }));
-
-      setAmountValues(amount)
-      setLabel("Sent");
-      setEscrowModal(false)
-
-      queryClient.invalidateQueries({
-        queryKey: ["challenges", publicKey.toString()],
-      });
-      
-    } else {
-      socket.once("connect", () => {
-        socket.emit("send-challenge", payload);
-        setLabel("Sent");
-        setChallengeStatuses((prev) => ({
-          ...prev,
-          [opponentPlayerKey as string]: "Sent",
-        }));
-      });
-    }
+    mutate(payload,{
+      onSuccess:(data)=>{
+        if(data.success){
+          console.log("created challenge data:",data)
+          toast.success("Challenge created successfully!")
+          setEscrowModal(false)
+        }
+      },
+      onError:(error)=>{
+        toast.error(error.message)
+      }
+    })
   };
 
   useEffect(() => {
