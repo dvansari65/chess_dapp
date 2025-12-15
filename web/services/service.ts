@@ -55,6 +55,7 @@ export const createChallenge = async ({
     if(!amount){
         throw new Error("Please provide amount first!")
     }
+//    TODO:create class for challenge util methods and same for other schema table
     try {
         const challenge = await prisma.challenge.create({
             data: {

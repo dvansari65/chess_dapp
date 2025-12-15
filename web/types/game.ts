@@ -31,6 +31,7 @@ export interface Game {
 export interface GameConfirmData {
   currentPlayerPubKey: string,
   gameId: number
+  currentPlayerSocketId:string,
   opponenentPlayerKey:string,
   opponentSocketId: string,
   playerName:string

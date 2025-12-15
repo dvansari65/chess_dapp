@@ -41,6 +41,8 @@ export default function Lobby() {
   const closeUserProfile = () => setIsSidebarOpen(false);
   const socket = useSocket();
   const queryClient = useQueryClient();
+  const [isChallengeCreated,setIsChallengeCreated] = useState(false)
+  const [opponentStatus,setOpponentStatus] = useState<"Offline" | "Online">("Online")
   const { data, isPending, error } = getAllPlayers();
   const {data:currenPlayer} = getPlayer(publicKey)
 
@@ -58,16 +60,23 @@ export default function Lobby() {
     }
 
     const handleOpponentPlayerStatus = (data: any) => {
-      if (data?.opponentPlayerKey) {
-        toast.error("opponent is offline!");
+      if (data?.opponentPlayerKey ||   data.status == "Offline") {
+        toast.error(`user  ${data.currentUser} is ${data.status}`)
+        setOpponentStatus("Offline")
       }
     };
     
     const handlePlayerOffline = (data: any) => {
+      toast.error(`user  ${data.currentUser} is ${data.status}`)
       console.log(`user ${data.status} ${data.currentUser}`);
     };
+
     const handleSuccessfullChallenge = (data: any) => {
-      toast.success(`challenge send successfully :${data?.opponentPlayerKey}`);
+      console.log("challenge-sent-successfully",data)
+      if(data.success && data.challengeData){
+        toast.success(`challenge send successfully :${data?.opponentPlayerKey}`);
+        setIsChallengeCreated(data.success)
+      }
     };
 
     socket.on("user-offline", handlePlayerOffline);
@@ -86,7 +95,8 @@ export default function Lobby() {
     currentPlayerStats,
     amount
   }: SendChallengeProps) => {
-
+    console.log("handleSendChallenge triggered...");
+    
     if(!currenPlayer?.user){
       toast.error("First register your name!")
       setEscrowModal(false)
@@ -109,7 +119,18 @@ export default function Lobby() {
       currentPlayerStats,
       amount
     };
-    console.log("payload",payload)
+   
+    // if(!isChallengeCreated){
+    //   toast.error("Failed to create challenge!")
+    //   setEscrowModal(false)
+    //   return
+    // }
+    if(opponentStatus === "Offline"){
+      toast.error("Opponent is Offline!")
+      setEscrowModal(false)
+      return;
+    }
+
     if (socket && socket.connected) {
 
       socket.emit("send-challenge", payload);

@@ -41,6 +41,9 @@ model Challenge {
   createdAt      DateTime
   expiresAt      DateTime
   status         ChallengeStatus
+  isGameCreated  Boolean @default(false)
+  gameId         Int
+ game           Game?
 }
 
 model Game {
@@ -51,9 +54,11 @@ model Game {
   player2PubKey String     
   player2       Player     @relation("player2", fields: [player2PubKey], references: [publickey])
   status        GameStatus @default(pending)
-  wageredAmount Int
+  wageredAmount Float       
   createdAt     DateTime
   finishedAt    DateTime?
+  challengeId   Int @unique @default(autoincrement())
+  challenge     Challenge? @relation(fields: [challengeId],references: [id])
 }
 
 enum playerStatus {
@@ -69,6 +74,7 @@ enum ChallengeStatus {
 }
 
 enum GameStatus {
+  started
   pending
   waitingForOnChainGameId
   draw

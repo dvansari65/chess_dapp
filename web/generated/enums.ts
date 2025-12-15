@@ -28,6 +28,7 @@ export type ChallengeStatus = (typeof ChallengeStatus)[keyof typeof ChallengeSta
 
 
 export const GameStatus = {
+  started: 'started',
   pending: 'pending',
   waitingForOnChainGameId: 'waitingForOnChainGameId',
   draw: 'draw',

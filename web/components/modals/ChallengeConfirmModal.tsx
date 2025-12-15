@@ -6,7 +6,6 @@ import { useSocket } from "@/utils/socketProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import { StartGame } from "@/types/game";
 
@@ -20,11 +19,14 @@ export default function ChallengeConfirmModal() {
 
     const handleStartGame = () => {
         if(!socket)return;
-
+        if(playerData?.user.status == "offline"){
+            toast.error(`${playerData?.user.userName} is offline`)
+            return;
+        }
         console.log("game confirm data:", data)
         const payload:StartGame = {
             gameId:data?.gameId,
-            opponentSocketId:data.opponentSocketId,
+            opponentSocketId:data.currentPlayerSocketId|| "",
             currentPlayerPubKey:data.currentPlayerPubKey,
             playerName:playerData?.user.userName || ""
         }

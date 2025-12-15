@@ -1,5 +1,10 @@
 "use client";
-import { Challenge, ChallengeStatus, RejectChallengeInputs, SuccesfulAcceptChallenge } from "@/types/challenge";
+import {
+  Challenge,
+  ChallengeStatus,
+  RejectChallengeInputs,
+  SuccesfulAcceptChallenge,
+} from "@/types/challenge";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -12,6 +17,7 @@ import { CreateGameVariables } from "@/types/game";
 import { useRouter } from "next/navigation";
 import { getPlayer } from "@/apis/getUser";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
 
 interface ChallengeTabsProps {
   challenges: Challenge[];
@@ -25,11 +31,11 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
   const [playerStatus, setPlayerStatus] = useState<"Offline" | "Online">(
     "Online"
   );
-  const {publicKey} = useWallet()
+
   const [challengeDataForModal, setChallengeDataForModal] = useState<
     Challenge | undefined
   >(undefined);
-  const {data:playerData} = getPlayer(publicKey)
+  const { data: playerData } = getPlayer(new PublicKey(currentPubKey));
   const socket = useSocket();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -65,41 +71,40 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
       }
     };
 
-    const handleSuccessfulAcceptChallenge = (data:SuccesfulAcceptChallenge)=>{
-      if(!data){
-        toast.error("Data not recieved!")
+    const handleSuccessfulAcceptChallenge = (
+      data: SuccesfulAcceptChallenge
+    ) => {
+      if (!data) {
+        toast.error("Data not recieved!");
         return;
       }
-      if(data?.gameId){
-        router.push(`/WaitingRoom/${data?.gameId}`)
-        toast.success("Wait some time in waiting room!")
-      }else{
-        toast.error("Game id not found!")
+      if (data?.gameId) {
+        router.push(`/WaitingRoom/${data?.gameId}`);
+        toast.success("Wait some time in waiting room!");
+      } else {
+        toast.error("Game id not found!");
         return;
       }
-    }
-    const handleSuccessfulRejection = (data:any)=>{
-     if(data.success){
-      toast.success(`Successfully rejected!`)
-     }else{
-      toast.error("challenge not rejected!")
-     }
-    }
-    socket.on("successfully-rejected",handleSuccessfulRejection)
-    socket.on("successfully-accepted",handleSuccessfulAcceptChallenge)
+    };
+    const handleSuccessfulRejection = (data: any) => {
+      if (data.success) {
+        toast.success(`Successfully rejected!`);
+      } else {
+        toast.error("challenge not rejected!");
+      }
+    };
+    socket.on("successfully-rejected", handleSuccessfulRejection);
+    socket.on("successfully-accepted", handleSuccessfulAcceptChallenge);
     socket.on("user-offline", handleOpponentOffline);
 
     return () => {
       socket.off("user-offline", handleOpponentOffline);
-      socket.off("successfully-rejected",handleSuccessfulRejection)
-      socket.off("successfully-accepted",handleSuccessfulAcceptChallenge)
+      socket.off("successfully-rejected", handleSuccessfulRejection);
+      socket.off("successfully-accepted", handleSuccessfulAcceptChallenge);
     };
-
   }, [socket]);
 
-  const handleChallengeModal = (
-    challenge: Challenge | undefined
-  ) => {
+  const handleChallengeModal = (challenge: Challenge | undefined) => {
     if (!challenge) {
       return;
     }
@@ -117,12 +122,12 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
     if (!currentPubKey || !playerStats || !challengeDataForModal?.id) {
       return;
     }
-    const payload:RejectChallengeInputs = {
+    const payload: RejectChallengeInputs = {
       challengeId: challengeDataForModal?.id,
       currentPlayerPubKey: currentPubKey.toString(),
       opponentPlayerPubKey: playerStats?.publickey?.toString(),
     };
-    console.log("reject challenge payload",payload);
+    console.log("reject challenge payload", payload);
     socket.emit("reject-challenge", payload);
     queryClient.invalidateQueries({ queryKey: ["challenges", currentPubKey] });
     setIsChallengeModal(false);
@@ -137,17 +142,25 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
       receiverPlayerKey: currentPlayerKey,
       opponenentPlayerKey,
       challengeId,
-      playerName:playerData?.user.userName
+      playerName: playerData?.user.userName,
     };
     if (!challengeId || !currentPlayerKey) {
       toast.error("Challenge ID or current player public key is missing!");
     }
-    if(challengeDataForModal?.sender?.status === "offline"){
-      toast.error("Opponent is offline!")
+    if (challengeDataForModal?.sender?.status === "offline") {
+      toast.error("Opponent is offline!");
       return;
     }
-    socket.emit("accept-challenge",payload)
-    setIsChallengeModal(false);
+    if (currentPlayerKey) {
+      socket.emit("accept-challenge", payload);
+      setIsChallengeModal(false);
+      queryClient.invalidateQueries({
+        queryKey: ["recievedChallenges", currentPlayerKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["challenges", currentPlayerKey],
+      });
+    }
   };
 
   return (
@@ -192,7 +205,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
                 key={challenge?.id}
                 onClick={() => {
                   if (!challenge || !challenge.receiver) return;
-                  handleChallengeModal( challenge);
+                  handleChallengeModal(challenge);
                 }}
                 className="
                     flex w-full items-center justify-between                 
@@ -244,9 +257,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
             sent?.map((challenge) => (
               <Button
                 key={challenge?.id}
-                onClick={() =>
-                  handleChallengeModal( challenge)
-                }
+                onClick={() => handleChallengeModal(challenge)}
                 className="
                   flex w-full items-center justify-between
                   bg-slate-800 border border-slate-700
@@ -290,7 +301,7 @@ function ChallengeTabs({ challenges, currentPubKey }: ChallengeTabsProps) {
             handleAcceptChallenge({
               challengeId: Number(challengeDataForModal?.id),
               currentPlayerKey: currentPubKey,
-              opponenentPlayerKey:challengeDataForModal?.senderPubKey || ""
+              opponenentPlayerKey: challengeDataForModal?.senderPubKey || "",
             })
           }
           onDecline={handleRejectChallenge}

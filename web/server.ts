@@ -4,12 +4,11 @@ import { SendChallengeProps } from "./types/player";
 import { createChallenge, updateUser } from "./services/service";
 import {
   AcceptChallengeData,
-  Challenge,
   RejectChallengeInputs,
 } from "./types/challenge";
 import { AcceptChallenge, RejectChallenge } from "./services/change-status";
 import { StartGame } from "./types/game";
-
+import { socketContext } from "./socket/context";
 
 const server = createServer();
 const io = new Server(server, {
@@ -18,6 +17,9 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
+socketContext.io = io;
+const onlineUsers = socketContext.onlineUsers;
 
 export interface ChallengeProps {
   challengerRating: number | undefined;
@@ -33,13 +35,12 @@ export interface RegisterUserProps {
   currentUserName: string | undefined;
 }
 
-const onlineUsers = new Map<string, string>();
-
 io.on("connect", (socket) => {
   console.log("socket started", socket.id);
 
   socket.on("register-user", async (data: RegisterUserProps) => {
     const { currentUserName, currentUserKey } = data;
+
     console.log("pubkey and username", currentUserKey, currentUserName);
 
     if (!currentUserKey) {
@@ -47,7 +48,6 @@ io.on("connect", (socket) => {
       return;
     }
 
-    // Remove any existing socket for this pubkey (prevents duplicates)
     for (const [existingSocketId, pubKey] of onlineUsers.entries()) {
       if (pubKey === currentUserKey && existingSocketId !== socket.id) {
         onlineUsers.delete(existingSocketId);
@@ -59,6 +59,7 @@ io.on("connect", (socket) => {
     }
 
     onlineUsers.set(socket.id, currentUserKey);
+
     socket.emit("successfully-register", {
       currentUserKey,
       currentUserName,
@@ -71,21 +72,24 @@ io.on("connect", (socket) => {
         `User ${currentUserName} registered with pubkey ${currentUserKey}`
       );
     } catch (error: any) {
-      io.to(socket.id).emit("error", { message: error?.message || "Failed to update user status!" })
+      io.to(socket.id).emit("error", {
+        message: error?.message || "Failed to update user status!",
+      });
       console.error("user not updated!", error.message);
     }
   });
 
   socket.on("unregister-user", async (data: { userKey: string }) => {
     const { userKey } = data;
+
     console.log("🔴 Unregistering user:", userKey);
 
     if (!userKey) {
       return;
     }
 
-    // Find and remove all sockets for this user
     let removedCount = 0;
+
     for (const [socketId, pubKey] of onlineUsers.entries()) {
       if (pubKey === userKey) {
         onlineUsers.delete(socketId);
@@ -98,7 +102,6 @@ io.on("connect", (socket) => {
       try {
         await updateUser(userKey, "Offline");
 
-        // Notify other users
         socket.broadcast.emit("user-offline", {
           currentUser: userKey,
           status: "Offline",
@@ -109,94 +112,109 @@ io.on("connect", (socket) => {
     }
   });
 
-  socket.on("send-challenge", async (data: SendChallengeProps) => {
-    const { currentPlayerKey, opponentPlayerKey, currentPlayerStats, amount } =
-      data;
+  // socket.on("send-challenge", async (data: SendChallengeProps) => {
+  //   const {
+  //     currentPlayerKey,
+  //     opponentPlayerKey,
+  //     currentPlayerStats,
+  //     amount,
+  //   } = data;
 
-    console.log("Challenge request received:", {
-      from: currentPlayerKey,
-      to: opponentPlayerKey,
-      stats: currentPlayerStats,
-      amount,
-    });
+  //   console.log("Challenge request received:", {
+  //     from: currentPlayerKey,
+  //     to: opponentPlayerKey,
+  //     stats: currentPlayerStats,
+  //     amount,
+  //   });
 
-    try {
-      if (!currentPlayerKey || !opponentPlayerKey) {
-        socket.emit("error", { message: "Missing player keys" });
-        return;
-      }
+  //   try {
+  //     if (!currentPlayerKey || !opponentPlayerKey) {
+  //       socket.emit("error", { message: "Missing player keys" });
+  //       return;
+  //     }
 
-      if (!amount) {
-        socket.emit("error", { message: "Amount is missing!" });
-        return;
-      }
+  //     if (!amount) {
+  //       socket.emit("error", { message: "Amount is missing!" });
+  //       return;
+  //     }
 
-      let opponentSocketId: string | undefined;
+  //     let opponentSocketId: string | undefined;
 
-      // Find opponent's socket ID
-      for (const [socketId, pubKey] of onlineUsers.entries()) {
-        if (pubKey === opponentPlayerKey) {
-          opponentSocketId = socketId;
-          break;
-        }
-      }
+  //     for (const [socketId, pubKey] of onlineUsers.entries()) {
+  //       if (pubKey === opponentPlayerKey) {
+  //         opponentSocketId = socketId;
+  //         break;
+  //       }
+  //     }
 
-      if (opponentSocketId) {
-        const challengeData = {
-          currentPlayerKey: opponentPlayerKey,
-          opponentPlayerStats: currentPlayerStats,
-          opponentPlayerKey: currentPlayerKey,
-          amount,
-        };
+  //     if (opponentSocketId) {
+  //       const challengeData = {
+  //         currentPlayerKey: opponentPlayerKey,
+  //         opponentPlayerStats: currentPlayerStats,
+  //         opponentPlayerKey: currentPlayerKey,
+  //         amount,
+  //       };
 
-        let challenge;
-        try {
-          challenge = await createChallenge({
-            senderPublickey: currentPlayerKey,
-            receiverPublicKey: opponentPlayerKey,
-            amount,
-          });
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
+  //       let challenge;
 
-        if (!challenge) {
-          socket.emit("error", { message: "challenge not created!" });
-        }
+  //       try {1
+  //         challenge = await createChallenge({
+  //           senderPublickey: currentPlayerKey,
+  //           receiverPublicKey: opponentPlayerKey,
+  //           amount,
+  //         });
+  //       } catch (error) {
+  //         console.error(error);
+  //         throw error;
+  //       }
 
-        io.to(opponentSocketId).emit("recieve-challenge", challengeData);
+  //       if (!challenge) {
+  //         socket.emit("error", { message: "challenge not created!" });
+  //         return;
+  //       }
 
-        socket.emit("challenge-sent-successfully", {
-          opponentPlayerKey,
-          timestamp: Date.now(),
-        });
-      } else {
-        socket.emit("opponent-offline", { opponentPlayerKey });
-        console.log("Opponent is offline:", opponentPlayerKey);
-      }
-    } catch (error: any) {
-      socket.emit("error", { message: error.message });
-      console.error(" Error in send-challenge:", error);
-    }
-  });
+  //       io.to(opponentSocketId).emit("recieve-challenge", challengeData);
+
+  //       socket.emit("challenge-sent-successfully", {
+  //         opponentPlayerKey,
+  //         timestamp: Date.now(),
+  //         success: true,
+  //         challengeData,
+  //       });
+  //     } else {
+  //       io.to(socket.id).emit("opponent-offline", {
+  //         opponentPlayerKey,
+  //         success: false,
+  //         status: "Offline",
+  //       });
+
+  //       console.log("Opponent is offline:", opponentPlayerKey);
+  //     }
+  //   } catch (error: any) {
+  //     socket.emit("error", { message: error.message });
+  //     console.error(" Error in send-challenge:", error);
+  //   }
+  // });
 
   socket.on("reject-challenge", async (data: RejectChallengeInputs) => {
-
     const { challengeId, currentPlayerPubKey, opponentPlayerPubKey } = data;
+
     try {
       if (!challengeId || !currentPlayerPubKey || !opponentPlayerPubKey) {
         return;
       }
+
       if (currentPlayerPubKey === opponentPlayerPubKey) {
         throw new Error("current and opponent player are same!");
       }
+
       const challengeStatus = await RejectChallenge(challengeId);
 
       if (challengeStatus !== "rejected") {
         socket.emit("error", { message: "status not updated!" });
         return;
       }
+
       let opponentSocketId: string | undefined;
 
       console.log("=== ONLINE USERS MAP ===");
@@ -211,32 +229,45 @@ io.on("connect", (socket) => {
           break;
         }
       }
+
       if (socket.id === opponentSocketId) {
-        throw new Error("opponent player's socket id and current player's socket id are same!")
+        throw new Error(
+          "opponent player's socket id and current player's socket id are same!"
+        );
       }
+
       if (!opponentSocketId) {
         socket.emit("error", { message: "Opponent socket id not found!" });
         return;
       }
-      if (socket?.id == opponentSocketId) {
-        console.log(true);
-      }
+
       io.to(opponentSocketId).emit("challenge-rejected", {
         opponentPlayerPubKey,
       });
-      io.to(socket?.id).emit("successfully-rejected", { success: true })
+
+      io.to(socket.id).emit("successfully-rejected", { success: true });
     } catch (error: any) {
       socket.emit("error", { message: error.message });
-      return;
     }
   });
 
   socket.on("accept-challenge", async (data: AcceptChallengeData) => {
-    const { receiverPlayerKey, opponenentPlayerKey, challengeId, playerName } = data;
+    const {
+      receiverPlayerKey,
+      opponenentPlayerKey,
+      challengeId,
+      playerName,
+    } = data;
 
-    if (!receiverPlayerKey || !opponenentPlayerKey || !challengeId || !playerName) {
+    if (
+      !receiverPlayerKey ||
+      !opponenentPlayerKey ||
+      !challengeId ||
+      !playerName
+    ) {
       socket.emit("error", {
-        message: "Reciever key or Opponent key or Challenge id,player name is missing!",
+        message:
+          "Reciever key or Opponent key or Challenge id,player name is missing!",
       });
       return;
     }
@@ -248,12 +279,13 @@ io.on("connect", (socket) => {
         opponentSocketId = socketId;
       }
     }
+
     if (opponentSocketId) {
       const gameId = await AcceptChallenge({
         challengeId,
         currentPlayerKey: receiverPlayerKey,
       });
-      // / Emit to the OPPONENT (who was challenged)
+
       console.log("Challenge request accepted:", {
         whoAcceptedSocketId: socket.id,
         whoSentSocketId: opponentSocketId,
@@ -263,10 +295,11 @@ io.on("connect", (socket) => {
 
       io.to(opponentSocketId).emit("successfully-accepted", {
         opponentSocketId,
+        currentPlayerSocketId: socket.id,
         currentPlayerPubKey: opponenentPlayerKey,
         opponenentPlayerKey: receiverPlayerKey,
         gameId,
-        playerName
+        playerName,
       });
     } else {
       io.to(socket.id).emit("user-offline", {
@@ -279,24 +312,31 @@ io.on("connect", (socket) => {
   socket.on("start-game", (data: StartGame) => {
     console.log("start game event started...", data);
 
-    const { gameId, opponentSocketId, playerName, currentPlayerPubKey } = data;
+    const {
+      gameId,
+      opponentSocketId,
+      playerName,
+      currentPlayerPubKey,
+    } = data;
 
     if (!gameId || !opponentSocketId || !playerName || !currentPlayerPubKey) {
       socket.emit("error", {
-        message: "Fields are missing while confirming the start game!"
+        message: "Fields are missing while confirming the start game!",
       });
-      return; // Don't proceed if validation fails
+      return;
     }
 
-    // Emit to opponent
+    console.log("socket id", socket.id);
+
+    for (const [socketId, pubKey] of onlineUsers.entries()) {
+      console.log(`socket id : ${socketId} >> pub key : ${pubKey}`);
+    }
+
     io.to(opponentSocketId).emit("successful-start", {
       playerName,
       currentPlayerPubKey,
-      gameId
+      gameId,
     });
-
-    // Emit to current player
-    io.to(socket.id).emit("successful-start", { gameId });
   });
 
   socket.on("disconnect", async () => {
@@ -304,6 +344,7 @@ io.on("connect", (socket) => {
 
     if (currentUser) {
       onlineUsers.delete(socket.id);
+
       socket.broadcast.emit("user-offline", {
         currentUser,
         status: "Offline",
@@ -324,6 +365,7 @@ io.on("connect", (socket) => {
 });
 
 const PORT = 3001;
+
 server.listen(PORT, () => {
-  console.log(` Socket.IO server running on PORT:${PORT}`); // FIXED
+  console.log(` Socket.IO server running on PORT:${PORT}`);
 });
