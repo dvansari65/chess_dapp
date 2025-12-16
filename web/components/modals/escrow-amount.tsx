@@ -22,6 +22,7 @@ interface EscrowAmountModalProps {
   currentPlayerStats: player | undefined;
   onClose: () => void;
   isOpen: boolean;
+  isLoading:boolean
 }
 
 function EscrowAmountModal({
@@ -32,6 +33,7 @@ function EscrowAmountModal({
   sendChallenge,
   onClose,
   isOpen,
+  isLoading
 }: EscrowAmountModalProps) {
   const [amount, setAmount] = useState<amountValuesTypes>(wageredAmount);
 
@@ -110,12 +112,15 @@ function EscrowAmountModal({
           </button>
 
           <button
+            disabled={isLoading}
             onClick={() => sendChallenge({currentPlayerKey,currentPlayerStats,opponentPlayerKey , amount})}
             className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 
                        hover:from-emerald-600 hover:to-green-600 rounded-xl font-semibold 
                        shadow-lg shadow-emerald-500/30 transition"
           >
-            Send Challenge
+            {
+              isLoading ? "Sending..." : "Send Challenge"
+            }
           </button>
         </div>
       </div>
