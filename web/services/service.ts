@@ -70,7 +70,8 @@ export const createChallenge = async ({
         if (!challenge) {
             throw new Error("failed to create challenge!");
         }
-        return challenge;
+       
+        return challenge
     } catch (error) {
         throw error;
     }

@@ -1,5 +1,4 @@
 import { createChallenge } from "@/services/service";
-import { emitToUser } from "@/socket/emit";
 import { CreateChallengeInputs } from "@/types/challenge";
 import { NextResponse } from "next/server";
 
@@ -59,12 +58,9 @@ export const POST = async (req: NextResponse) => {
       amount: amount,
     });
 
-    //  Emitting the event to the reciever from the api!
-    emitToUser(receiverPublicKey,"recieve-challenge",challenge)
-
     return NextResponse.json(
         {
-            message:"Challenge sent successfully!",
+            message:"challenge created sucessfully!",
             success:true,
             challenge
         },

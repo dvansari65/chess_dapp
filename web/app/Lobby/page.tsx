@@ -10,31 +10,20 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSocket } from "@/utils/socketProvider";
 import { player, SendChallengeProps } from "@/types/player";
-import { RegisterUserProps } from "@/server";
 import ErrorLabel from "../../components/error/error";
-import { useQueryClient } from "@tanstack/react-query";
 import { amountValuesTypes } from "@/types/escrow";
 import EscrowAmountModal from "@/components/modals/escrow-amount";
-import { sendChallenge } from "@/apis/sendChallenge";
-import { CreateChallengeInputs } from "@/types/challenge";
+
 
 export default function Lobby() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { publicKey, connected } = useWallet();
-  const [label, setLabel] = useState<"Challenge" | "Sent" | "Accepted">(
-    "Challenge"
-  );
-
-  const [challengeStatuses, setChallengeStatuses] = useState<
-    Record<string, "Sent" | "Accepted" | "Rejected">
-  >({});
   const [amountValues, setAmountValues] = useState<amountValuesTypes>(0.001);
   const [escrowModal, setEscrowModal] = useState(false);
   const [selectedOpponentKey, setSelectedOpponentKey] = useState<string>();
-  const [selectedOpponentStats, setSelectedOpponentStats] = useState<
-    player | undefined
-  >();
+  const [selectedOpponentStats, setSelectedOpponentStats] = useState<player | undefined>(undefined);
   const [opponentStatus,setOpponentStatus] = useState<"Offline" | "Online">("Online")
+  const [isSendingChallenge, setIsSendingChallenge] = useState(false);
   const openUserProfile = () => setIsSidebarOpen(true);
   const closeUserProfile = () => setIsSidebarOpen(false);
   const socket = useSocket();
@@ -42,81 +31,79 @@ export default function Lobby() {
   const { data, isPending, error } = getAllPlayers();
   const {data:currenPlayer} = getPlayer(publicKey)
   const { data: UserData,isPending: isUserLoading } = getPlayer(publicKey);
-  const {mutate,isPending:sendChallengeLoading,error:sendChallengeError} = sendChallenge()
 
   useEffect(() => {
-    
     if (!socket) {
       console.log("❌ Socket not available");
       return;
     }
-
+    
     if (!UserData?.user) {
       console.log("⏳ Waiting for UserData...");
       return;
     }
-
+  
     const handleOpponentPlayerStatus = (data: any) => {
-      if (data?.opponentPlayerKey ||   data.status == "Offline") {
-        toast.error(`user  ${data.currentUser} is ${data.status}`)
-        setOpponentStatus("Offline")
+      if (data?.opponentPlayerKey || data.status === "Offline") {
+        toast.error(`User ${data.currentUser} is ${data.status}`);
+        setOpponentStatus("Offline");
+        setIsSendingChallenge(false);
       }
     };
-    
-    const handlePlayerOffline = (data: any) => {
-      toast.error(`user  ${data.currentUser} is ${data.status}`)
-      console.log(`user ${data.status} ${data.currentUser}`);
+  
+    const handleSuccessfullChallenge = (data: any) => {
+      if (data) {
+        setEscrowModal(false);
+        toast.success("Challenge sent successfully!");
+        setIsSendingChallenge(false);
+      }
     };
-
+  
+    const handlePlayerOffline = (data: any) => {
+      toast.error(`User ${data.currentUser} is ${data.status}`);
+      console.log(`User ${data.status} ${data.currentUser}`);
+      setIsSendingChallenge(false);
+    };
+  
+    socket.on("challenge-sent-successfully", handleSuccessfullChallenge);
     socket.on("user-offline", handlePlayerOffline);
     socket.on("opponent-offline", handleOpponentPlayerStatus);
-
+  
     return () => {
-      socket.off("opponent-offline", handleOpponentPlayerStatus);
+      socket.off("challenge-sent-successfully", handleSuccessfullChallenge);
       socket.off("user-offline", handlePlayerOffline);
+      socket.off("opponent-offline", handleOpponentPlayerStatus);
     };
   }, [socket, UserData]);
 
-  const handleSendChallenge = ({
-    currentPlayerKey,
-    opponentPlayerKey,
-    amount
-  }: SendChallengeProps) => {
+  const handleSendChallenge = ({ opponentPlayerKey, amount }: SendChallengeProps) => {
     console.log("handleSendChallenge triggered...");
     
-    if(!currenPlayer?.user){
-      toast.error("First register your name!")
-      setEscrowModal(false)
+    if (!currenPlayer?.user) {
+      toast.error("First register your name!");
+      setEscrowModal(false);
       return;
     }
-
+    
     if (!connected) {
       toast.error("Connect your wallet!");
       return;
     }
-
+    
     if (!publicKey) {
       toast.error("PublicKey not found!");
       return;
     }
     
-    const payload:CreateChallengeInputs = {
-      senderPublickey:currentPlayerKey || "",
-      receiverPublicKey:opponentPlayerKey || "",
+    const payload: SendChallengeProps = {
+      currentPlayerStats: UserData?.user,
+      currentPlayerKey: String(publicKey),
+      opponentPlayerKey: opponentPlayerKey || "",
       amount
     };
-    mutate(payload,{
-      onSuccess:(data)=>{
-        if(data.success){
-          console.log("created challenge data:",data)
-          toast.success("Challenge created successfully!")
-          setEscrowModal(false)
-        }
-      },
-      onError:(error)=>{
-        toast.error(error.message)
-      }
-    })
+    console.log("payload:",payload)
+    setIsSendingChallenge(true);
+    socket.emit("send-challenge", payload);
   };
 
   useEffect(() => {
@@ -138,55 +125,55 @@ export default function Lobby() {
   }
 
   return (
-    <div className="w-full h-full ">
-      <div>
-        <LobbyHeader openUserProfile={openUserProfile} openFilter={() => {}} />
-        <UserSidebar
-          user={UserData?.user}
-          isOpen={isSidebarOpen}
-          onClose={closeUserProfile}
-          isLoading={isUserLoading}
-        />
-      </div>
-      <div>
-        {isPending &&
-          [...Array(12)].map((_, i) => (
-            <div key={i}>
-              <OpponentsLoader />
-            </div>
-          ))}
-        {data?.users?.map((user) => (
-          <div key={`${user.id}-${user.publickey}`}>
-            <Oppenent
-              sendChallenge={() => {
-                setSelectedOpponentKey(user.publickey?.toString());
-                setSelectedOpponentStats(user); 
-                setEscrowModal(true);
-              }}
-              userName={user.userName}
-              publickey={user.publickey?.toString()}
-              status={user.status}
-              ratings={user.rating}
-              currentPlayer={publicKey?.toString()}
-              challengeStatus={
-                challengeStatuses[user.publickey?.toString() || ""] ||
-                "Rejected"
-              }
-            />
+    <div className="w-full h-full">
+    <div>
+      <LobbyHeader openUserProfile={openUserProfile} openFilter={() => {}} />
+      <UserSidebar
+        user={UserData?.user}
+        isOpen={isSidebarOpen}
+        onClose={closeUserProfile}
+        isLoading={isUserLoading}
+      />
+    </div>
+    
+    <div>
+      {isPending &&
+        [...Array(12)].map((_, i) => (
+          <div key={i}>
+            <OpponentsLoader />
           </div>
         ))}
-      </div>
-      {escrowModal && (
-        <EscrowAmountModal
-          isOpen={escrowModal}
-          currentPlayerKey={publicKey?.toString()}
-          opponentPlayerKey={selectedOpponentKey}
-          wageredAmount={amountValues}
-          currentPlayerStats={selectedOpponentStats}
-          sendChallenge={handleSendChallenge}
-          onClose={() => setEscrowModal(false)}
-        />
-      )}
+        
+      {data?.users?.map((user) => (
+        <div key={`${user.id}-${user.publickey}`}>
+          <Oppenent
+            sendChallenge={() => {
+              setSelectedOpponentKey(user.publickey?.toString());
+              setSelectedOpponentStats(user);
+              setEscrowModal(true);
+            }}
+            userName={user.userName}
+            publickey={user.publickey?.toString()}
+            status={user.status}
+            ratings={user.rating}
+            currentPlayer={publicKey?.toString()}
+          />
+        </div>
+      ))}
     </div>
+  
+    {escrowModal && (
+      <EscrowAmountModal
+        isOpen={escrowModal}
+        currentPlayerKey={publicKey?.toString()}
+        opponentPlayerKey={selectedOpponentKey}
+        wageredAmount={amountValues}
+        currentPlayerStats={selectedOpponentStats}
+        sendChallenge={handleSendChallenge}
+        onClose={() => setEscrowModal(false)}
+        isLoading={isSendingChallenge}
+      />
+    )}
+  </div>
   );
 }

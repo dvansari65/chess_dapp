@@ -8,8 +8,8 @@ interface oppenentProps {
   ratings: number | undefined;
   publickey: string | undefined;
   currentPlayer: string | undefined;
-  challengeStatus: "Sent" | "Accepted" | "Rejected";
-  sendChallenge: ()=>void
+  sendChallenge: () => void;
+  
 }
 
 function Opponent({
@@ -19,19 +19,16 @@ function Opponent({
   publickey,
   currentPlayer,
   sendChallenge,
-  challengeStatus,
 }: oppenentProps) {
   const publicKeyObj = new PublicKey(publickey as PublicKeyInitData);
-   
-   if (currentPlayer?.toString() === publicKeyObj.toString()) {
+  if (currentPlayer?.toString() === publicKeyObj.toString()) {
     return null;
   }
-
   return (
     <div className="group relative flex gap-4 text-stone-100 justify-between items-center px-6 py-3 m-2 rounded-2xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-purple-500/20">
       {/* Animated background glow */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/5 to-pink-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      
+
       {/* Shimmer effect */}
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
 
@@ -41,7 +38,7 @@ function Opponent({
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform duration-300">
             {String(userName).charAt(0).toUpperCase()}
           </div>
-          
+
           {/* Status indicator dot */}
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-slate-900 flex items-center justify-center">
             <div
@@ -87,11 +84,10 @@ function Opponent({
         </div>
         <button
           onClick={sendChallenge}
-          
-          disabled={challengeStatus === "Sent" || status == "offline" }
+          disabled={status == "offline"}
           className={`relative px-6 py-2 rounded-xl font-semibold text-sm transition-all duration-300 
             ${
-              challengeStatus === "Sent" ||  status === "offline"
+              status === "offline"
                 ? "bg-slate-700/50 text-slate-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             }`}
